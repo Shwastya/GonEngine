@@ -30,8 +30,8 @@ namespace gon
 
 	void LogManager::switchLog(const LogType type)
 	{
-		// I probably won't use it
-		// for future logging implementations
+		// for future logging 
+		// switching implementations 
 	}
 
 	Log::Log() { init(); }

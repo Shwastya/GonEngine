@@ -21,14 +21,13 @@ include(cmake/compiler.cmake)
 file(GLOB_RECURSE RECURSIVE_SRC_FILES    
     ${CMAKE_CURRENT_LIST_DIR}/src/GonEngine/*.cpp
     #${CMAKE_CURRENT_LIST_DIR}/src/GonEngine/*.h
-    )
+)
 
 
 file(GLOB_RECURSE RECURSIVE_HEADER_FILES
     ${CMAKE_CURRENT_LIST_DIR}/include/GonEngine/*.hpp    
     ${CMAKE_CURRENT_LIST_DIR}/include/GonEngine/*.h
-
-    )    
+)    
 
 set (ENGINE_SRC_FILES ${RECURSIVE_SRC_FILES})
 set (ENGINE_HEADER_FILES ${RECURSIVE_HEADER_FILES})
@@ -41,7 +40,8 @@ add_library(EngineLib STATIC ${ENGINE_SRC_FILES} ${ENGINE_HEADER_FILES} ${DEPS_S
 
 target_include_directories(EngineLib PRIVATE ${INCLUDE_PATHS})
 
-
+# PCH support
+# target_precompile_headers(EngineLib PRIVATE  /include/GonEngine/gonpch.h)
 
 target_compile_definitions(EngineLib PRIVATE -D_GLFW_USE_OPENGL=1)
 target_compile_features(EngineLib PRIVATE cxx_std_17)
