@@ -12,7 +12,7 @@
 
 namespace gon
 {
-	struct VirtuaLog
+	struct SLog
 	{
 		virtual void init() = 0;
 
@@ -21,12 +21,12 @@ namespace gon
 
 		virtual void shutDown() = 0;
 
-		virtual ~VirtuaLog() = default;
+		virtual ~SLog() = default;
 	};
 
-	struct Log : public VirtuaLog
+	struct Log : public SLog
 	{
-		Log() {	init(); }
+		Log();
 
 		void init() override;
 
@@ -45,7 +45,7 @@ namespace gon
 
 	enum class LogType
 	{
-		LT_SPDLOG, LT_OTHERLOG
+		LT_Spdlog, LT_Otherlog
 	};
 
 	// Log Manager is a Singleton
@@ -54,7 +54,7 @@ namespace gon
 		~LogManager() = default;
 
 		static LogManager& p();
-		VirtuaLog& get();
+		SLog& get();
 
 		void switchLog(const LogType type);
 
@@ -62,8 +62,8 @@ namespace gon
 		LogManager();
 
 		// VirtuaLog* m_Log = nullptr;
-		std::unique_ptr<VirtuaLog> m_log;
-		LogType m_selected = LogType::LT_SPDLOG;
+		std::unique_ptr<SLog> m_log;
+		LogType m_selected = LogType::LT_Spdlog;
 	};
 }
 

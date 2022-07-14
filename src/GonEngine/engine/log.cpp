@@ -23,7 +23,7 @@ namespace gon
 		return instance;
 	}
 
-	VirtuaLog& LogManager::get()
+	SLog& LogManager::get()
 	{
 		return *m_log;
 	}
@@ -33,6 +33,8 @@ namespace gon
 		// I probably won't use it
 		// for future logging implementations
 	}
+
+	Log::Log() { init(); }
 
 	// current Log implementation
 	void Log::init()
