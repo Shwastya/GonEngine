@@ -2,7 +2,8 @@
 set(INCLUDE_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/glfw
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/spdlog)
 
 #Common Dependency Files
 set(DEPS_SRC_FILES_COMMON
