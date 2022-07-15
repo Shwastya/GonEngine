@@ -1,18 +1,22 @@
 #include <GonEngine/gon.h>
+#pragma once
 
 namespace gon {
-	class GonEngine;
 
 	class TestProject : public GonEngine
 	{
 	public:
-		TestProject() {}
-		~TestProject() {}
+		
+		TestProject() : GonEngine("Project1") {  };
+
+		~TestProject() {};
 	};
 
-	GonEngine* initProject()
+	extern GonEngine* start_project()
 	{
 		return new TestProject();
 	}
 }
+
+
 

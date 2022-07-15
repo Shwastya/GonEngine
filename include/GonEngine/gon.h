@@ -2,20 +2,29 @@
 #pragma once
 
 // Call for side project client
-#include "engine/gon.hpp"
+#include "GonEngine/engine/gon.hpp"
+// Logging with spdlog
+#include "GonEngine/engine/log.hpp"
+#include "GonEngine/goncfg.h"
 
-#if defined(GON_WIN64) || defined(GON_WIN32)
+//#if defined(GON_WIN64) || defined(GON_WIN32)
+
+
 
 int main(int argc, char** argv)
 {
 	GON_LOG_ON
 	{
-		auto test{ gon::initProject() };
+	
+		//gon::initProject();
+		//gon::initProject();
+		auto test = gon::start_project();
 		test->run();
 		delete test;
-		return 0;
+		
 	}		
 	GON_LOG_OFF
+	return 0;
 }
 
-#endif
+//#endif

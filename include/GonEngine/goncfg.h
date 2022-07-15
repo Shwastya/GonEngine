@@ -6,12 +6,19 @@ Author. Suastia
 */
 #pragma once
 
-// Logging Off/On
+// Logging: Off/On->(only in debug)
 #if 1 && defined(_DEBUG)
-#ifndef _GON_LOG_
-#define _GON_LOG_
+	#ifndef _GON_LOG
+	#define _GON_LOG
+	#endif
 #endif
+// Asserts: off/on->(0|1 v _GON_LOG)
+#if 0 || defined(_GON_LOG)
+	#ifndef _GON_ASSERTS
+	#define _GON_ASSERTS
+	#endif
 #endif
+
 
 #if defined(_WIN64)
 /* Microsoft Windows (64-bit) */
@@ -35,31 +42,29 @@ Author. Suastia
 
 // _______________________Logging Macros_______________________________________
 
-#if defined(_GON_LOG_) // _GON_LOG_ is ON
+#define	GON		gon::LogManager::p().get().engineLogger()
+#define APP		gon::LogManager::p().get().clientLogger()
 
-#if defined(_DEBUG) // _GON_LOG_ is ON
-	
-	#define	GON		gon::LogManager::p().get().engineLogger()
-	#define APP		gon::LogManager::p().get().clientLogger()		
-	
-	// CORE Logs
-	#define GON_TRACE(...) GON->trace (__VA_ARGS__)
-	#define GON_INFO(...)  GON->info  (__VA_ARGS__)
-	#define GON_WARN(...)  GON->warn  (__VA_ARGS__)
-	#define GON_ERROR(...) GON->error (__VA_ARGS__)
-	#define GON_FATAL(...) GON->fatal (__VA_ARGS__)
+#if defined(_GON_LOG) // _GON_LOG_ is ON
 
-	// CLIENT Logs
-	#define APP_TRACE(...) APP->trace (__VA_ARGS__)
-	#define APP_INFO(...)  APP->info  (__VA_ARGS__)
-	#define APP_WARN(...)  APP->warn  (__VA_ARGS__)
-	#define APP_ERROR(...) APP->error (__VA_ARGS__)
-	#define APP_FATAL(...) APP->fatal (__VA_ARGS__)
+	#if defined(_DEBUG) // _GON_LOG_ is ON	
+		// CORE Logs
+		#define GON_TRACE(...) GON->trace (__VA_ARGS__)
+		#define GON_INFO(...)  GON->info  (__VA_ARGS__)
+		#define GON_WARN(...)  GON->warn  (__VA_ARGS__)
+		#define GON_ERROR(...) GON->error (__VA_ARGS__)
+		#define GON_FATAL(...) GON->fatal (__VA_ARGS__)
 
-	#define GON_LOG_ON GON_TRACE("Welcome to Gon-Engine!");
-	#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
-#endif
+		// CLIENT Logs
+		#define APP_TRACE(...) APP->trace (__VA_ARGS__)
+		#define APP_INFO(...)  APP->info  (__VA_ARGS__)
+		#define APP_WARN(...)  APP->warn  (__VA_ARGS__)
+		#define APP_ERROR(...) APP->error (__VA_ARGS__)
+		#define APP_FATAL(...) APP->fatal (__VA_ARGS__)
 
+		#define GON_LOG_ON GON_TRACE("Welcome to Gon-Engine!");
+		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
+	#endif
 #else // _GON_LOG_ is OFF	
 
 	// CORE Logs
@@ -69,18 +74,43 @@ Author. Suastia
 	#define GON_ERROR(...) 
 
 	// CORE Client
-	#define GON_TRACE(...)
-	#define GON_INFO(...)  
-	#define GON_WARN(...)  
-	#define GON_ERROR(...) 
-	#define GON_FATAL(...)
+	#define APP_TRACE(...)
+	#define APP_INFO(...)  
+	#define APP_WARN(...)  
+	#define APP_ERROR(...) 
+	#define APP_FATAL(...)
 
 	#define GON_LOG_ON	0;
 	#define GON_LOG_OFF	0;
 
 #endif // MH_LOG_SYSTEM
 
+// asserts
+#if defined(_GON_ASSERTS) // ASSERST or _GON_LOG is ON
+	#ifndef _GON_LOG
+		#define GON_ERROR(...) GON->error (__VA_ARGS__)
+		#define APP_ERROR(...) APP->error (__VA_ARGS__)
+		#define GON_TRACE(...) GON->trace (__VA_ARGS__)
+		#define GON_LOG_ON GON_TRACE("Gon-Engine only logging with asserts!");
+		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
+	#endif
 
+	#ifndef _DEBUG		
+		#define _BREAK_DEGUG ;
+		#define GON_LOG_ON GON_TRACE("Gon-Engine logging with asserts only...");
+		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
+	#else
+		#ifndef _BREAK_DEGUG
+			#define _BREAK_DEGUG __debugbreak();
+		#endif
+	#endif // !(_DEBUG))
+
+	#define APP_ASSERT(x, ...) { if(!(x)) {APP_ERROR("[ASSERTION FAILED]: {0}", __VA_ARGS__); _BREAK_DEGUG}}
+	#define GON_ASSERT(x, ...) { if(!(x)) {GON_ERROR("[ASSERTION FAILED]: {0}", __VA_ARGS__); _BREAK_DEGUG}}
+#else
+	#define GON_ASSERT(...) 
+	#define APP_ASSERT(...)
+#endif
 // ----------------------------------------------------------------------------
 
 

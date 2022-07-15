@@ -1,22 +1,29 @@
 #pragma once
+#include<functional>
 
-// set-config-preproces-etc.
-#include "GonEngine/goncfg.h"
-// Logging with spdlog
-#include "GonEngine/engine/log.hpp"
-
-namespace gon {
-
+namespace gon 
+{
+	class SWindow;
 	class GonEngine
 	{
 	public:
-		GonEngine();
+		GonEngine(const std::string& name);
 		virtual ~GonEngine();
 
+		static GonEngine& ptr();
+
 		void run();
+
+	private:
+
+		std::unique_ptr<SWindow> m_window;
+
+		bool m_gonRunning{ true };
 	};
 
-	// for project side instantiate
-	GonEngine* initProject();
 
+
+	// predeclaracion para el entry-point
+	// por parte de los proyectos cliente
+	GonEngine* start_project();
 }
