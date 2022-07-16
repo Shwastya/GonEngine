@@ -1,10 +1,11 @@
 #pragma once
 #include "GonEngine/engine/window.hpp"
+#include "GonEngine/engine/platform/GLFWCallBacks/callbacks.hpp"
 
-typedef struct GLFWwindow GLFWwindow;
+
 
 namespace gon
-{	
+{
 	class Window : public SWindow
 	{
 		void shutDown();
@@ -31,15 +32,11 @@ namespace gon
 		virtual void setCaptureMode(bool& toggle) const override;
 
 	private:
-		struct WindowData
-		{
-			std::string m_title;
-			uint32_t m_width, m_height;
-			bool m_vsync{true};
-			std::function<void(Event&)> CallBack;
-		};
 
-		WindowData m_data;
+		
+		WDataCallBacks m_data;
+
+
 		GLFWwindow* m_window;	
 		bool m_fullScreen = false;
 	};

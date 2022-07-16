@@ -7,7 +7,7 @@ namespace gon
 	// -*-*-*-*-*-*-*-*-*-*- Event Super Class -*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-
 	class Event {
 	public:
-		bool m_handled = false;
+		bool m_handled{ false };
 		virtual ~Event() = default;
 		virtual EventType getEventType() const = 0;
 	};
@@ -28,8 +28,8 @@ namespace gon
 
 		virtual EventType getEventType()  const override { return m_type; }
 	private:
-		uint32_t m_width, m_height;
-		const static EventType m_type = EventType::WindowResize;
+		uint32_t m_width{0}, m_height{0};
+		const static EventType m_type{ EventType::WindowResize };
 	};
 	// ------------------------------------------------------------------------
 	// -------------------- OnWindowClose <---- Event -------------------------
@@ -39,8 +39,8 @@ namespace gon
 		virtual EventType getEventType() const override { return m_type; }
 
 	private:
-		uint32_t m_Width, m_Height;
-		const static EventType m_type = EventType::WindowClose;
+		uint32_t m_Width{0}, m_Height{0};
+		const static EventType m_type{ EventType::WindowClose };
 	};
 	// ------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ namespace gon
 		KeyCode getKeyCode() const { return m_keyCode; }
 	protected:
 		KeyEvent(KeyCode keycode) : m_keyCode(keycode) {}
-		KeyCode m_keyCode;
+		KeyCode m_keyCode{ KeyCode::Backspace };
 	};
 	// -*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-		
 	// ----
@@ -65,7 +65,7 @@ namespace gon
 		int GetRepeatCount() const { return m_repeatCount; }
 		virtual EventType getEventType() const override { return m_type; }
 	private:
-		int m_repeatCount;
+		int m_repeatCount{0};
 		const static EventType m_type = EventType::KeyPressed;
 	};
 	// ----
@@ -74,7 +74,7 @@ namespace gon
 		OnKeyReleased(KeyCode keycode, int repeat = 1) : KeyEvent(keycode), m_repeatCount(repeat) {}
 		virtual EventType getEventType() const override { return m_type; }
 	private:
-		int m_repeatCount;
+		int m_repeatCount{0};
 		const static EventType m_type = EventType::KeyRelesead;
 	};
 	// ----
@@ -95,7 +95,7 @@ namespace gon
 		int GetMouseButton() const { return m_button; }
 	protected:
 		MouseButtonEvent(int button) : m_button(button) {}
-		int m_button;
+		int m_button{0};
 	};
 	// -*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*
 	// ----
@@ -125,7 +125,7 @@ namespace gon
 		float getY() const { return m_mouseY; }
 		virtual EventType getEventType() const override { return m_type; }
 	private:
-		float m_mouseX, m_mouseY;
+		float m_mouseX{0.0f}, m_mouseY{0.0f};
 		const static EventType m_type = EventType::MouseMoved;
 	};
 	// ----
@@ -137,7 +137,7 @@ namespace gon
 		float GetYOffset() const { return m_yOffset; }
 		virtual EventType getEventType() const override { return m_type; }
 	private:
-		float m_xOffset, m_yOffset;
+		float m_xOffset{0.0f}, m_yOffset{0.0f};
 		const static EventType m_type = EventType::MouseScrolled;
 	};
 	// ----
