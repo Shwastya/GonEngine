@@ -1,6 +1,7 @@
 #pragma once
 #include "GonEngine/engine/nodes/nodes.hpp"
 #include <GonEngine/gon.h>
+#include "GonEngine/engine/input.hpp"
 
 #define ADD_NODE(x) pushNode(std::make_unique<TestNode>(x));
 
@@ -10,40 +11,36 @@ namespace gon {
 	{
 	public:
 		//TestNode(const NodeType ntype = NodeType::Project) : Node(ntype) {}
-#if defined (_NAME_TEST) && (_DEBUG)
+#if defined (_NODE_NAMETEST) && (_DEBUG)
 		TestNode(const NodeType ntype = NodeType::Project, const std::string& name = "test")
-			: Node(ntype, name), m_nodeType(ntype), m_name(name)
+			: Node(ntype, name)
 		{}
 #endif
 		void onUpdate(TimeStep dt) override
 		{
-			//APP_INFO("[UPDATE] Test1 node");
+			auto [x, y] = Input::getMousePos();
+			APP_INFO("{0},{1}", x, y);
 		}
 
 		void onEvent(Event& e) override
 		{			
-			if (m_nodeType == NodeType::None)
+			if (m_nodeType == NodeType::Engine)
 			
 			{				
 				if (e.getEventType() == EventType::MouseButtonPressed)
 				{
-					//APP_WARN("{0}", m_name);
-				}											
+					APP_WARN("ole! {0}", this->getId());
+				}				
 			}				
 		}
 
-		void bind() override
+		void onJoin() override
 		{}
-		void unbind() override
+		void onQuit() override
 		{}
 
 	private:
-#if defined (_NAME_TEST) && (_DEBUG)
-		const std::string m_name{ "" };
-#endif
-		const NodeType m_nodeType{NodeType::Project};
-		uint32_t count = 0;
-
+		//Input m_input;
 	};
 
 	class Test : public GonEngine

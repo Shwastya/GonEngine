@@ -4,6 +4,8 @@
 #include <ostream>
 
 // Definicion propia de KeyCode para GonEngine - key & Mouse Codes -
+// ... se adjunta tambien definicion enum class de (Event Types) ...
+// ... ya que este archivo es llamado por el sistema de Eventos  ...
 
 // GonEngine dispone de su propia definicion de IO Codes, reduciendo la 
 // dependencia de la Api de GLFW y no tener asi que recurrir a sus 
@@ -13,11 +15,11 @@
 // del conocimiento de la biblioteca GLFW que en teoria solo debe ser conocida 
 // por el engine.
 
-// IMPORTANTE:
-// de momento los keycodes solo se prueban en sistemas x64 sw vindows
+// IMPORTANTE: - De ahi el tenerlo aqui localizado -
+// de momento los keycodes solo se prueban en sistemas x64 en vindows
 // ya sea para sistema windows x34 o otras plataformas (Unix, MacOS..)
 // habria que hacer multiples definiciones para cada unos con condiciones
-// a nivel de preproceso.
+// a nivel de preproceso. 
 
 namespace gon
 {

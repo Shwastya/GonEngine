@@ -13,7 +13,7 @@ namespace gon
 	float TimeStep::MilliSeconds() const { return m_Time * 1000.0f; }
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
-#if defined (_NAME_TEST) && (_DEBUG) 
+#if defined (_NODE_NAMETEST) && (_DEBUG) 
 	#ifndef _INFO 
 		#define _INFO node->getName()
 	#endif

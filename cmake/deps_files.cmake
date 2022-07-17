@@ -3,7 +3,9 @@ set(INCLUDE_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/glfw
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/spdlog)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/spdlog
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui
+    )
 
 #Common Dependency Files
 set(DEPS_SRC_FILES_COMMON
@@ -14,7 +16,26 @@ set(DEPS_SRC_FILES_COMMON
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/glfw/window.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/glfw/vulkan.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/glad/glad.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb/stb_image.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb/stb_image.h
+
+    # my dear ImGui deps
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imconfig.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_draw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_internal.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_widgets.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_rectpack.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_textedit.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_truetype.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_demo.cpp
+        # opengl
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.cpp
+
+
+
+    )
 
 #Windows Dependency Files
 set(DEPS_SRC_FILES_WIN

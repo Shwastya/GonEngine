@@ -4,8 +4,8 @@
 #include <functional>
 
 
-namespace gon 
-{
+namespace gon {
+
 	class SWindow;
 	class Event;
 	class GonEngine
@@ -16,11 +16,11 @@ namespace gon
 
 		void run();
 
-		static GonEngine& ptr();
-
-		void onEvent(Event& e);
-
+		static GonEngine* getGon();
 		static float getTime();
+		SWindow* getWindow();
+
+		void onEvent(Event& e);		
 		
 		void pushNode(std::unique_ptr<Node> node);
 		void pushOverNode(std::unique_ptr<Node> overnode);
@@ -33,6 +33,8 @@ namespace gon
 		std::unique_ptr<SWindow> m_window;
 		bool m_gon_is_running;
 		NodeStack m_nodes;
+
+		static GonEngine* s_instance;
 	};
 
 	// predeclaracion para el entry-point

@@ -1,6 +1,6 @@
 #pragma once
 #if 1
-	#define _NAME_TEST
+	#define _NODE_NAMETEST
 #endif
 #include <vector>
 #include <iostream>
@@ -35,7 +35,7 @@ namespace gon
 		//	static uint32_t id = 0;
 		//	m_id = id++;
 		//};
-#if defined (_NAME_TEST) && (_DEBUG) 
+#if defined (_NODE_NAMETEST) && (_DEBUG) 
 		Node(const NodeType ntype = NodeType::Project, const std::string& name = "")
 			: m_nodeType(ntype), m_name(name)
 		{
@@ -45,8 +45,8 @@ namespace gon
 #endif
 		virtual ~Node() = default;
 
-		virtual void bind() = 0;
-		virtual void unbind() = 0;
+		virtual void onJoin() = 0;
+		virtual void onQuit() = 0;
 
 		virtual void onUpdate(TimeStep dt);
 		virtual void onEvent(Event& e);
@@ -56,7 +56,7 @@ namespace gon
 
 		const NodeType type() { return m_nodeType; };		
 
-#if defined (_NAME_TEST) && (_DEBUG) 
+#if defined (_NODE_NAMETEST) && (_DEBUG) 
 		const std::string& getName() const { return m_name; }
 	protected:
 		std::string m_name{ "" };		

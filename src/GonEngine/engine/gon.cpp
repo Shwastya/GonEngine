@@ -4,17 +4,18 @@
 #include "GonEngine/goncfg.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "GonEngine/engine/input.hpp"
 
 namespace gon {
 
-	
-	
+	GonEngine* GonEngine::s_instance = nullptr;
+
 	GonEngine::GonEngine(const std::string& name = "Gon Engine", const size_t reserve)
 		: m_gon_is_running(true), m_nodes(reserve)
 	{
+		s_instance = this;
 		m_window = SWindow::create(name);
-		m_window->setVsync(true);
-
+		m_window->setVsync(true);		
 		//Bindeamos las callbacks a la funcion miembro OnEvent()
 		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));
 	}
@@ -34,7 +35,7 @@ namespace gon {
 
 			TimeStep temporal = 0.0f;
 
-
+			
 
 			for (std::unique_ptr<Node>& node : m_nodes)
 			{
@@ -43,55 +44,45 @@ namespace gon {
 		}
 	}
 
-	GonEngine& GonEngine::ptr()
-	{
-		// estudiar si conviene eliminar
-		// la opcion singleton del engine
-		static GonEngine instance;
-		return instance;
+	GonEngine* GonEngine::getGon() {		
+		return s_instance;
 	}
+	float GonEngine::getTime() {
+		const float getTime = glfwGetTime();
+		return getTime;
+	}
+	SWindow* GonEngine::getWindow()
+	{
+		return m_window.get();
+	}
+
+
+
 	void GonEngine::onEvent(Event& e)
 	{
 		
 		if (e.getEventType() == EventType::WindowClose)
 		{
 			onCloseWindow();;
-		}
-				
+		}				
 
 		for (auto it = m_nodes.end(); it != m_nodes.begin();)
 		{
-			(*--it)->onEvent(e);
-
-			
+			(*--it)->onEvent(e);			
 
 			if ((*it)->type() == NodeType::Engine)
 			{
 				
 				if (e.getEventType() == EventType::MouseButtonPressed)
 				{
-					GON_ERROR("node Ids: {0}", (*it)->getId());
-					GON_WARN("{0}", (*it)->getName());
+					/*GON_ERROR("node Ids: {0}", (*it)->getId());
+					GON_WARN("{0}", (*it)->getName());*/
 				}
 			}
 		}
-		
+	}
 
-		
-
-		
 	
-		
-
-		
-
-	}
-
-	float GonEngine::getTime()
-	{
-		const float getTime = glfwGetTime();
-		return getTime;
-	}
 
 	void GonEngine::pushNode(std::unique_ptr<Node> node)
 	{
