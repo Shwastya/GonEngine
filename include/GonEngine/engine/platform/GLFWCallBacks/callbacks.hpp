@@ -2,7 +2,7 @@
 #include <functional>
 #include <iostream>
 
-typedef struct GLFWwindow GLFWwindow;
+struct GLFWwindow;
 
 namespace gon 
 {

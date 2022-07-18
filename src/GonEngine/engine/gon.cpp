@@ -1,28 +1,32 @@
 #include "GonEngine/engine/platform/windows_window.hpp"
+#include "GonEngine/engine/input.hpp"
 #include "GonEngine/engine/gon.hpp"
 #include "GonEngine/engine/log.hpp"
 #include "GonEngine/goncfg.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "GonEngine/engine/input.hpp"
+
 
 namespace gon {
 
 	GonEngine* GonEngine::s_instance = nullptr;
 
-	GonEngine::GonEngine(const std::string& name = "Gon Engine", const size_t reserve)
-		: m_gon_is_running(true), m_nodes(reserve)
+	GonEngine::GonEngine(const std::string& name, const size_t reserve)
+		: m_gon_is_running(true), m_layers(reserve),
+		  m_window(SWindow::create(name)),
+		  m_imgui(new ImGuiNode(NodeType::ImGui))		
 	{
 		s_instance = this;
-		m_window = SWindow::create(name);
-		m_window->setVsync(true);		
+		m_window->setVsync(true);	
+		m_imgui->onJoin();
+
 		//Bindeamos las callbacks a la funcion miembro OnEvent()
 		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));
 	}
 
 	GonEngine::~GonEngine()
 	{
-
+		m_imgui->onQuit();
 	}
 
 	void GonEngine::run()
@@ -31,29 +35,43 @@ namespace gon {
 		{
 			glClearColor(0.5f, 0.0f, 0.4f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
-			m_window->swapBuffers();
+			
 
 			TimeStep temporal = 0.0f;
 
-			
-
-			for (std::unique_ptr<Node>& node : m_nodes)
+			m_imgui->beginRender();
+			for (NLayer* node : m_layers)
 			{
-				node->onUpdate(temporal);
+				node->onUpdate(temporal);				
+				node->onRender();
 			}
+			m_imgui->onRender();
+			m_imgui->closeRender();
+		
+
+			// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+			//m_imgui_UI->header();
+			//for (Node* node : m_nodes)
+			//{
+				//node->onImguiRender();
+			//}
+			//m_imgui_UI->footer();
+			// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+			m_window->swapBuffers();
 		}
 	}
 
-	GonEngine* GonEngine::getGon() {		
-		return s_instance;
+	GonEngine& GonEngine::getGon() {		
+		return *s_instance;
 	}
 	float GonEngine::getTime() {
 		const float getTime = glfwGetTime();
 		return getTime;
 	}
-	SWindow* GonEngine::getWindow()
+	SWindow& GonEngine::getPtrWindow()
 	{
-		return m_window.get();
+		return *m_window;
 	}
 
 
@@ -66,32 +84,22 @@ namespace gon {
 			onCloseWindow();;
 		}				
 
-		for (auto it = m_nodes.end(); it != m_nodes.begin();)
-		{
-			(*--it)->onEvent(e);			
-
-			if ((*it)->type() == NodeType::Engine)
-			{
-				
-				if (e.getEventType() == EventType::MouseButtonPressed)
-				{
-					/*GON_ERROR("node Ids: {0}", (*it)->getId());
-					GON_WARN("{0}", (*it)->getName());*/
-				}
-			}
+		for (auto it = m_layers.end(); it != m_layers.begin();)
+		{			
+			(*--it)->onEvent(e);
 		}
 	}
 
 	
 
-	void GonEngine::pushNode(std::unique_ptr<Node> node)
+	void GonEngine::pushNode(NLayer *node)
 	{
-		m_nodes.pushNode(std::move(node));
+		m_layers.pushLayer(node);
 	}
 
-	void GonEngine::pushOverNode(std::unique_ptr<Node> overnode)
+	void GonEngine::pushOverNode(NLayer* overnode)
 	{
-		m_nodes.pushNode(std::move(overnode));
+		m_layers.pushLayer(overnode);
 	}
 	
 	/*const bool GonEngine::onWindowClose(const OnWindowClose& e)

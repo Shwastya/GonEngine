@@ -76,11 +76,11 @@ namespace gon
 
 		// cambiar esto para abstraer contexto de render 
 		//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-		glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4.6); // Queremos OpenGL 3.3
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4.6);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Para hacer feliz a MacOS ; Aunque no debería ser necesaria
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //No queremos el viejo OpenGL 	
+		//glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Queremos OpenGL 3.3
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+		//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Para hacer feliz a MacOS ; Aunque no debería ser necesaria
+		//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //No queremos el viejo OpenGL 	
 
 		glfwMakeContextCurrent(m_window);
 		int result = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -103,8 +103,8 @@ namespace gon
 		glfwPollEvents();
 	}
 	void Window::maximize() { glfwMaximizeWindow(m_window); }
-	uint32_t& Window::width() { return m_data.ptr()->m_width; }
-	uint32_t& Window::height() { return m_data.ptr()->m_height; }
+	uint32_t Window::width() { return m_data.ptr()->m_width; }
+	uint32_t Window::height() { return m_data.ptr()->m_height; }
 	Position Window::getPosition()
 	{
 		int x, y;

@@ -4,6 +4,7 @@
 
 
 
+
 namespace gon
 {
 	class Window : public SWindow
@@ -19,8 +20,8 @@ namespace gon
 
 		virtual void maximize() override;
 
-		virtual uint32_t& width()    override;
-		virtual uint32_t& height()   override;
+		virtual uint32_t width()    override;
+		virtual uint32_t height()   override;
 		virtual Position getPosition() override;
 
 		virtual void* getWindow() const override;

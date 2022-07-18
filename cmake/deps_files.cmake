@@ -19,19 +19,35 @@ set(DEPS_SRC_FILES_COMMON
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb/stb_image.h
 
     # my dear ImGui deps
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_truetype.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_textedit.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_rectpack.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_widgets.cpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imconfig.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_draw.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_internal.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_widgets.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_rectpack.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_textedit.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imstb_truetype.h
+
+
+
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_demo.cpp
-        # opengl
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_draw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_tables.cpp
+
+    # opengl
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_glfw.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_glfw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.cpp
+
+
+
+
+
+
+
 
 
 

@@ -3,7 +3,7 @@
 #include "GonEngine/engine/input.hpp"
 #include <GLFW/glfw3.h> 
 
-#define GON_WIN	  static_cast<Window*>(GonEngine::getGon()->getWindow()); // void* ptr
+#define GON_WIN	  static_cast<Window*>(&GonEngine::getGon().getPtrWindow()); // void* ptr
 #define GLFW_WIN  static_cast<GLFWwindow*>
 
 namespace gon {

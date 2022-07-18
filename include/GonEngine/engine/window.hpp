@@ -1,6 +1,6 @@
 #pragma once
-#include <functional>
-#include <iostream>
+#include <GonEngine/engine/memcfg/scp_ptr.hpp>
+
 
 namespace gon
 {
@@ -37,8 +37,8 @@ namespace gon
 
 		virtual void maximize() = 0;
 
-		virtual uint32_t& width()	 = 0;
-		virtual uint32_t& height()	 = 0;
+		virtual uint32_t width()	 = 0;
+		virtual uint32_t height()	 = 0;
 		virtual Position getPosition() = 0;
 
 		virtual void* getWindow() const = 0;
@@ -49,9 +49,9 @@ namespace gon
 		virtual bool isVsync() const = 0;
 		virtual void setCaptureMode(bool& toggle) const = 0;		
 
-		// NOTA:
+		// Importante:
 		// Para que fuera completamente independientemente de la plataforma 
 		// haria falta algun control o switch (o a nivel de pre-proceso)
-		static std::unique_ptr<SWindow> create(const WProps& window_props);
+		static u_ptr<SWindow> create(const WProps& window_props);
 	};
 }

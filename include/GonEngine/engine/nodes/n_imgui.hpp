@@ -4,21 +4,22 @@
 
 namespace gon
 {
-	class ImGuiLayer : public Node
+	class ImGuiNode : public Node
 	{
 	public:
-		// ImGuiLayer(const NodeType ntype = NodeType::Project);
-#if defined (_NODE_NAMETEST) && (_DEBUG)	
-		ImGuiLayer(const NodeType ntype, const std::string& name);
-#endif
-		~ImGuiLayer();
+		
+		ImGuiNode(const NodeType ntype = NodeType::ImGui, const std::string& name = "imgui-layer");
 
-		virtual void onJoin()	  override;
+		~ImGuiNode();
+
+		virtual void onJoin() override;
+
+		void beginRender();
+		virtual void onRender() override;
+		void closeRender();
+
 		virtual void onQuit() override;
 
-		void begin();
-		void end();
-
-		void setGonColorProfile();
+		void setColorGonDefault();
 	};
 }

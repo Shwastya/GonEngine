@@ -26,7 +26,8 @@ file(GLOB_RECURSE RECURSIVE_SRC_FILES
 
 file(GLOB_RECURSE RECURSIVE_HEADER_FILES
     ${CMAKE_CURRENT_LIST_DIR}/include/GonEngine/*.hpp    
-    ${CMAKE_CURRENT_LIST_DIR}/include/GonEngine/*.h
+    #${CMAKE_CURRENT_LIST_DIR}/include/GonEngine/*.h
+    #${CMAKE_CURRENT_LIST_DIR}/include/GonEngine/*.cpp
 )    
 
 set (ENGINE_SRC_FILES ${RECURSIVE_SRC_FILES})
