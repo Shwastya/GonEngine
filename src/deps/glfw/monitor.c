@@ -363,14 +363,15 @@ GLFWAPI const char* glfwGetMonitorName(GLFWmonitor* handle)
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     return monitor->name;
 }
-
+#pragma warning( push )
+#pragma warning( disable : 4152 )
 GLFWAPI GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun cbfun)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP_POINTERS(_glfw.callbacks.monitor, cbfun);
     return cbfun;
 }
-
+#pragma warning( pop )
 GLFWAPI const GLFWvidmode* glfwGetVideoModes(GLFWmonitor* handle, int* count)
 {
     _GLFWmonitor* monitor = (_GLFWmonitor*) handle;

@@ -429,11 +429,11 @@ FMT_CONSTEXPR auto to_unsigned(Int value) ->
 
 FMT_MSC_WARNING(suppress : 4566) constexpr unsigned char micro[] = "\u00B5";
 
-constexpr auto is_utf8() -> bool {
+ constexpr auto is_utf8() -> bool {
   // Avoid buggy sign extensions in MSVC's constant evaluation mode.
   // https://developercommunity.visualstudio.com/t/C-difference-in-behavior-for-unsigned/1233612
   using uchar = unsigned char;
-  return FMT_UNICODE || (sizeof(micro) == 3 && uchar(micro[0]) == 0xC2 &&
+FMT_MSC_WARNING(suppress : 6285) return FMT_UNICODE || (sizeof(micro) == 3 && uchar(micro[0]) == 0xC2 &&
                          uchar(micro[1]) == 0xB5);
 }
 FMT_END_DETAIL_NAMESPACE
@@ -692,7 +692,7 @@ class basic_format_parse_context : private ErrorHandler {
   FMT_CONSTEXPR void on_error(const char* message) {
     ErrorHandler::on_error(message);
   }
-
+#pragma warning(disable : 26437)
   constexpr auto error_handler() const -> ErrorHandler { return *this; }
 };
 
@@ -1854,6 +1854,7 @@ class format_arg_store
             is_packed, Context,
             detail::mapped_type_constant<remove_cvref_t<T>, Context>::value>(
             std::forward<T>(args))...} {
+#pragma warning(disable : 26800)
     detail::init_named_args(data_.named_args(), 0, 0, args...);
   }
 };
@@ -2250,7 +2251,7 @@ FMT_CONSTEXPR auto code_point_length(const Char* begin) -> int {
   // Compute the pointer to the next character early so that the next
   // iteration can start working on the next character. Neither Clang
   // nor GCC figure out this reordering on their own.
-  return len + !len;
+  return len + ~len;
 }
 
 // Return the result via the out param to workaround gcc bug 77539.
@@ -2290,7 +2291,7 @@ FMT_CONSTEXPR auto parse_nonnegative_int(const Char*& begin, const Char* end,
   // Check for overflow.
   const unsigned max = to_unsigned((std::numeric_limits<int>::max)());
   return num_digits == std::numeric_limits<int>::digits10 + 1 &&
-                 prev * 10ull + unsigned(p[-1] - '0') <= max
+      prev * 10ull + unsigned(static_cast<unsigned long long>(p[-1]) - '0') <= max
              ? static_cast<int>(value)
              : error_value;
 }
@@ -2365,7 +2366,12 @@ FMT_CONSTEXPR auto do_parse_arg_id(const Char* begin, const Char* end,
   auto it = begin;
   do {
     ++it;
-  } while (it != end && (is_name_start(c = *it) || ('0' <= c && c <= '9')));
+  }
+
+
+
+  while (it != end && (is_name_start(c = *it) || ('0' <= c && c <= '9')));
+  
   handler(basic_string_view<Char>(begin, to_unsigned(it - begin)));
   return it;
 }

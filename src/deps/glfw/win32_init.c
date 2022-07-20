@@ -164,6 +164,8 @@ static void freeLibraries(void)
 
 // Create key code translation tables
 //
+#pragma warning( push )
+#pragma warning( disable : 4244 )
 static void createKeyTables(void)
 {
     int scancode;
@@ -299,7 +301,7 @@ static void createKeyTables(void)
             _glfw.win32.nativeKeys[_glfw.win32.publicKeys[scancode]] = scancode;
     }
 }
-
+#pragma warning( pop )
 // Creates a dummy window for behind-the-scenes work
 //
 static HWND createHelperWindow(void)

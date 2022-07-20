@@ -356,7 +356,8 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
         _glfwPlatformSetCursorPos(window, xpos, ypos);
     }
 }
-
+#pragma warning( push )
+#pragma warning( disable : 6011 )
 GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
 {
     _GLFWcursor* cursor;
@@ -377,7 +378,10 @@ GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
 
     return (GLFWcursor*) cursor;
 }
+#pragma warning( pop )
 
+#pragma warning( push )
+#pragma warning( disable : 6011 )
 GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
 {
     _GLFWcursor* cursor;
@@ -407,7 +411,7 @@ GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
 
     return (GLFWcursor*) cursor;
 }
-
+#pragma warning( pop )
 GLFWAPI void glfwDestroyCursor(GLFWcursor* handle)
 {
     _GLFWcursor* cursor = (_GLFWcursor*) handle;
@@ -455,7 +459,8 @@ GLFWAPI void glfwSetCursor(GLFWwindow* windowHandle, GLFWcursor* cursorHandle)
 
     _glfwPlatformSetCursor(window, cursor);
 }
-
+#pragma warning( push )
+#pragma warning( disable : 4152 )
 GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
@@ -539,7 +544,7 @@ GLFWAPI GLFWdropfun glfwSetDropCallback(GLFWwindow* handle, GLFWdropfun cbfun)
     _GLFW_SWAP_POINTERS(window->callbacks.drop, cbfun);
     return cbfun;
 }
-
+#pragma warning( pop )
 GLFWAPI int glfwJoystickPresent(int joy)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(0);
@@ -597,14 +602,15 @@ GLFWAPI const char* glfwGetJoystickName(int joy)
 
     return _glfwPlatformGetJoystickName(joy);
 }
-
+#pragma warning( push )
+#pragma warning( disable : 4152 )
 GLFWAPI GLFWjoystickfun glfwSetJoystickCallback(GLFWjoystickfun cbfun)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP_POINTERS(_glfw.callbacks.joystick, cbfun);
     return cbfun;
 }
-
+#pragma warning( pop )
 GLFWAPI void glfwSetClipboardString(GLFWwindow* handle, const char* string)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;

@@ -24,7 +24,9 @@
 //    distribution.
 //
 //========================================================================
-
+#ifdef _MSC_VER
+    #define _CRT_SECURE_NO_WARNINGS
+#endif
 #include "internal.h"
 
 #include <stdlib.h>
@@ -179,7 +181,9 @@ _GLFWmonitor** _glfwPlatformGetMonitors(int* count)
             break;
         }
     }
-
+#pragma warning( push )
+#pragma warning( disable : 6308 )
+#pragma warning( disable : 28182 )
     for (adapterIndex = 0;  ;  adapterIndex++)
     {
         ZeroMemory(&adapter, sizeof(DISPLAY_DEVICEW));
@@ -216,7 +220,7 @@ _GLFWmonitor** _glfwPlatformGetMonitors(int* count)
             monitors[found - 1] = createMonitor(&adapter, NULL);
         }
     }
-
+#pragma warning( pop )
     _GLFW_SWAP_POINTERS(monitors[0], monitors[primaryIndex]);
 
     *count = found;
@@ -254,7 +258,9 @@ GLFWvidmode* _glfwPlatformGetVideoModes(_GLFWmonitor* monitor, int* count)
     GLFWvidmode* result = NULL;
 
     *count = 0;
-
+#pragma warning( push )
+#pragma warning( disable : 6308 )
+#pragma warning( disable : 28182 )
     for (;;)
     {
         int i;
@@ -324,7 +330,7 @@ GLFWvidmode* _glfwPlatformGetVideoModes(_GLFWmonitor* monitor, int* count)
 
     return result;
 }
-
+#pragma warning( pop )
 void _glfwPlatformGetVideoMode(_GLFWmonitor* monitor, GLFWvidmode* mode)
 {
     DEVMODEW dm;
@@ -358,7 +364,8 @@ void _glfwPlatformGetGammaRamp(_GLFWmonitor* monitor, GLFWgammaramp* ramp)
     memcpy(ramp->green, values + 256, 256 * sizeof(unsigned short));
     memcpy(ramp->blue,  values + 512, 256 * sizeof(unsigned short));
 }
-
+#pragma warning( push )
+#pragma warning( disable : 6385 )
 void _glfwPlatformSetGammaRamp(_GLFWmonitor* monitor, const GLFWgammaramp* ramp)
 {
     HDC dc;
@@ -379,7 +386,7 @@ void _glfwPlatformSetGammaRamp(_GLFWmonitor* monitor, const GLFWgammaramp* ramp)
     SetDeviceGammaRamp(dc, values);
     DeleteDC(dc);
 }
-
+#pragma warning( pop )
 
 //////////////////////////////////////////////////////////////////////////
 //////                        GLFW native API                       //////

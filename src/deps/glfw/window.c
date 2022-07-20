@@ -115,6 +115,7 @@ void _glfwInputWindowMonitorChange(_GLFWwindow* window, _GLFWmonitor* monitor)
 //////////////////////////////////////////////////////////////////////////
 //////                        GLFW public API                       //////
 //////////////////////////////////////////////////////////////////////////
+#pragma warning( push )
 
 GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
                                      const char* title,
@@ -163,7 +164,9 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
         return NULL;
 
     window = calloc(1, sizeof(_GLFWwindow));
+    #pragma warning( disable : 6011 )
     window->next = _glfw.windowListHead;
+
     _glfw.windowListHead = window;
 
     window->videoMode.width       = width;
@@ -228,7 +231,7 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
 
     return (GLFWwindow*) window;
 }
-
+#pragma warning( pop )
 void glfwDefaultWindowHints(void)
 {
     _GLFW_REQUIRE_INIT();
@@ -785,7 +788,8 @@ GLFWAPI void* glfwGetWindowUserPointer(GLFWwindow* handle)
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     return window->userPointer;
 }
-
+#pragma warning( push )
+#pragma warning( disable : 4152 )
 GLFWAPI GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow* handle,
                                                   GLFWwindowposfun cbfun)
 {
@@ -862,7 +866,7 @@ GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* handle
     _GLFW_SWAP_POINTERS(window->callbacks.fbsize, cbfun);
     return cbfun;
 }
-
+#pragma warning( pop )
 GLFWAPI void glfwPollEvents(void)
 {
     _GLFW_REQUIRE_INIT();

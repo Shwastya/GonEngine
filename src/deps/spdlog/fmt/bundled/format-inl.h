@@ -255,7 +255,7 @@ struct fp {
   template <typename Float, FMT_ENABLE_IF(is_supported<Float>::value)>
   FMT_CONSTEXPR bool assign(Float n) {
     // Assume float is in the format [sign][exponent][significand].
-    const int num_float_significand_bits =
+    constexpr int num_float_significand_bits = // SUASTIA
         detail::num_significand_bits<Float>();
     const uint64_t implicit_bit = 1ULL << num_float_significand_bits;
     const uint64_t significand_mask = implicit_bit - 1;
@@ -287,6 +287,7 @@ struct fp {
 // Normalizes the value converted from double and multiplied by (1 << SHIFT).
 template <int SHIFT = 0> FMT_CONSTEXPR fp normalize(fp value) {
   // Handle subnormals.
+  #pragma warning(suppress : 26498)
   const uint64_t implicit_bit = 1ULL << num_significand_bits<double>();
   const auto shifted_implicit_bit = implicit_bit << SHIFT;
   while ((value.f & shifted_implicit_bit) == 0) {
@@ -294,7 +295,8 @@ template <int SHIFT = 0> FMT_CONSTEXPR fp normalize(fp value) {
     --value.e;
   }
   // Subtract 1 to account for hidden bit.
-  const auto offset =
+
+  constexpr auto offset =
       fp::num_significand_bits - num_significand_bits<double>() - SHIFT - 1;
   value.f <<= offset;
   value.e -= offset;
@@ -332,7 +334,7 @@ FMT_CONSTEXPR inline fp get_cached_power(int min_exponent,
   const int shift = 32;
   const auto significand = static_cast<int64_t>(log10_2_significand);
   int index = static_cast<int>(
-      ((min_exponent + fp::num_significand_bits - 1) * (significand >> shift) +
+      ((static_cast<long long>(min_exponent) + fp::num_significand_bits - 1) * (significand >> shift) +
        ((int64_t(1) << shift) - 1))  // ceil
       >> 32                          // arithmetic shift
   );
@@ -1990,7 +1992,7 @@ FMT_INLINE int remove_trailing_zeros(uint64_t& n) FMT_NOEXCEPT {
 
   // Otherwise, work with the remainder
   auto quotient = static_cast<uint32_t>(n / 100000000);
-  auto remainder = static_cast<uint32_t>(n - 100000000 * quotient);
+  auto remainder = static_cast<uint32_t>(n - 100000000 * static_cast<unsigned long long>(quotient));
 
   if (t == 0 || remainder * mod_inv1 > max_quotient1) {
     return 0;

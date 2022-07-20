@@ -25,6 +25,9 @@
 //
 //========================================================================
 
+#pragma warning( push )
+#pragma warning( disable : 4100 )
+#pragma warning( disable : 6011 )
 #include "internal.h"
 
 #include <limits.h>
@@ -811,7 +814,8 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
                          SWP_NOACTIVATE | SWP_NOZORDER);
             break;
         }
-
+#pragma warning( push )
+#pragma warning( disable : 6011 )
         case WM_DROPFILES:
         {
             HDROP drop = (HDROP) wParam;
@@ -846,6 +850,7 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
             return 0;
         }
     }
+
 
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
@@ -1722,3 +1727,4 @@ GLFWAPI HWND glfwGetWin32Window(GLFWwindow* handle)
     return window->win32.handle;
 }
 
+#pragma warning( pop )

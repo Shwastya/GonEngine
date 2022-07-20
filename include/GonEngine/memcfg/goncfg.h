@@ -2,9 +2,19 @@
 This engine is intended to run from C++17. 
 The following code is for possible cross-platform portability and for core 
 settings and configurations.
-Author. Suastia
 */
 #pragma once
+
+namespace gon {
+
+	enum class API
+	{
+		None = 0,
+		OpenGL,
+		DirectX,
+		Vulkan
+	};
+}
 
 // Logging: Off/On->(only in debug)
 #if 1 && defined(_DEBUG)
@@ -53,14 +63,12 @@ Author. Suastia
 		#define GON_INFO(...)  GON->info  (__VA_ARGS__)
 		#define GON_WARN(...)  GON->warn  (__VA_ARGS__)
 		#define GON_ERROR(...) GON->error (__VA_ARGS__)
-		#define GON_FATAL(...) GON->fatal (__VA_ARGS__)
 
 		// CLIENT Logs
 		#define APP_TRACE(...) APP->trace (__VA_ARGS__)
 		#define APP_INFO(...)  APP->info  (__VA_ARGS__)
 		#define APP_WARN(...)  APP->warn  (__VA_ARGS__)
 		#define APP_ERROR(...) APP->error (__VA_ARGS__)
-		#define APP_FATAL(...) APP->fatal (__VA_ARGS__)
 
 		#define GON_LOG_ON GON_TRACE("Welcome to Gon-Engine!");
 		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
@@ -78,7 +86,6 @@ Author. Suastia
 	#define APP_INFO(...)  
 	#define APP_WARN(...)  
 	#define APP_ERROR(...) 
-	#define APP_FATAL(...)
 
 	#define GON_LOG_ON	0;
 	#define GON_LOG_OFF	0;

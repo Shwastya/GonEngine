@@ -248,7 +248,8 @@ FMT_END_NAMESPACE
 #else
 #  define FMT_HEADER_ONLY_CONSTEXPR20
 #endif
-
+#pragma warning( push )
+#pragma warning( disable : 26451 )
 FMT_BEGIN_NAMESPACE
 namespace detail {
 
@@ -1051,7 +1052,8 @@ template <> constexpr auto digits10<uint128_t>() FMT_NOEXCEPT -> int {
 
 template <typename Char> struct thousands_sep_result {
   std::string grouping;
-  Char thousands_sep;
+
+  Char thousands_sep{' '};
 };
 
 template <typename Char>
@@ -1411,7 +1413,7 @@ template <typename Char> struct write_int_data {
         size = width;
       }
     } else if (specs.precision > num_digits) {
-      size = (prefix >> 24) + to_unsigned(specs.precision);
+        size = (static_cast<size_t>(prefix >> 24)) + to_unsigned(specs.precision);
       padding = to_unsigned(specs.precision - num_digits);
     }
   }
@@ -2049,6 +2051,7 @@ FMT_CONSTEXPR20 auto write(OutputIt out, T value) -> OutputIt {
   }
 
   constexpr auto specs = basic_format_specs<Char>();
+  #pragma warning(suppress : 26498)
   uint mask = exponent_mask<floaty>();
   if ((bits & mask) == mask)
     return write_nonfinite(out, std::isinf(value), specs, fspecs);
@@ -3086,7 +3089,7 @@ FMT_INLINE auto format_to(OutputIt out, const Locale& loc,
                           format_string<T...> fmt, T&&... args) -> OutputIt {
   return vformat_to(out, loc, fmt, fmt::make_format_args(args...));
 }
-
+#pragma warning( pop )
 FMT_MODULE_EXPORT_END
 FMT_END_NAMESPACE
 

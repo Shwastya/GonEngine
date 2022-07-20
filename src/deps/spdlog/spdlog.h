@@ -3,7 +3,9 @@
 
 // spdlog main header file.
 // see example.cpp for usage example
-
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 #ifndef SPDLOG_H
 #define SPDLOG_H
 

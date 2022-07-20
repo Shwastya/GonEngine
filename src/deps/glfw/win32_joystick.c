@@ -173,7 +173,8 @@ static int compareJoystickObjects(const void* first, const void* second)
 
 // Checks whether the specified device supports XInput
 // Technique from FDInputJoystickManager::IsXInputDeviceFast in ZDoom
-//
+#pragma warning( push )
+#pragma warning( disable : 6011 )
 static GLFWbool supportsXInput(const GUID* guid)
 {
     UINT i, count = 0;
@@ -235,6 +236,7 @@ static GLFWbool supportsXInput(const GUID* guid)
     free(ridl);
     return result;
 }
+#pragma warning( pop )
 
 // Frees all resources associated with the specified joystick
 //
@@ -329,7 +331,9 @@ static BOOL CALLBACK deviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi,
 }
 
 // DirectInput device enumeration callback
-//
+#pragma warning( push )
+#pragma warning( disable : 4100 )
+#pragma warning( disable : 6387 )
 static BOOL CALLBACK deviceCallback(const DIDEVICEINSTANCE* di, void* user)
 {
     int joy = 0;
@@ -441,7 +445,7 @@ static BOOL CALLBACK deviceCallback(const DIDEVICEINSTANCE* di, void* user)
     _glfwInputJoystickChange(joy, GLFW_CONNECTED);
     return DIENUM_CONTINUE;
 }
-
+#pragma warning( pop )
 // Attempt to open the specified joystick device
 // TODO: Pack state arrays for non-gamepad devices
 //

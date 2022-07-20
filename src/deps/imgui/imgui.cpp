@@ -1111,7 +1111,8 @@ ImGuiStyle::ImGuiStyle()
     // Default theme
     ImGui::StyleColorsDark(this);
 }
-
+#pragma warning( push )
+#pragma warning ( disable : 6011 39)
 // To scale your entire UI (e.g. if you want your app to use High DPI or generally be DPI aware) you may use this helper function. Scaling the fonts is done separately and is up to you.
 // Important: This operation is lossy because we round all sizes to integer. If you need to change your scale multiples, call this over a freshly initialized ImGuiStyle structure rather than scaling multiple times.
 void ImGuiStyle::ScaleAllSizes(float scale_factor)
@@ -1797,6 +1798,7 @@ static const ImU32 GCrc32LookupTable[256] =
     0xA00AE278,0xD70DD2EE,0x4E048354,0x3903B3C2,0xA7672661,0xD06016F7,0x4969474D,0x3E6E77DB,0xAED16A4A,0xD9D65ADC,0x40DF0B66,0x37D83BF0,0xA9BCAE53,0xDEBB9EC5,0x47B2CF7F,0x30B5FFE9,
     0xBDBDF21C,0xCABAC28A,0x53B39330,0x24B4A3A6,0xBAD03605,0xCDD70693,0x54DE5729,0x23D967BF,0xB3667A2E,0xC4614AB8,0x5D681B02,0x2A6F2B94,0xB40BBE37,0xC30C8EA1,0x5A05DF1B,0x2D02EF8D,
 };
+#pragma warning( pop )
 
 // Known size hash
 // It is ok to call ImHashData on a string with known length but the ### operator won't be supported.
@@ -13258,11 +13260,13 @@ static void ImGui::WindowSelectViewport(ImGuiWindow* window)
         {
             // Regular (non-child, non-popup) windows by default are also allowed to protrude
             // Child windows are kept contained within their parent.
+#pragma warning( disable : 6011 )
             window->ViewportAllowPlatformMonitorExtend = window->Viewport->PlatformMonitor;
         }
     }
 
-    // Update flags
+#pragma warning( disable : 6011 )
+    // Update flags    
     window->ViewportOwned = (window == window->Viewport->Window);
     window->ViewportId = window->Viewport->ID;
 
@@ -15343,6 +15347,7 @@ static void ImGui::DockNodeUpdateTabBar(ImGuiDockNode* node, ImGuiWindow* host_w
 
     const bool node_was_active = (node->LastFrameActive + 1 == g.FrameCount);
     const bool closed_all = node->WantCloseAll && node_was_active;
+#pragma warning ( disable : 4616)
     const ImGuiID closed_one = node->WantCloseTabId && node_was_active;
     node->WantCloseAll = false;
     node->WantCloseTabId = 0;

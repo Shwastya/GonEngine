@@ -194,6 +194,7 @@ GLFWAPI const char* glfwGetVersionString(void)
 
 GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun)
 {
+#pragma warning(disable : 4152)
     _GLFW_SWAP_POINTERS(_glfwErrorCallback, cbfun);
     return cbfun;
 }

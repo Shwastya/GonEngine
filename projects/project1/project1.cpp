@@ -1,9 +1,4 @@
-#pragma once
-#include "GonEngine/engine/nodes/nodes.hpp"
-#include <GonEngine/gon.h>
-#include "GonEngine/engine/input.hpp"
-#include <imgui.h>
-
+#include <GonEngine/main.h>
 
 #define ADD_NODE(x) pushNode(std::make_unique<TestNode>(x));
 
@@ -11,8 +6,7 @@ namespace gon {
 
 	class TestNode : public NLayer
 	{
-	public:
-		
+	public:		
 
 		TestNode(const NodeType ntype = NodeType::Project, const std::string& name = "test")
 			: NLayer(ntype, name)
@@ -25,6 +19,7 @@ namespace gon {
 
 		void onEvent(Event& e) override
 		{
+			e;
 			/*if (m_nodeType == NodeType::Engine)
 
 			{
@@ -37,33 +32,27 @@ namespace gon {
 
 		void onUpdate(TimeStep dt) override
 		{
+			dt;
 			/*auto [x, y] = Input::getMousePos();
 			APP_INFO("{0},{1}", x, y);*/
-		}
-
-		
+		}		
 
 		void onRender() override
 		{
 			ImGui::Begin("Test");
 			ImGui::Text("Hello world!");
 			ImGui::End();
-		}
-
-		
-		
-
+		}	
 	private:
-		//Input m_input;
 	};
 
 	class Test : public GonEngine
 	{
 	public:
 		
-		Test() : GonEngine("Project1") 
+		Test() : GonEngine(API::OpenGL, "project", 1920, 1080, 15) 
 		{
-			pushNode(new TestNode(NodeType::Project));
+			pushNode(std::make_unique<TestNode>(NodeType::Project));
 			//pushNode(new TestNode(NodeType::None));
 			//pushNode(new TestNode(NodeType::Project));
 			//pushNode(new TestNode(NodeType::Engine));

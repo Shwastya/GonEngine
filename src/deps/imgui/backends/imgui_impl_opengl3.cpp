@@ -266,6 +266,7 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
     {
         // Query GL_VERSION in desktop GL 2.x, the string will start with "<major>.<minor>"
         const char* gl_version = (const char*)glGetString(GL_VERSION);
+#pragma warning( disable : 6031 )
         sscanf(gl_version, "%d.%d", &major, &minor);
     }
     bd->GlVersion = (GLuint)(major * 100 + minor * 10);

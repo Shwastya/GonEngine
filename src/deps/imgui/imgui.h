@@ -42,6 +42,8 @@ Index of this file:
 
 #pragma once
 
+
+
 // Configuration file with compile-time options (edit imconfig.h or '#define IMGUI_USER_CONFIG "myfilename.h" from your build system')
 #ifdef IMGUI_USER_CONFIG
 #include IMGUI_USER_CONFIG
@@ -115,6 +117,10 @@ Index of this file:
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable: 26495)    // [Static Analyzer] Variable 'XXX' is uninitialized. Always initialize a member variable (type.6).
+#pragma warning (disable: 33010)
+#pragma warning (disable: 28182)
+#pragma warning (disable: 6011)
+#pragma warning (disable: 6387) 
 #endif
 #if defined(__clang__)
 #pragma clang diagnostic push
