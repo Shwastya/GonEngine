@@ -1,5 +1,7 @@
 #include "GonEngine/geometries/geometry.hpp"
 #include <glm/detail/func_geometric.inl>
+#include "GonEngine/log.hpp"
+#include "GonEngine/memcfg/goncfg.h"
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <glad/glad.h>
@@ -7,9 +9,63 @@
 
 namespace gon {
 
-	void Geometry::calcTangents(const float* positions, const float* uvs, const float* normals, float* tangents, float* biTangents) const
+    // Float pointer scoped
+    // -*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+    Geometry::ScpFloat::ScpFloat(const size_t length) 
+        : m_data(new float[length])
+    {} 
+    void Geometry::ScpFloat::init(const size_t length)
+    {
+        m_data = new float[length];
+    }
+
+    Geometry::ScpFloat::~ScpFloat() { delete[] m_data; }
+
+    float* Geometry::ScpFloat::get()
+    {
+        return m_data;
+    }
+
+    float& Geometry::ScpFloat::operator[](uint32_t idx)
+    {
+        return m_data[idx];
+    }
+    
+
+    // Uint32_t pointer scoped
+    // -*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+    Geometry::ScpUint32::ScpUint32(const size_t length)
+        : m_data(new uint32_t[length])
+    {}
+    void Geometry::ScpUint32::init(const size_t length)
+    {
+        m_data = new uint32_t[length];
+    }
+    Geometry::ScpUint32::~ScpUint32() { delete[] m_data; }
+
+    uint32_t* Geometry::ScpUint32::get()
+    {
+        return m_data;
+    }  
+
+    uint32_t& Geometry::ScpUint32::operator[](uint32_t idx)
+    {
+        return m_data[idx];
+    }
+    
+    // -*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+
+
+
+
+    Geometry::Geometry(const uint32_t vertices, const uint32_t elements)
+        : m_nVertices(vertices), m_nElements(elements)
+    {}
+
+    void Geometry::calcTangents(const float* positions, const float* uvs, const float* normals, float* tangents, float* biTangents) const
 	{
-        for (size_t i = 0; i < _nVertices; i += 3)
+        for (uint32_t i = 0; i < m_nVertices; i += 3)
         {
             const uint32_t idx3{ i * 3 };
             const uint32_t idx2{ i * 2 };
@@ -41,13 +97,28 @@ namespace gon {
             biTangents[idx3 + 2] = biTangents[idx3 + 5] = biTangents[idx3 + 8] = biTangent.z;
         }
 
-        for (size_t i = 0; i < _nVertices; ++i)
+        for (uint32_t i = 0; i < m_nVertices; ++i)
         {
             const uint32_t idx3{ i * 3 };
 
-            glm::vec3 n(normals[idx3 + 0], normals[idx3 + 1], normals[idx3 + 2]);
-            glm::vec3 t(tangents[idx3 + 0], tangents[idx3 + 1], tangents[idx3 + 2]);
-            glm::vec3 b(biTangents[idx3 + 0], biTangents[idx3 + 1], biTangents[idx3 + 2]);
+            glm::vec3 n
+            (
+                (normals[idx3 + 0]), 
+                (normals[idx3 + 1]), 
+                (normals[idx3 + 2])
+            );
+            glm::vec3 t
+            (
+                tangents[idx3 + 0], 
+                tangents[idx3 + 1], 
+                tangents[idx3 + 2]
+            );
+            glm::vec3 b
+            (
+                biTangents[idx3 + 0], 
+                biTangents[idx3 + 1], 
+                biTangents[idx3 + 2]
+            );
 
             t = glm::normalize(t - n * glm::dot(t, n));
 
@@ -58,62 +129,61 @@ namespace gon {
 
             tangents[idx3 + 0] = t.x;
             tangents[idx3 + 1] = t.y;
-            tangents[idx3 + 2] = t.z;
-        }
+            tangents[idx3 + 2] = t.z;            
+        }        
 	}
 
-	void Geometry::setData(const float* positions, const float* uvs, const float* normals, const uint32_t* indices, float* vbo, bool TangBitang)
+	void Geometry::setData(const float* positions, const float* uvs, const float* normals, bool TangBitang)
 	{
-        const size_t length = static_cast<size_t>(_nVertices) * 3;
-        const auto tangents = new float[length];
-        const auto biTangents = new float[length];
+        const size_t length = static_cast<size_t>(m_nVertices) * 3;
 
+        
+        ScpFloat tangents(length);
+        ScpFloat biTangents(length);       
+        calcTangents(positions, uvs, normals, tangents.get(), biTangents.get());
 
-        calcTangents(positions, uvs, normals, tangents, biTangents);
         // en caso de la geometria de sphere o teapot
         // que no se calculan bien tangentes ni bitangentes
-
         if (!TangBitang)
         {
-            memset(tangents, 0.0f, length * sizeof(float));
-            memset(biTangents, 0.0f, length * sizeof(float));
+            memset(tangents.get(), 0, (length) * sizeof(float));
+            memset(biTangents.get(), 0, (length) * sizeof(float));
         }
 
-        uint32_t idx{ 0 }, idxUvs{ 0 }, idxVbo{ 0 };
+        uint32_t idx{ 0 };
 
-        for (size_t i = 0; i < _nVertices; i++)
+        for (idx = 0; idx < m_nVertices * 3; idx += 3)
         {
-            vbo[idxVbo] = positions[idx];
-            vbo[idxVbo + 1] = positions[idx + 1];
-            vbo[idxVbo + 2] = positions[idx + 2];
-
-            // uvs
-            vbo[idxVbo + 3] = uvs[idxUvs];
-            vbo[idxVbo + 4] = uvs[idxUvs + 1];
-            idxUvs += 2;
-
-            // normals
-            vbo[idxVbo + 5] = normals[idx];
-            vbo[idxVbo + 6] = normals[idx + 1];
-            vbo[idxVbo + 7] = normals[idx + 2];
-
-            // tangents
-            vbo[idxVbo + 8] = tangents[idx];
-            vbo[idxVbo + 9] = tangents[idx + 1];
-            vbo[idxVbo + 10] = tangents[idx + 2];
-
-            // bitangents
-            vbo[idxVbo + 11] = biTangents[idx];
-            vbo[idxVbo + 12] = biTangents[idx + 1];
-            vbo[idxVbo + 13] = biTangents[idx + 2];
-
-            idx += 3;
-            idxVbo += 14;
+            m_vbo[idx] = positions[idx]; m_vbo[idx + 1] = positions[idx + 1]; m_vbo[idx + 2] = positions[idx + 2];
         }
-        delete[] tangents;
-        delete[] biTangents;
+
+        uint32_t x = 0, y = idx;
+        for (idx = idx; idx < (y + (m_nVertices * 2)); idx += 2)
+        {
+            //GON_WARN("vbo[{0}] = uvs[{1}];  vbo[{2}] = uvs[{3}]", idx, x, idx + 1, x + 1);
+            m_vbo[idx] = uvs[x];  m_vbo[idx + 1] = uvs[x + 1];
+            x += 2; 
+        }
+
+        x = 0, y = idx;
+        for (idx = idx; idx < (y + (m_nVertices * 3)); idx += 3)
+        {
+            m_vbo[idx] = normals[x];  m_vbo[idx + 1] = normals[x + 1]; m_vbo[idx + 2] = normals[x + 2];
+            x += 3;
+        }
+
+        x = 0, y = idx;
+        for (idx = idx; idx < (y + (m_nVertices * 3)); idx += 3)
+        {
+            m_vbo[idx] = tangents[x];  m_vbo[idx + 1] = tangents[x + 1]; m_vbo[idx + 2] = tangents[x + 2];
+            x += 3;
+        }
+
+        x = 0, y = idx;
+        for (idx = idx; idx < (y + (m_nVertices * 3)); idx += 3)
+        {
+            m_vbo[idx] = biTangents[x];  m_vbo[idx + 1] = biTangents[x + 1]; m_vbo[idx + 2] = biTangents[x + 2];
+            x += 3;
+        }       
 	}
-
-	
-
 }

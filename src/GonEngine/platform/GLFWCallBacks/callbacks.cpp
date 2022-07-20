@@ -9,6 +9,8 @@
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"
 
+#pragma warning( disable : 4100 )
+
 namespace gon
 {
 
@@ -124,7 +126,6 @@ namespace gon
 		glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			auto& data = *(CAST(glfwGetWindowUserPointer(window)));
-			GON_WARN("File 'callbacks.cpp' in line 138 formal parameters without reference. 'mods = {0}' 'scancode = {1}': ", mods, scancode);
 			switch (action)
 			{
 				case GLFW_PRESS:
@@ -160,7 +161,6 @@ namespace gon
 		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
 		{
 			auto& data = *(CAST(glfwGetWindowUserPointer(window)));
-			GON_WARN("File 'callbacks.cpp' in line 169 formal parameter without reference. 'mod = {0}'", mods);
 			switch (action)
 			{
 				case GLFW_PRESS:
