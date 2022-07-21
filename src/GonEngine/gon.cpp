@@ -7,6 +7,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "GonEngine/geometries/triangle.hpp"
+#include "GonEngine/platform/OpenGL/opengl_shader.hpp"
+
 namespace gon {
 
 	GonEngine* GonEngine::s_instance = nullptr;
@@ -15,7 +18,7 @@ namespace gon {
 		const int32_t h, const size_t reserve)
 		: m_gon_is_running(true), m_layers(reserve),
 		  m_window(SWindow::create({name, api, w, h})),
-		  m_imgui(new ImGuiNode(NodeType::ImGui))		
+		  m_imgui(new ImGuiNode(NodeType::ImGui))
 	{
 		s_instance = this;
 		m_window->setVsync(true);	
@@ -23,7 +26,34 @@ namespace gon {
 
 		//Bindeamos las callbacks a la funcion miembro OnEvent()
 		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));
+
+		
+
+		glGenVertexArrays(1, &m_VAO);
+		glBindVertexArray(m_VAO);
+
+		glGenBuffers(1, &m_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+		Triangle triangle;
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * (3*3), triangle.getPositions(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+		glGenBuffers(1, &m_EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 3, triangle.getIndices(), GL_STATIC_DRAW);
+		
+
+		const std::string vs = ("../assets/shaders/basic_vertex.vs");
+		const std::string fs = ("../assets/shaders/basic_fragment.fs");
+
+		m_shader = Shader::Create(vs, fs);
 	}
+
 	GonEngine::~GonEngine()
 	{
 		m_imgui->onQuit();
@@ -34,9 +64,13 @@ namespace gon {
 	{
 		while (m_gon_is_running)
 		{
-			glClearColor(0.5f, 0.0f, 0.4f, 1.0f);
+			glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
+			m_shader->bind();
+
+			glBindVertexArray(m_VAO);
+			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
 			TimeStep temporal = 0.0f;
 

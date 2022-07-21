@@ -1,4 +1,5 @@
 #include <GonEngine/main.h>
+#include "GonEngine/geometries/triangle.hpp"
 
 #define ADD_NODE(x) pushNode(std::make_unique<TestNode>(x));
 
@@ -19,20 +20,20 @@ namespace gon {
 
 		void onEvent(Event& e) override
 		{
-			e;
-			/*if (m_nodeType == NodeType::Engine)
-
+			
+			if (e.getEventType() == EventType::KeyPressed)
 			{
-				if (e.getEventType() == EventType::MouseButtonPressed)
+				OnKeyPressed& _e = dynamic_cast<OnKeyPressed&>(e);
+
+				if (_e.getKeyCode() == GON_KEY_A)
 				{
-					APP_WARN("ole! {0}", this->getId());
-				}
-			}	*/
+					Triangle triangle;
+				}					
+			}
 		}
 
 		void onUpdate(TimeStep dt) override
-		{
-			dt;
+		{			
 			/*auto [x, y] = Input::getMousePos();
 			APP_INFO("{0},{1}", x, y);*/
 		}		

@@ -7,6 +7,7 @@ namespace gon {
 	constexpr size_t k_default_reserve{ 10 };
 	class SWindow;
 	class Event;
+	class Shader;
 	class GonEngine	
 	{
 	public:
@@ -40,8 +41,10 @@ namespace gon {
 		bool m_gon_is_running;
 		NLayersManager m_layers;
 		
+		uint32_t m_VAO{0}, m_VBO{0}, m_EBO{0};
+		s_ptr<Shader> m_shader;
 
-
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		static GonEngine* s_instance;
 	};
 

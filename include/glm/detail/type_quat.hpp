@@ -40,6 +40,8 @@ namespace glm
 #		endif
 
 #		if GLM_LANG & GLM_LANG_CXXMS_FLAG
+#pragma warning( push )
+#pragma warning( disable : 4201)
 			union
 			{
 #				ifdef GLM_FORCE_QUAT_DATA_XYZW
@@ -50,6 +52,7 @@ namespace glm
 
 				typename detail::storage<4, T, detail::is_aligned<Q>::value>::type data;
 			};
+#pragma warning( pop ) 
 #		else
 #			ifdef GLM_FORCE_QUAT_DATA_XYZW
 				T x, y, z, w;

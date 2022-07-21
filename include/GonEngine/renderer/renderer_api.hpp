@@ -31,7 +31,8 @@ namespace gon {
 
 		// non virtual
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*		
-		const static API _API(const bool GetSet = false, const API api = API::OpenGL);
+		const static API _API(const bool GetSet, const API api);
+		const static API _API();
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		
 	};

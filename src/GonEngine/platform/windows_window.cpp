@@ -21,12 +21,10 @@ namespace gon
 	Window::Window(const WProps& window_props)
 		:m_data(std::make_unique<WDataCallBacks>(window_props))
 	{
-		GON_INFO("[CREATING] GLFW '{0}' Window.", window_props.m_title);
 		init();
 	}
 	Window::~Window()
 	{
-		GON_INFO("[DESTROYING] GLFW '{0}' Window.", m_data->getTitle());
 		m_data->shutDown();
 		GON_INFO("[DESTROYED] GLFW '{0}' Window.", m_data->getTitle());
 	}

@@ -7,10 +7,16 @@
 namespace gon 
 {
 	
-	const API RendererApi::_API(const bool GetSet, const API api)
+	const API RendererApi::_API(const bool GetSet = false, const API api = API::OpenGL)
 	{
 		static API _API{ api };
 		if (GetSet) _API = api;
 		return _API;
 	}	
+
+	const API RendererApi::_API()
+	{
+		
+		return _API(false);
+	}
 }

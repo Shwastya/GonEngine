@@ -57,6 +57,8 @@ namespace gon
 		//glfwSwapInterval(1); // Enable vsync
 		ImGui_ImplGlfw_InitForOpenGL(window, true);		
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		GON_INFO("[CREATED] ImGui context layer. Now you can use it in any project.");
 	}
 
 
@@ -65,6 +67,7 @@ namespace gon
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();	
+		GON_INFO("[DESTROYED] ImGui context layer.");
 	}
 
 	// Header
