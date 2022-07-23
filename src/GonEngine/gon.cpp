@@ -1,8 +1,8 @@
 #include "GonEngine/platform/OpenGL/opengl_shader.hpp"
 #include "GonEngine/imguimods/imgui_config_layer.hpp"
-//#include "GonEngine/platform/OpenGL/opengl_vbo.hpp"
 #include "GonEngine/platform/OpenGL/opengl_vao.hpp"
 #include "GonEngine/platform/windows_window.hpp"
+#include "GonEngine/renderer/render_manager.hpp"
 #include "GonEngine/renderer/api_context.hpp"
 #include "GonEngine/geometries/triangle.hpp"
 #include "GonEngine/events/events.hpp"
@@ -12,9 +12,6 @@
 #include "GonEngine/log.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
-
-#include "GonEngine/renderer/render_manager.hpp"
 
 namespace gon {
 
@@ -36,16 +33,14 @@ namespace gon {
 		  m_window(SWindow::create({ name, api, width, height })),
 		  m_imgui(std::make_unique<ImguiLayerSet>()),
 		  m_vao{VAO::create(5)},
-		  m_rendererMan{std::make_unique<RenderManager>()}
+		  m_render{std::make_unique<RenderManager>()}
 	{
 		s_instance = this;
 		m_window->setVsync(true);		
 		m_imgui->onJoin();
 
 		//Bindeamos las callbacks a la funcion -> GonEngine::OnEvent()
-		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));
-
-
+		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));	
 		
 		Triangle triangle;						
 		u_ptr<VBO> vbo{ VBO::create(triangle.get(), triangle.size()) };
@@ -69,13 +64,13 @@ namespace gon {
 	{
 		while (m_gon_is_running)
 		{
-			glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			
 			m_shader->bind();
 			m_vao->bind();
+
+			m_render->setClearColor({ 0.15f, 0.15f, 0.45f, 1.0f });
+			m_render->clear();			
+			m_render->Draw(m_vao.get());
 			
-			glDrawElements(GL_TRIANGLES, m_vao->getEBO()->nIndices(), GL_UNSIGNED_INT, nullptr);
 
 			TimeStep temporal = 0.0f;
 

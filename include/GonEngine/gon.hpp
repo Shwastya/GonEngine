@@ -48,8 +48,7 @@ namespace gon {
 		u_ptr<VAO> m_vao;
 		u_ptr<Shader> m_shader;
 
-		#define RENDER m_renderMan
-		u_ptr <RenderManager> m_rendererMan;
+		u_ptr <RenderManager> m_render;
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		static GonEngine* s_instance;
 	};

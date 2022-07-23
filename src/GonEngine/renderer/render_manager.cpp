@@ -30,6 +30,7 @@ namespace gon {
 			GON_ASSERT(false, "Unknown renderer API.");
 			break;
 		}
+		m_renderer_api->initDefaultConfiguration();
 	}
 	RenderManager::~RenderManager()	{ GON_TRACE("[DESTROYED] Renderer Manager."); }
 	
