@@ -1,64 +1,63 @@
 #include <Windows.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "GonEngine/window.hpp"
-#include "GonEngine/events/events.hpp"
-#include "GonEngine/renderer/renderer_api.hpp"
-#include "GonEngine/platform/OpenGL/opengl_context.hpp"
-#include "GonEngine/platform/GLFWCallBacks/callbacks.hpp"
-#include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"
+#include "GonEngine/window.hpp"
+#include "GonEngine/memcfg/goncfg.h"
+#include "GonEngine/events/events.hpp"
+#include "GonEngine/renderer/api_context.hpp"
+#include "GonEngine/platform/OpenGL/opengl_context.hpp"
+#include "GonEngine/platform/window_handler/window_handler.hpp"
 
 #pragma warning( disable : 4100 )
 
-namespace gon
-{
+namespace gon {
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-		GON_ERROR("GLFW Error ({0}): {1}", error, description);
+		GON_TRACE("GLFW Error ({0}): {1}", error, description);
 		glfwTerminate();
 	}
 
-	WDataCallBacks::WDataCallBacks(const WProps& window_props)
+	WindowHandler::WindowHandler(const WProps& window_props)
 		: m_data(window_props.m_title, window_props.m_width, window_props.m_height),
 		m_window(nullptr), m_Context(nullptr)
 
 	{
-		RendererApi::_API(true, window_props.m_api);
+		APIContext::setAPI(true, window_props.m_api);
 	}	
 
-	void WDataCallBacks::initGLFW()
+	void WindowHandler::initGLFW()
 	{
 		glfwInit();
 		glfwSetErrorCallback(GLFWErrorCallback);
 	}
 
-	void WDataCallBacks::initContext()
+	void WindowHandler::initContext()
 	{
-		switch (RendererApi::_API())
+		switch (APIContext::getAPI())
 		{
 		case API::OpenGL:
-			GON_TRACE("Selected API: OpenGL");
+			GON_TRACE("OpenGL API context.");
 			m_Context = std::make_unique<OpenGLContext>(m_window);
 			break;
 		case API::DirectX:
-			GON_TRACE("Selected API: DirectX");
+			GON_TRACE("Context API selected: DirectX");
 			GON_WARN("DirectX is not implemented yet. OpenGl will be started instead.");
 			m_Context = std::make_unique<OpenGLContext>(m_window);
 			break;
 		case API::Vulkan:
-			GON_TRACE("Selected API: Vulkan");
+			GON_TRACE("Context API selected:: Vulkan");
 			GON_WARN("Vulkan is not implemented yet. OpenGl will be started instead.");
 			m_Context = std::make_unique<OpenGLContext>(m_window);
 			break;
 		}
 
 		m_Context->init();
-		GON_INFO("[CREATED] window '{0}' {1} {2}", m_data.m_title, m_data.m_width, m_data.m_height);
+		GON_TRACE("[CREATED] Window '{0}' {1} x {2}.", m_data.m_title, m_data.m_width, m_data.m_height);
 	}	
 
-	void WDataCallBacks::initFullScreenWindow()
+	void WindowHandler::initFullScreenWindow()
 	{
 		// NOTAS GLFW Oficial Site:
 		 
@@ -77,26 +76,26 @@ namespace gon
 			PrimaryMonitor, NULL
 		);
 	}
-	void WDataCallBacks::initWindowedWindow()
+	void WindowHandler::initWindowedWindow()
 	{
 		m_window = glfwCreateWindow(m_data.m_width,
 			m_data.m_height, m_data.m_title.c_str(),
 			NULL, NULL);
 	}
 
-	void* WDataCallBacks::getWindow() { return m_window; }
+	void* WindowHandler::getWindow() { return m_window; }
 
-	void WDataCallBacks::swapBuffers()
+	void WindowHandler::swapBuffers()
 	{		
 		m_Context->swapBuffers();
 		glfwPollEvents();
 	}
 
-	void WDataCallBacks::maximize()	{ glfwMaximizeWindow(m_window);	}	
+	void WindowHandler::maximize()	{ glfwMaximizeWindow(m_window);	}	
 
 	#define CAST reinterpret_cast<WindowData*>
 
-	void WDataCallBacks::initCallBacks()
+	void WindowHandler::initCallBacks()
 	{
 		glfwSetWindowUserPointer(m_window, &m_data);
 
@@ -203,14 +202,14 @@ namespace gon
 		});
 	}
 
-	void WDataCallBacks::callBack(const std::function<void(Event&)>& cb)
+	void WindowHandler::callBack(const std::function<void(Event&)>& cb)
 	{
 		m_data.CallBack = cb ;
 	}
 
-	int32_t WDataCallBacks::getWidth() { return m_data.m_width; }
-	int32_t WDataCallBacks::getHeight() { return m_data.m_height; }
-	std::pair<float, float> WDataCallBacks::getPosition()
+	int32_t WindowHandler::getWidth() { return m_data.m_width; }
+	int32_t WindowHandler::getHeight() { return m_data.m_height; }
+	std::pair<float, float> WindowHandler::getPosition()
 	{
 		int x, y;
 		glfwGetWindowPos(m_window, &x, &y);
@@ -225,21 +224,21 @@ namespace gon
 		return position;
 	}
 
-	void WDataCallBacks::setVsync(const bool toggle)
+	void WindowHandler::setVsync(const bool toggle)
 	{
 		glfwSwapInterval(static_cast<int>(toggle));
 		m_data.m_vsync = toggle;
 	}
 
-	void WDataCallBacks::setCapturemode(const bool toggle)
+	void WindowHandler::setCapturemode(const bool toggle)
 	{
 		if (toggle)	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		else glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
-	const bool WDataCallBacks::isVsync() const { return m_data.m_vsync; }
+	const bool WindowHandler::isVsync() const { return m_data.m_vsync; }
 
-	void WDataCallBacks::shutDown()	
+	void WindowHandler::shutDown()	
 	{ 
 		glfwDestroyWindow(m_window);
 		glfwTerminate(); 

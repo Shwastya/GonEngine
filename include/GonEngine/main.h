@@ -1,6 +1,7 @@
 #pragma once
 
 // Call for side project client -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+#include "GonEngine/renderer/api_context.hpp"
 #include "GonEngine/events/events.hpp"
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/nodes/nodes.hpp"

@@ -1,6 +1,8 @@
 #pragma once
 #include <GonEngine/memcfg/scp_ptr.hpp>
 #include "GonEngine/memcfg/goncfg.h"
+// posiblemente borrar-depurar
+#include "GonEngine/renderer/api_context.hpp"
 
 namespace gon
 {

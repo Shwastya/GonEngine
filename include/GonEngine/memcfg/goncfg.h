@@ -4,18 +4,6 @@ The following code is for possible cross-platform portability and for core
 settings and configurations.
 */
 #pragma once
-
-namespace gon {
-
-	enum class API
-	{
-		None = 0,
-		OpenGL,
-		DirectX,
-		Vulkan
-	};
-}
-
 // Logging: Off/On->(only in debug)
 #if 1 && defined(_DEBUG)
 	#ifndef _GON_LOG
@@ -70,7 +58,7 @@ namespace gon {
 		#define APP_WARN(...)  APP->warn  (__VA_ARGS__)
 		#define APP_ERROR(...) APP->error (__VA_ARGS__)
 
-		#define GON_LOG_ON GON_TRACE("Welcome to Gon-Engine!");
+		#define GON_LOG_ON GON_WARN("Welcome to the Gon-Engine logging!");
 		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
 	#endif
 #else // _GON_LOG_ is OFF	

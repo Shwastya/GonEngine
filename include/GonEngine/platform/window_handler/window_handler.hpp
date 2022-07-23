@@ -1,16 +1,15 @@
 #pragma once
+#include "GonEngine/renderer/api_context.hpp"
 #include <functional>
 #include <iostream>
-#include "GonEngine/renderer/renderer_context.hpp"
+
 struct GLFWwindow;
 
-namespace gon 
-{
-	class Event;
-	struct WProps; 
-	enum class API;	
+namespace gon {
 
-	class WDataCallBacks
+	enum class API;	class Event; struct WProps;
+
+	class WindowHandler
 	{
 	private:
 		struct WindowData
@@ -26,14 +25,14 @@ namespace gon
 
 	public:
 
-		WDataCallBacks(const WProps& window_props);
-		~WDataCallBacks() = default;
+		WindowHandler(const WProps& window_props);
+		~WindowHandler() = default;
 
-		WDataCallBacks(const WDataCallBacks&) = delete;
-		WDataCallBacks& operator=(const WDataCallBacks&) = delete;
+		WindowHandler(const WindowHandler&) = delete;
+		WindowHandler& operator=(const WindowHandler&) = delete;
 
-		WDataCallBacks(WDataCallBacks&&) noexcept = delete;
-		WDataCallBacks& operator=(WDataCallBacks&&) noexcept = delete;
+		WindowHandler(WindowHandler&&) noexcept = delete;
+		WindowHandler& operator=(WindowHandler&&) noexcept = delete;
 
 		void initGLFW();
 		void initContext();
@@ -63,6 +62,6 @@ namespace gon
 	private:		
 		WindowData m_data;
 		GLFWwindow* m_window;	
-		u_ptr<RendererContext> m_Context;
+		u_ptr<APIContext> m_Context;
 	};
 }

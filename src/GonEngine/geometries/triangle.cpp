@@ -11,7 +11,7 @@ namespace gon
             (1 * 1 * 3)     // m_nElements
         )        
     { 
-        GON_INFO("[CREATED] Triangle from geometry.");
+        GON_TRACE("[CREATED] Triangle from geometry.");
 
         // positions, uvs, normals, tangents, bitangents
         const size_t totSize = N_V * 3 + N_V * 2 + N_V * 3 + N_V * 3 + N_V * 3;
@@ -46,11 +46,11 @@ namespace gon
     }
     Triangle::~Triangle()
     {
-        GON_INFO("[DESTROYED] Triangle from geometry.");
+        GON_TRACE("[DESTROYED] Triangle from geometry.");
     }
-    const size_t Triangle::sizeVbo()
+    const uint32_t Triangle::size()
     {
-        const size_t vboSize
+        const uint32_t vboSize
         {
             sizeof(float) * m_nVertices * 3 +
             sizeof(float) * m_nVertices * 2 +
@@ -65,16 +65,8 @@ namespace gon
         return m_indices.get();
     }
 
-    // TEMPORAL
-    // ELIMINAR DESPUES DE PRUEBAS
-    float* Triangle::getPositions()
+    const uint32_t Triangle::nIndices()
     {
-        static float pos[]
-        {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
-        };
-        return pos;
-    }    
+        return m_nElements;
+    }
 }

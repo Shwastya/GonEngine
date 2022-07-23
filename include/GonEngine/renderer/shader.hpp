@@ -37,7 +37,7 @@ namespace gon
 
         //virtual const std::string& GetName() const = 0;
 
-        static s_ptr<Shader> Create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "none");
+        static u_ptr<Shader> create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "none");
         //static s_ptr<Shader> Create(const std::string& GLSLFilePath);
 
     };

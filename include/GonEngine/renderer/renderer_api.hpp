@@ -1,39 +1,43 @@
 #pragma once
 
+#include <glm/glm.hpp>
 
 namespace gon {
-
-	// API is defined en window.hpp
-	// 
-	enum class API;
-	class RendererApi
+	
+	struct VAO;
+	class RendererAPI
 	{
 	public:		
 
-		RendererApi() = default;
-		virtual ~RendererApi() = default;
+		RendererAPI() = default;
+		virtual ~RendererAPI() = default;
 
-		RendererApi(const RendererApi&) = delete;
-		RendererApi& operator=(const RendererApi&) = delete;
+		RendererAPI(const RendererAPI&) = delete;
+		RendererAPI& operator=(const RendererAPI&) = delete;
 
-		RendererApi(RendererApi&&) noexcept = delete;
-		RendererApi& operator=(RendererApi&&) noexcept = delete;
+		RendererAPI(RendererAPI&&) noexcept = delete;
+		RendererAPI& operator=(RendererAPI&&) noexcept = delete;
 
-		// virtual interface 
+		virtual void initDefaultConfiguration() = 0;
+
+		virtual void setClearColor(const glm::vec4& color) const = 0;
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
+		virtual void clear() = 0;
+		virtual void clearColor() = 0;
+		virtual void clearDepth() = 0;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		virtual void init()				= 0;
 
-		virtual void clearColor(const float r, const float g, const float b, const float a)	= 0;
-		virtual void clearBuffer()		= 0;
-		virtual void clearColorBuffer()	= 0;
-		virtual void clearDepthBuffer()	= 0;
-		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+		virtual void Draw(const VAO* vao) const = 0;
 
-		// non virtual
-		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*		
-		const static API _API(const bool GetSet, const API api);
-		const static API _API();
-		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+		virtual void enableCullFace()  = 0;
+		virtual void disableCullFace() = 0;
+
+		virtual void linePolygonMode(const bool type) const = 0;
+
+
 		
+
+		
+			
 	};
 }

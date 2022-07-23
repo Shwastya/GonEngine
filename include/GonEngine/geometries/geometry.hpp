@@ -20,7 +20,7 @@ namespace gon {
         Geometry(Geometry&&) noexcept = default;
         Geometry& operator=(Geometry&&) noexcept = default;
 
-
+        virtual float* get () = 0;
 
     protected:
 

@@ -1,109 +1,69 @@
 #include "GonEngine/platform/windows_window.hpp"
-#include "GonEngine/events/events.hpp"
-#include "GonEngine/log.hpp"
-#include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/memcfg/scp_ptr.hpp"
+#include "GonEngine/events/events.hpp"
+#include "GonEngine/memcfg/goncfg.h"
+#include "GonEngine/log.hpp"
 
+namespace gon {	
 
-namespace gon
-{
-	static bool _GLFW_On = false;
-	
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 	u_ptr<SWindow> SWindow::create(const WProps& data)
-	{
-		GON_TRACE("unique_ptr for GLFW Window (Win-platform)");
-		
+	{		
 		return std::make_unique<Window>(data);
 	}
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-	
+
+	static bool _GLFW_On = false;
+
 	Window::Window(const WProps& window_props)
-		:m_data(std::make_unique<WDataCallBacks>(window_props))
+		:m_windowHandler(std::make_unique<WindowHandler>(window_props))
 	{
 		init();
 	}
 	Window::~Window()
 	{
-		m_data->shutDown();
-		GON_INFO("[DESTROYED] GLFW '{0}' Window.", m_data->getTitle());
+		m_windowHandler->shutDown();
+		GON_TRACE("[DESTROYED] GLFW '{0}' Window.", m_windowHandler->getTitle());
 	}
 	void Window::init()
 	{
-		if (!_GLFW_On)
-		{
-			m_data->initGLFW();
+		if (!_GLFW_On) {
+			m_windowHandler->initGLFW();
 			_GLFW_On = true;
 		}
-		if (m_fullScreen)
-		{
-			GON_TRACE("Initializing GLFW fullscreen mode");
-			m_data->initFullScreenWindow();
+		if (m_fullScreen) {
+			GON_TRACE("Initializing GLFW fullscreen mode...");
+			m_windowHandler->initFullScreenWindow();
 		}
-		else
-		{
-			GON_TRACE("Initializing GLFW windowed mode");
-			m_data->initWindowedWindow();
-		}
-
-
+		else {
+			GON_TRACE("Initializing GLFW windowed mode...");
+			m_windowHandler->initWindowedWindow();
+		}		
 		//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-		m_data->initContext();
+		m_windowHandler->initContext();
 		//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-		m_data->initCallBacks();
+		m_windowHandler->initCallBacks();
+		//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 		
 	}
-
-	void Window::swapBuffers()
-	{		
-		m_data->swapBuffers();
-	}
-	void* Window::getWindow() const
-	{
-		return m_data->getWindow();
-	}
-	void Window::maximize()
-	{
-		m_data->maximize();
-	}		
+	void Window::swapBuffers()		{ m_windowHandler->swapBuffers(); }
+	void* Window::getWindow() const	{ return m_windowHandler->getWindow(); }
+	void Window::maximize()			{ m_windowHandler->maximize(); }
 
 	void Window::setCallBack(const std::function<void(Event&)>& cb)
 	{
-		m_data->callBack(cb);
+		m_windowHandler->callBack(cb);
 	}
-
-	int32_t Window::width()
-	{
-		return m_data->getHeight();
-	}
-
-	int32_t Window::height()
-	{
-		return m_data->getWidth();
-	}
-
+	int32_t Window::width()			{ return m_windowHandler->getHeight(); }
+	int32_t Window::height()		{ return m_windowHandler->getWidth(); }
 	Position Window::getPosition()
 	{
-		auto [x, y] = m_data->getPosition();
+		auto [x, y] = m_windowHandler->getPosition();
 		return { x, y };
 	}
-
-	void Window::setVsync(bool toggle)
-	{
-		m_data->setVsync(toggle);
-	}
-
-	bool Window::isVsync() const 
-	{ 
-		return m_data->isVsync(); 
-	}
-	
-	void Window::setCaptureMode(bool& toggle) const
-	{
-		// captura del raton en pantalla
-		m_data->setCapturemode(toggle);
-	}
+	void Window::setVsync(bool toggle)	{ m_windowHandler->setVsync(toggle); }
+	bool Window::isVsync() const		{ return m_windowHandler->isVsync(); }
+	void Window::setCaptureMode(bool& toggle) const	{ m_windowHandler->setCapturemode(toggle);}
 }
 	
 

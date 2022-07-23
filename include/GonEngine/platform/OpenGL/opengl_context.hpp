@@ -1,16 +1,21 @@
 #pragma once
-#include "GonEngine/renderer/renderer_context.hpp"
+#include "GonEngine/renderer/api_context.hpp"
 
 struct GLFWwindow;
 
-namespace gon
-{
+namespace gon {
 
-	class OpenGLContext final : public RendererContext
+	class OpenGLContext final : public APIContext
 	{
 	public:
 
-		OpenGLContext(GLFWwindow* _GLFWwindow);		
+		OpenGLContext(GLFWwindow* _GLFWwindow);	
+
+		OpenGLContext(const OpenGLContext&) = default;
+		OpenGLContext& operator=(const OpenGLContext&) = default;
+
+		OpenGLContext(OpenGLContext&&) noexcept = default;
+		OpenGLContext& operator=(OpenGLContext&&) noexcept = default;
 
 		virtual void init() override;
 		virtual void swapBuffers() override;

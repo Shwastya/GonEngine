@@ -54,7 +54,7 @@ namespace gon
 		LT_Otherlog
 	};
 
-	// LogManager is a Singleton
+
 	struct LogManager
 	{
 		~LogManager() = default;

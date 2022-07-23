@@ -19,6 +19,7 @@ namespace gon
 	{
 		static uint32_t id = 0;
 		m_id = id++;
+		GON_TRACE("[CREATED] Layer '{0}' id:{1}.",m_name, m_id);
 	}
 
 	// Node Stack Manager
@@ -26,77 +27,60 @@ namespace gon
 	NLayersManager::NLayersManager(const size_t reserve) : m_idxLast(0)
 	{
 		m_layers.reserve(reserve);
-		GON_INFO("[CREATED] NLayersManager.");
+		GON_TRACE("[CREATED] Layers manager.");
 	}
 	NLayersManager::~NLayersManager()
 	{
+		GON_TRACE("[DESTROYED] Layers manager.");
 	}
-	void NLayersManager::pushLayer(u_ptr<NLayer> layer)
+	void NLayersManager::pushLayer(u_ptr<Node> layer)
 	{
-		GON_TRACE("[NLayer id:{0}] '{1}' pushed to the first half of the list.", layer->getId(), layer->getName());
+		GON_INFO("[Layer id:{0}] '{1}' pushed to the first half of the list.", layer->getId(), layer->getName());
 		m_layers.emplace(m_layers.begin() + m_idxLast,std::move(layer));
 		m_idxLast++;
 
 	}
-	void NLayersManager::pushOverLayer(u_ptr<NLayer> overLayer)
+	void NLayersManager::pushOverLayer(u_ptr<Node> overLayer)
 	{
-		GON_TRACE("[NLayer id:{0}] '{1}' pushed to the second half of the list.", overLayer->getId(), overLayer->getName());
+		GON_INFO("[Layer id:{0}] '{1}' pushed to the second half of the list.", overLayer->getId(), overLayer->getName());
 		m_layers.emplace_back(std::move(overLayer));
 	}
-	void NLayersManager::popLayer(u_ptr<NLayer> NLayer)
+	void NLayersManager::popLayer(u_ptr<Node> NLayer)
 	{
 		auto it = std::find(m_layers.begin(), m_layers.end(), NLayer);
 
 		if (it != m_layers.end())
 		{
-			GON_TRACE("[NLayer {0}] deleted.", m_idxLast);
+			GON_TRACE("[Layer {0}] deleted.", m_idxLast);
 			m_layers.erase(it);
 			m_idxLast--;
 		}
 	}
-	void NLayersManager::popOverLayer(u_ptr<NLayer> overNLayer)
+	void NLayersManager::popOverLayer(u_ptr<Node> overNLayer)
 	{
 		auto it = std::find(m_layers.begin(), m_layers.end(), overNLayer);
 
 		if (it != m_layers.end())
 		{
-			GON_TRACE("[NLayer {0}] deleted.", m_layers.size());
+			GON_TRACE("[Layer {0}] deleted.", m_layers.size());
 			m_layers.erase(it);
 		}
 	}
 	const NodeType NLayersManager::getType(int idx)
 	{
-		return m_layers[idx]->type();
+		return m_layers[idx]->getType();
 	}
-	std::vector<u_ptr<NLayer>>::iterator NLayersManager::begin()
+	std::vector<u_ptr<Node>>::iterator NLayersManager::begin()
 	{
 		return m_layers.begin();
 	}
-	std::vector<u_ptr<NLayer>>::iterator NLayersManager::end()
+	std::vector<u_ptr<Node>>::iterator NLayersManager::end()
 	{
 		return m_layers.end();
 	}
+	Node::~Node()
+	{
+		GON_TRACE("[DESTROYED] Layer '{0}' id:{1}.", m_name, m_id);
+	}
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-	//void Node::onUpdate(TimeStep dt)
-	//{
-	//	//GON_WARN("[Node] base-interface has triggering the 'onUpdate()' function");
-	//}
-
-	//void Node::onEvent(Event& e)
-	//{
-	//	//GON_WARN("[Node] base-interface has triggering the 'onEvent()' function");
-	//}
-
-	//void Node::onImguiRender()
-	//{
-	//	//GON_WARN("[Node] base-interface has triggering the 'onImguiRender()' function");
-	//}
-
-	
-
-	
-
-	
-
 }

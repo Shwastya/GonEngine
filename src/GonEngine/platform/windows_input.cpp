@@ -1,6 +1,6 @@
 #include "GonEngine/platform/windows_window.hpp"
-#include "GonEngine/gon.hpp"	
 #include "GonEngine/input.hpp"
+#include "GonEngine/gon.hpp"
 #include <GLFW/glfw3.h> 
 
 #define GON_WIN	  static_cast<Window*>(&GonEngine::getGon().getPtrWindow()); // void* ptr
@@ -23,7 +23,6 @@ namespace gon {
 		);
 		return (K == GLFW_PRESS || K == GLFW_REPEAT);
 	}
-
 	bool Input::isMouseButtonPressed(MouseButton button)
 	{
 		Window& w = *GON_WIN;
@@ -46,7 +45,6 @@ namespace gon {
 		);
 		return static_cast<float>(x);
 	}
-
 	float Input::getYmouse()
 	{
 		Window& w = *GON_WIN;

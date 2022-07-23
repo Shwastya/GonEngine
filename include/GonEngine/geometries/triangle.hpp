@@ -11,12 +11,13 @@ namespace gon
 
         virtual ~Triangle();
 
-        const size_t sizeVbo();
+        const uint32_t  size();
         const uint32_t* getIndices();
+        const uint32_t  nIndices();
 
-        // TEMPORAL
-        // ELIMINAR DESPUES DE PRUEBAS
-        float* getPositions();
+        virtual float* get() override { return m_vbo.get(); };
+
+
 
     private:        
         ScpUint32 m_indices;

@@ -4,16 +4,25 @@
 
 namespace gon {
 
-	class OpenGLRendererAPI final : public RendererApi 
+	class OpenGLRendererAPI final : public RendererAPI 
 	{
+	public:
 		OpenGLRendererAPI() = default;
 
-		virtual void init() override;
-		virtual void clearColor(const float r, const float g, const float b, const float a) override;
+		virtual void initDefaultConfiguration() override;
 
-		virtual void clearBuffer() override;
-		virtual void clearColorBuffer() override;
-		virtual void clearDepthBuffer() override;
+		virtual void setClearColor(const glm::vec4& color) const override;
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
+		virtual void clear() override;
+		virtual void clearColor() override;
+		virtual void clearDepth() override;
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 
+		virtual void Draw(const VAO* vao) const override;
+
+		virtual void enableCullFace() override;
+		virtual void disableCullFace() override;
+
+		virtual void linePolygonMode(const bool type) const override;
 	};
 }

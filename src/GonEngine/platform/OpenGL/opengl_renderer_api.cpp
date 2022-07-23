@@ -1,33 +1,54 @@
 #include "GonEngine/log.hpp"
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/renderer/renderer_api.hpp"
+#include "GonEngine/platform/OpenGL/opengl_vao.hpp"
 #include "GonEngine/platform/OpenGL/opengl_renderer_api.hpp"
 #include <glad/glad.h>
 
 namespace gon {
 
-	void OpenGLRendererAPI::init()
+	
+
+	void OpenGLRendererAPI::initDefaultConfiguration()
 	{
-		GON_WARN("'OpenGlRendererAPI' empty function");
+		// por defecto caras traseras no se pintaran
+		OpenGLRendererAPI::enableCullFace();
 	}
 
-	void OpenGLRendererAPI::clearColor(const float r, const float g, const float b, const float a)
+	void OpenGLRendererAPI::setClearColor(const glm::vec4& color) const
 	{
-		glClearColor(r, g, b, a);
+		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void OpenGLRendererAPI::clearBuffer()
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+	void OpenGLRendererAPI::clear()
 	{
-		GON_WARN("'clearBuffer()' empty function");
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	void OpenGLRendererAPI::clearColor() { glClear(GL_COLOR_BUFFER_BIT); }
+	void OpenGLRendererAPI::clearDepth() { glClear(GL_DEPTH_BUFFER_BIT); }
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+	void OpenGLRendererAPI::Draw(const VAO* vao) const
+	{
+		glDrawElements(GL_TRIANGLES, vao->getEBO()->nIndices(), GL_UNSIGNED_INT, nullptr);
 	}
 
-	void OpenGLRendererAPI::clearColorBuffer()
+	void OpenGLRendererAPI::enableCullFace() 
 	{
-		GON_WARN("'clearColorBuffer() empty function");
+		glEnable(GL_CULL_FACE);		glCullFace(GL_BACK);
+	}
+	void OpenGLRendererAPI::disableCullFace()
+	{
+		glDisable(GL_CULL_FACE);	glCullFace(GL_BACK);
 	}
 
-	void OpenGLRendererAPI::clearDepthBuffer()
+	void OpenGLRendererAPI::linePolygonMode(const bool type) const
 	{
-		GON_WARN("'clearDepthBuffer() empty function");
-	}	
+		glPolygonMode(GL_FRONT_AND_BACK, type ? GL_LINE : GL_FILL);
+	}
+
+	
+
+	
 }

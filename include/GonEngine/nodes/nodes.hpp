@@ -1,9 +1,10 @@
 #pragma once
 #include <GonEngine/memcfg/scp_ptr.hpp>
 
-namespace gon
-{
+namespace gon {
+
 	class Event;
+
 	struct TimeStep
 	{
 		TimeStep(float time = 0.0f);
@@ -36,24 +37,31 @@ namespace gon
 
 		Node(Node&&) noexcept = delete;
 		Node& operator=(Node&&) noexcept = delete;
-		virtual ~Node() = default;
+		virtual ~Node();
 
 		virtual void onJoin() = 0;
 		virtual void onQuit() = 0;	
 
+		virtual void onEvent(Event& e) = 0;
+		virtual void onUpdate(TimeStep dt) = 0;
+
 		virtual void onRender() = 0;
 
 		inline const uint32_t getId() { return m_id; };
-		inline const NodeType type() { return m_nodeType; };
+		inline const NodeType getType() { return m_nodeType; };
 		inline  const std::string& getName() const { return m_name; }
 
 	protected:
 		const NodeType m_nodeType{ NodeType::None };
-		std::string m_name{ "" };
-		uint32_t m_id{ 0 };
+		const std::string m_name;
+		uint32_t m_id;
 
 	};
-	struct NLayer : public Node
+
+
+
+
+	/*struct NLayer : public Node
 	{		
 		NLayer(const NodeType ntype = NodeType::Layer, const std::string& name = "noname")
 			: Node(ntype, name)
@@ -68,7 +76,7 @@ namespace gon
 		virtual void onUpdate(TimeStep dt) = 0;
 
 		virtual void onRender() override = 0;
-	};
+	};*/
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 	class NLayersManager
 	{
@@ -76,19 +84,19 @@ namespace gon
 		NLayersManager(const size_t reserve);
 		virtual ~NLayersManager();
 
-		void pushLayer(u_ptr<NLayer> node);
-		void pushOverLayer(u_ptr<NLayer> overnode);
+		void pushLayer(u_ptr<Node> node);
+		void pushOverLayer(u_ptr<Node> overnode);
 
-		void popLayer(u_ptr<NLayer> node);
-		void popOverLayer(u_ptr<NLayer> overnode);
+		void popLayer(u_ptr<Node> node);
+		void popOverLayer(u_ptr<Node> overnode);
 
 		const NodeType getType(int idx);
 
-		std::vector<u_ptr<NLayer>>::iterator begin();
-		std::vector<u_ptr<NLayer>>::iterator end();
+		std::vector<u_ptr<Node>>::iterator begin();
+		std::vector<u_ptr<Node>>::iterator end();
 
 	private:
-		std::vector<u_ptr<NLayer>> m_layers;
+		std::vector<u_ptr<Node>> m_layers;
 		uint32_t m_idxLast{ 0 };
 	};
 }

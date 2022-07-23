@@ -1,5 +1,5 @@
 #include "GonEngine/platform/OpenGL/opengl_shader.hpp"
-#include "GonEngine/renderer/renderer_api.hpp"
+#include "GonEngine/renderer/api_context.hpp"
 #include "GonEngine/renderer/shader.hpp"
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/window.hpp"
@@ -8,32 +8,32 @@
 
 namespace gon
 {
-	s_ptr<Shader>Shader::Create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
+	u_ptr<Shader>Shader::create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
 	{
-		switch (RendererApi::_API())
+		switch (APIContext::getAPI())
 		{
 		case API::None:
 			// is needed some code?
 			GON_WARN("not API selected for shader.");
-			return nullptr; break;
+			return nullptr;
 
 		case API::OpenGL:
 
-			return std::make_shared<OpenGLShader>(vertexPath, fragmentPath, geometryPath); break;
+			return std::make_unique<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
 
 		case API::DirectX:
 
 			GON_WARN("DirectX not implemented. OpenGL shader by default");
-			return std::make_shared<OpenGLShader>(vertexPath, fragmentPath, geometryPath); break;
+			return std::make_unique<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
 
 
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL shader by default");
-			return std::make_shared<OpenGLShader>(vertexPath, fragmentPath, geometryPath); break;
+			return std::make_unique<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
 
 		default:
 			GON_WARN("Unknown shader API.");
-			return nullptr; break;
+			return nullptr;
 		}
 	}
 

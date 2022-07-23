@@ -92,7 +92,7 @@ namespace gon
 
 	void SpdLog::shutDown()
 	{
-		LogManager::p().get().engineLogger()->info("[DESTROYING] spdlog. ByeBye.");
+		LogManager::p().get().engineLogger()->warn("Closing logging system, good bye!");
 		m_alive = false;
 		m_clientLogger.reset();
 		m_engineLogger.reset();

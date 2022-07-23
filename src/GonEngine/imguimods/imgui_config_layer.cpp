@@ -1,11 +1,10 @@
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
-#include "GonEngine/memcfg/goncfg.h"
+#include "GonEngine/imguimods/imgui_config_layer.hpp"
+#include "GonEngine/platform/windows_window.hpp"
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
-#include "GonEngine/platform/windows_window.hpp"
-#include "GonEngine/window.hpp"
+#include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"
-#include "GonEngine/nodes/n_imgui.hpp"
 #include "GonEngine/gon.hpp"
 #include <GLFW/glfw3.h>
 
@@ -13,14 +12,12 @@ namespace gon
 {
 	
 	
-	ImGuiNode::ImGuiNode(const NodeType ntype, const std::string& name)
-		: Node(ntype, name)
-	{}
-
-	ImGuiNode::~ImGuiNode()
+	
+	ImguiLayerSet::~ImguiLayerSet()
 	{
+		onQuit();
 	}
-	void ImGuiNode::onJoin()
+	void ImguiLayerSet::onJoin()
 	{
 		
 
@@ -58,21 +55,21 @@ namespace gon
 		ImGui_ImplGlfw_InitForOpenGL(window, true);		
 		ImGui_ImplOpenGL3_Init("#version 410");
 
-		GON_INFO("[CREATED] ImGui context layer. Now you can use it in any project.");
+		GON_TRACE("[CREATED] ImGui CFG layer.");
 	}
 
 
-	void ImGuiNode::onQuit()
+	void ImguiLayerSet::onQuit()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();	
-		GON_INFO("[DESTROYED] ImGui context layer.");
+		GON_TRACE("[DESTROYED] ImGui CFG context.");
 	}
 
 	// Header
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImGuiNode::beginRender()
+	void ImguiLayerSet::ImguiBegin()
 	{
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -81,7 +78,7 @@ namespace gon
 	}
 	// Render
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImGuiNode::onRender()
+	void ImguiLayerSet::OnRender()
 	{
 		static bool show_demo_window = true;
 		ImGui::ShowDemoWindow(&show_demo_window);
@@ -89,7 +86,7 @@ namespace gon
 	// Footer
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	void ImGuiNode::closeRender()
+	void ImguiLayerSet::ImguiEnd()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		GonEngine& gonEngine = GonEngine::getGon();
@@ -112,7 +109,7 @@ namespace gon
 		}
 
 	}
-	void ImGuiNode::setColorGonDefault()
+	void ImguiLayerSet::GonColors()
 	{
 	}
 
