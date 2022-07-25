@@ -7,7 +7,7 @@ namespace gon {
 
 	struct OpenglVBO : public VBO
 	{
-		OpenglVBO(float* vertices, const uint32_t size);
+		OpenglVBO(const float* vertices, const uint32_t size);
 		virtual ~OpenglVBO();
 
 		virtual void bind() const override;

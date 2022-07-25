@@ -18,23 +18,21 @@ namespace gon {
         Geometry& operator=(const Geometry&) = default;
 
         Geometry(Geometry&&) noexcept = default;
-        Geometry& operator=(Geometry&&) noexcept = default;
-
-        virtual float* get () = 0;
+        Geometry& operator=(Geometry&&) noexcept = default;       
 
     protected:
+
 
         // RAII patterns
         struct ScpFloat
         {   
         public:
 
-            ScpFloat() = default;
-            ScpFloat(const size_t  length);
+            ScpFloat();
             void init(const size_t length);
             ~ScpFloat();
 
-            float* get();
+            float* get() const;
             
             // overload operators
             float& operator[](uint32_t idx);
@@ -46,12 +44,11 @@ namespace gon {
         {
         public:
 
-            ScpUint32() = default;
-            ScpUint32(const size_t length);
+            ScpUint32();
             void init(const size_t length);
             ~ScpUint32();
 
-            uint32_t* get();
+            uint32_t* get() const;
             // overload operator            
             uint32_t& operator[](uint32_t idx);
 
@@ -64,14 +61,13 @@ namespace gon {
         void calcTangents(const float* positions, const float* uvs,
             const float* normals, float* tangents, float* biTangents) const;
 
-        void setData(const float* positions, const float* uvs,
+        void setData(float* vbo, const float* positions, const float* uvs,
             const float* normals, bool TangBitang = true);
 
     protected:
 
         uint32_t m_nVertices{ 0 };
         uint32_t m_nElements{ 0 };
-        ScpFloat  m_vbo;
         //const std::string m_name{ nullptr };
     };
 }

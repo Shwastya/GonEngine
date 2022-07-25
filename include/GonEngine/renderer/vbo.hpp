@@ -17,7 +17,7 @@ namespace gon {
 		virtual void setLayout(const VBOLayout& layout) = 0;
 		virtual const VBOLayout& getLayout() const = 0;
 
-		static u_ptr<VBO> create(float* vertices, const uint32_t size);
+		static u_ptr<VBO> create(const float* vertices, const uint32_t size);
 
 	};
 

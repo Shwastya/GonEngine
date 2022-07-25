@@ -816,6 +816,7 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
         }
 #pragma warning( push )
 #pragma warning( disable : 6011 )
+#pragma warning( disable : 26451 )
         case WM_DROPFILES:
         {
             HDROP drop = (HDROP) wParam;

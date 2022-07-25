@@ -23,10 +23,10 @@ namespace gon {
 		return 0;
 	}
 
-	OpenglVAO::OpenglVAO(const size_t reserve = 5)  
+	OpenglVAO::OpenglVAO(const size_t reserve = 1) : m_pointer_idx(0)
 	{
 		glGenVertexArrays(1, &m_id_vao);
-		reserve; //m_vbo_vec.reserve(reserve);
+		m_vbo_vec.reserve(reserve);
 		GON_TRACE("[CREATED] An OpenGL VAO (Vertex Array Object). ");
 	}
 
@@ -51,44 +51,53 @@ namespace gon {
 		u_ptr<VBO> vbo = std::move(_vbo);
 
 		glBindVertexArray(m_id_vao);
-		vbo->bind();
+		//vbo->bind(); -> vbo ya hace bind al crearse
 
 		const size_t size = vbo->getLayout().getObjects().size();
 
-		if (size < 1) GON_ERROR("Layout does not have any VBO (Vertex Buffer Object)");
-	
-		//else GON_WARN(" ... There are {0} components of the VBO in the VBO Layout ...", size);
+		if (size < 1) GON_ASSERT(true, "Layout does not have any VBO (Vertex Buffer Object)");		
 
-		uint32_t idx = 0;
+		
 
 		auto layout = vbo->getLayout();
-
+		
 		for (const auto& object : layout)
 		{
-			glEnableVertexAttribArray(idx);
+			glEnableVertexAttribArray(m_pointer_idx);
 			glVertexAttribPointer
 			(
-				idx,
+				m_pointer_idx,
 				object.compCount(),
 				toOpenGLBaseType(object.m_type),
 				object.m_normalized ? GL_TRUE : GL_FALSE,
 				layout.stride(),
 				(const void*)object.m_offset
 			);
-			++idx;
+			++m_pointer_idx;
 			GON_INFO("[VBO '{0}' component moved to VAO] now is into a Shader.", object.m_name);
 		}
 		
+		// des-bindeamos de momento VAO y VBO
+		glBindVertexArray(0);
+		vbo->unbind();
 		// m_vbo_vec.push_back(std::move(vbo));		
-		m_vbo = std::move(vbo);
+		m_vbo_vec.emplace_back(std::move(vbo));
+
+		
+		
 	}
 
 	void OpenglVAO::takeEBO(u_ptr<EBO>& _ebo)
 	{
 		GON_INFO("[EBO component moved to VAO] now is into a Shader.");
+
 		m_ebo = std::move(_ebo);
 		glBindVertexArray(m_id_vao);
 		m_ebo->bind();
+
+		// des-bindeamos de momento VAO y VBO
+		glBindVertexArray(0);
+		m_ebo->unbind();
 	}
 
 }

@@ -5,7 +5,7 @@
 
 namespace gon {
 
-	u_ptr<VBO> VBO::create(float* vertices, const uint32_t size)
+	u_ptr<VBO> VBO::create(const float* vertices, const uint32_t size)
 	{
 		switch (APIContext::getAPI())
 		{

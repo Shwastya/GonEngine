@@ -9,9 +9,13 @@
 #include "GonEngine/nodes/nodes.hpp"
 #include "GonEngine/input.hpp"
 #include "GonEngine/gon.hpp"
-#include "GonEngine/log.hpp"
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "GonEngine/renderer/camera/c_orthographic.hpp"
+#include "GonEngine/renderer/camera/c_perspective.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace gon {
 
@@ -22,18 +26,18 @@ namespace gon {
 
 	GonEngine::GonEngine
 	(
-		const API api = API::OpenGL, 
-		const std::string& name = "Gon Engine", 		
-		const int32_t width  = 1920, 
-		const int32_t height = 1080, 
+		const API api = API::OpenGL,
+		const std::string& name = "Gon Engine",
+		const int32_t width = 1920,
+		const int32_t height = 1080,
 		const size_t reserve = k_default_reserve
 	)
 		: m_gon_is_running(true),
-		  m_layers(std::make_unique<NLayersManager>(reserve)),
-		  m_window(SWindow::create({ name, api, width, height })),
-		  m_imgui(std::make_unique<ImguiLayerSet>()),
-		  m_vao{VAO::create(5)},
-		  m_render{std::make_unique<RenderManager>()}
+		m_layers(std::make_unique<NLayersManager>(reserve)),
+		m_window(SWindow::create({ name, api, width, height })),
+		m_imgui(std::make_unique<ImguiLayerSet>()),
+		m_vao{ VAO::create(2) },
+		m_render(std::make_unique<RenderManager>())	
 	{
 		s_instance = this;
 		m_window->setVsync(true);		
@@ -41,16 +45,38 @@ namespace gon {
 
 		//Bindeamos las callbacks a la funcion -> GonEngine::OnEvent()
 		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));	
+
+		Triangle triangle;
 		
-		Triangle triangle;						
-		u_ptr<VBO> vbo{ VBO::create(triangle.get(), triangle.size()) };
+		u_ptr<VBO> vbo{ VBO::create(triangle.get(),  triangle.size())};
 		VBOLayout bufferLayout =
 		{
-			{DataType::Float3, "aPos", false},
+			{DataType::Float3, "aPos"},
+			{DataType::Float2, "aUvs"},
+			{DataType::Float3, "aNormal"},
+			{DataType::Float3, "aTang"},
+			{DataType::Float3, "aBitang"},			
 		};
 		vbo->setLayout(bufferLayout);
 		m_vao->takeVBO(vbo);
-		u_ptr<EBO> ebo{ EBO::create(triangle.getIndices(), triangle.nIndices()) };
+
+
+		float vertexColor[3 * 3]
+		{
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f
+		};
+		u_ptr<VBO> vbo2{ VBO::create(vertexColor, sizeof(vertexColor)) };
+		VBOLayout bufferLayout2
+		{
+			{{DataType::Float3, "aColor"},}
+		};
+		vbo2->setLayout(bufferLayout2);
+		m_vao->takeVBO(vbo2);
+
+
+		u_ptr<EBO> ebo{ EBO::create(triangle.getIndices(), triangle.nIndices())};
 		m_vao->takeEBO(ebo);
 		m_shader = Shader::create(k_vs, k_fs);
 	}
@@ -65,6 +91,22 @@ namespace gon {
 		while (m_gon_is_running)
 		{
 			m_shader->bind();
+
+			const float dance = static_cast<float>(glm::abs(glm::cos(getTime())));
+
+			glm::mat4 model{ 1.0f };
+			
+			model = glm::translate	(model, glm::vec3(0.0f, -1.0f, 0.0f));
+			model = glm::rotate		(model, (float)getTime() * glm::radians(90.0f ) , glm::vec3(0.0f, 0.0f, 1.0f));			
+			model = glm::scale		(model, glm::vec3(1.5f, 1.5f, 1.5f));
+
+			
+		
+			const auto [view, proj] { m_cameraMan.getViewProjectionMatrix() };
+			m_shader->uniform("uModel", model);
+			m_shader->uniform("uView", view);
+			m_shader->uniform("uProj", proj);
+
 			m_vao->bind();
 
 			m_render->setClearColor({ 0.15f, 0.15f, 0.45f, 1.0f });
@@ -93,7 +135,7 @@ namespace gon {
 	}
 	double GonEngine::getTime() 
 	{
-		const double getTime = glfwGetTime();
+		const double getTime{ glfwGetTime() };
 		return getTime;
 	}
 	SWindow& GonEngine::getPtrWindow()
@@ -109,6 +151,19 @@ namespace gon {
 		{
 			onCloseWindow();;
 		}				
+
+
+		if (e.getEventType() == EventType::KeyPressed)
+		{
+			OnKeyPressed& _e = dynamic_cast<OnKeyPressed&>(e);
+
+			if (_e.getKeyCode() == GON_KEY_C)
+			{
+				if (m_cameraMan.getCamMode() != CamMode::Ortho)				
+					m_cameraMan.switchCam(CamMode::Ortho);				
+				else m_cameraMan.switchCam(CamMode::Persp);
+			}
+		}
 
 		for (auto it = (*m_layers).end(); it != (*m_layers).begin();)
 		{			

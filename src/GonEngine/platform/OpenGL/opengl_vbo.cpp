@@ -7,8 +7,8 @@
 
 namespace gon {
 
-	OpenglVBO::OpenglVBO(float* vertices, const uint32_t size)
-		:m_id_vbo(NULL)
+	OpenglVBO::OpenglVBO(const float* vertices, const uint32_t size)
+		:m_id_vbo(0)
 	{
 		glGenBuffers(1, &m_id_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, m_id_vbo);

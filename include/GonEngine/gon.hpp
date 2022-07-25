@@ -1,4 +1,5 @@
 #pragma once
+#include "GonEngine/renderer/camera/camera_manager.hpp"
 
 namespace gon {
 	
@@ -6,7 +7,7 @@ namespace gon {
 
 	class ImguiLayerSet; class SWindow;	class Event; class Shader;
 	struct Node; class NLayersManager; class RenderManager;
-	struct VBO;	 struct EBO; struct VAO;
+	struct VBO;	 struct EBO; struct VAO; class CameraMan; 
 
 	enum class API;
 
@@ -48,12 +49,14 @@ namespace gon {
 		u_ptr<VAO> m_vao;
 		u_ptr<Shader> m_shader;
 
-		u_ptr <RenderManager> m_render;
+		u_ptr<RenderManager> m_render;
+
+		CameraMan m_cameraMan{ CameraMan(CamMode::Persp, 0.0f, -1.0f, 3.0f) };
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		static GonEngine* s_instance;
+		static GonEngine* s_instance;		
 	};
-	
-		
+
+
 	// predeclaracion para el entry-point
 	// por parte de los proyectos cliente
 	u_ptr<GonEngine> start_project();
