@@ -27,6 +27,8 @@ namespace gon {
 		virtual void handleMouseMovement(const float xoffset, const float yoffset, const bool constrainPitch = true) override {};
 		virtual void handleMouseScroll(float yoffset) override {};
 
+		//virtual void setRotation(const float rot) override { rot; };
+
 		// non-virtual
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		const float getFOV() { return m_fov; };

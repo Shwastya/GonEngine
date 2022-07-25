@@ -4,7 +4,6 @@
 #include "GonEngine/renderer/api_context.hpp"
 #include "GonEngine/events/events.hpp"
 #include "GonEngine/memcfg/goncfg.h"
-#include "GonEngine/nodes/nodes.hpp"
 #include "GonEngine/input.hpp"
 #include "GonEngine/gon.hpp"
 #include "GonEngine/log.hpp"
@@ -18,8 +17,8 @@
 	{
 		GON_LOG_ON
 		{
-			gon::u_ptr<gon::GonEngine>test{gon::start_project()};
-			test->run();		
+			gon::u_ptr<gon::GonEngine>projectApp{gon::start_project()};
+			projectApp->run();
 		}		
 		GON_LOG_OFF
 		return 0;

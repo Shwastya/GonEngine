@@ -13,14 +13,14 @@ namespace gon
 	
 	
 	
-	ImguiLayerSet::~ImguiLayerSet()
+	ImguiLayerContext::~ImguiLayerContext()
 	{
 		onQuit();
 	}
-	void ImguiLayerSet::onJoin()
+	void ImguiLayerContext::onJoin()
 	{
 		
-
+		
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -44,6 +44,7 @@ namespace gon
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
+	
 		// Setup Platform/Renderer backends
 		GonEngine& gonEngine = GonEngine::getGon();		
 		GLFWwindow* window = static_cast<GLFWwindow*>(gonEngine.getPtrWindow().getWindow());
@@ -59,7 +60,7 @@ namespace gon
 	}
 
 
-	void ImguiLayerSet::onQuit()
+	void ImguiLayerContext::onQuit()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -69,7 +70,7 @@ namespace gon
 
 	// Header
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImguiLayerSet::ImguiBegin()
+	void ImguiLayerContext::ImguiBegin()
 	{
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -78,7 +79,7 @@ namespace gon
 	}
 	// Render
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImguiLayerSet::OnRender()
+	void ImguiLayerContext::OnRender()
 	{
 		static bool show_demo_window = true;
 		ImGui::ShowDemoWindow(&show_demo_window);
@@ -86,7 +87,7 @@ namespace gon
 	// Footer
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	void ImguiLayerSet::ImguiEnd()
+	void ImguiLayerContext::ImguiEnd()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		GonEngine& gonEngine = GonEngine::getGon();
@@ -109,7 +110,7 @@ namespace gon
 		}
 
 	}
-	void ImguiLayerSet::GonColors()
+	void ImguiLayerContext::GonColors()
 	{
 	}
 

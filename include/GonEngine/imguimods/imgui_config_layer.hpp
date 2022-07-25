@@ -2,12 +2,12 @@
 
 namespace gon {
 
-	class ImguiLayerSet
+	class ImguiLayerContext
 	{
 	public:
 		
-		ImguiLayerSet() = default;
-		~ImguiLayerSet();
+		ImguiLayerContext() = default;
+		~ImguiLayerContext();
 
 		void onJoin();
 

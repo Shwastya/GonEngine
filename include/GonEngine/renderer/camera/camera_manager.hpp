@@ -24,15 +24,20 @@ namespace gon {
 		void takeSelectedCam() { switchCam(m_mode); };
 		const CamMode getCamMode() { return m_mode; }
 
+		// Only in orthographic camera mode.
+		void setRotation(const float rot);
+
 		const std::pair<glm::mat4, glm::mat4> getViewProjectionMatrix() const;
 
 		const glm::vec3& getPosition() { return m_camera->getPosition(); };
 		void setPosition(const glm::vec3& position) { m_camera->setPosition(position); };
 
+		
+
 	private:
 		CamMode m_mode;
 		u_ptr<Camera> m_camera;
-		float m_last_z;
+		float m_last_z, m_last_rot;
 	};
 
 }

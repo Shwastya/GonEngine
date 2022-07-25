@@ -28,21 +28,15 @@ namespace gon {
 
     const std::pair<glm::mat4, glm::mat4> Perspective::getViewProjectionMatrix() const
     {  
-        auto wi = static_cast<float>(GonEngine::getGon().getPtrWindow().width());
-        auto he = static_cast<float>(GonEngine::getGon().getPtrWindow().height());
-
-        //GON_ERROR("{0} {1}",wi, he);
-
-        std::pair<glm::mat4, glm::mat4> w;
-        
+        std::pair<glm::mat4, glm::mat4> w;        
         w.first = glm::mat4(1.0f); w.second = glm::mat4(1.0f);
 
         w.first   = glm::lookAt(m_position, m_position + m_front, m_up);
         w.second  = glm::perspective
         (
             glm::radians(m_fov),
-            wi / he
-                  ,
+            static_cast<float>(GonEngine::getGon().getPtrWindow().width()) / 
+            static_cast<float>(GonEngine::getGon().getPtrWindow().height()),
             m_near, m_far
         );
         return w;

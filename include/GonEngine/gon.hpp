@@ -5,9 +5,10 @@ namespace gon {
 	
 	constexpr size_t k_default_reserve{ 10 };
 
-	class ImguiLayerSet; class SWindow;	class Event; class Shader;
+	class SWindow;	class Event; class ImguiLayerContext; 	
 	struct Node; class NLayersManager; class RenderManager;
-	struct VBO;	 struct EBO; struct VAO; class CameraMan; 
+	class Shader; struct VBO; struct EBO; struct VAO; 
+	class CameraMan; 
 
 	enum class API;
 
@@ -41,23 +42,25 @@ namespace gon {
 		const bool onCloseWindow();
 	private:
 		bool m_gon_is_running;
+
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		u_ptr<SWindow>			m_window;
-		u_ptr<ImguiLayerSet>	m_imgui;
-		u_ptr<NLayersManager>	m_layers;
+		u_ptr<SWindow>				m_window;
+		u_ptr<ImguiLayerContext>	m_imgui;
+		u_ptr<NLayersManager>		m_layers;
 
-		u_ptr<VAO> m_vao;
-		u_ptr<Shader> m_shader;
+		u_ptr<VAO>					m_vao;
+		u_ptr<Shader>				m_shader;
 
-		u_ptr<RenderManager> m_render;
+		u_ptr<RenderManager>		m_render;
 
-		CameraMan m_cameraMan{ CameraMan(CamMode::Persp, 0.0f, -1.0f, 3.0f) };
+		CameraMan m_cameraMan{ CameraMan(CamMode::Persp, 0.0f, 0.0f, 3.0f) };
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		static GonEngine* s_instance;		
 	};
 
 
-	// predeclaracion para el entry-point
-	// por parte de los proyectos cliente
+	// entry-point forward declaration.
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	u_ptr<GonEngine> start_project();
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 }

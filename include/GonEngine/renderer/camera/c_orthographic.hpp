@@ -10,8 +10,8 @@ namespace gon {
     {
     public:
         Orthographic() = default;
-        Orthographic(const float x, const float y, const float z, const float orthodistant = 1.0f);
-        Orthographic(const glm::vec3& position, const float orthodistant = 1.0f);       
+        Orthographic(const float x, const float y, const float z, const float orthodistant = 1.0f, const float rotation = 0.0f);
+        Orthographic(const glm::vec3& position, const float orthodistant = 1.0f, const float rotation = 0.0f);       
         
         ~Orthographic();
         
@@ -25,13 +25,15 @@ namespace gon {
         virtual void handleMouseMovement(const float xoffset, const float yoffset, const bool constrainPitch = true) override {};
         virtual void handleMouseScroll(float yoffset) override {};
         
+       // virtual void setRotation(const float rot) override;
         // non-virtual
         // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-        void setRotation(const float rotate) { m_rotation = rotate; };
+        void setRotation(const float rot);
+      
 
 
     private:        
-        float m_rotation, m_right, m_left, m_top, m_bottom;
+        float m_rotation, m_right, m_left, m_top, m_bottom;       
        
     };
 }

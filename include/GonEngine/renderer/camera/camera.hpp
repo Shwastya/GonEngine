@@ -32,6 +32,8 @@ namespace gon {
 		virtual void handleMouseMovement(const float xoffset, const float yoffset, const bool constrainPitch = true) = 0;
 		virtual void handleMouseScroll(float yoffset) = 0;		
 
+		//virtual void setRotation(const float rot) = 0;
+
 	protected:
 		glm::vec3 m_position;
 	};

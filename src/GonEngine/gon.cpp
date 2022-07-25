@@ -35,7 +35,7 @@ namespace gon {
 		: m_gon_is_running(true),
 		m_layers(std::make_unique<NLayersManager>(reserve)),
 		m_window(SWindow::create({ name, api, width, height })),
-		m_imgui(std::make_unique<ImguiLayerSet>()),
+		m_imgui(std::make_unique<ImguiLayerContext>()),
 		m_vao{ VAO::create(2) },
 		m_render(std::make_unique<RenderManager>())	
 	{
@@ -96,9 +96,9 @@ namespace gon {
 
 			glm::mat4 model{ 1.0f };
 			
-			model = glm::translate	(model, glm::vec3(0.0f, -1.0f, 0.0f));
-			model = glm::rotate		(model, (float)getTime() * glm::radians(90.0f ) , glm::vec3(0.0f, 0.0f, 1.0f));			
-			model = glm::scale		(model, glm::vec3(1.5f, 1.5f, 1.5f));
+			//model = glm::translate	(model, glm::vec3(0.0f, -1.0f, 0.0f));
+			//model = glm::rotate		(model, (float)getTime() * glm::radians(90.0f ) , glm::vec3(0.0f, 0.0f, 1.0f));			
+			//model = glm::scale		(model, glm::vec3(1.5f, 1.5f, 1.5f));
 
 			
 		
@@ -162,6 +162,12 @@ namespace gon {
 				if (m_cameraMan.getCamMode() != CamMode::Ortho)				
 					m_cameraMan.switchCam(CamMode::Ortho);				
 				else m_cameraMan.switchCam(CamMode::Persp);
+			}
+			if (_e.getKeyCode() == GON_KEY_R)
+			{				
+				if (m_cameraMan.getCamMode() != CamMode::Ortho)
+					GON_ERROR("No hay camara ortografica activa");
+				else m_cameraMan.setRotation(45.0f);
 			}
 		}
 
