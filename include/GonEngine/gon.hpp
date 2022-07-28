@@ -1,23 +1,25 @@
 #pragma once
-#include "GonEngine/renderer/camera/camera_manager.hpp"
+#include "GonEngine/memcfg/scp_ptr.hpp"
+#include "GonEngine/renderer/api_context.hpp"
 
-namespace gon {
-	
-	constexpr size_t k_default_reserve{ 10 };
+namespace Gon {
 
-	class SWindow;	class Event; class ImguiLayerContext; 	
-	struct Node; class NLayersManager; class RenderManager;
-	class Shader; struct VBO; struct EBO; struct VAO; 
-	class CameraMan; 
-
-	enum class API;
+	class	SWindow;	
+	class	Event;
+	class	ImguiLayerContext;  
+	struct	GameObject; 
+	class	GameObjectsManager; 
+	class	RenderManager;	
+	class	Shader; 
+	struct	VAO; 
+	class	CameraMan;	
 
 	class GonEngine
 	{
 	public:
-		GonEngine() = default;
-		GonEngine(const API api, const std::string& name, const int32_t width,
-				  const int32_t height, const size_t reserve);
+
+		
+		GonEngine();
 
 		GonEngine(const GonEngine&) = default;
 		GonEngine& operator=(const GonEngine&) = default;
@@ -27,40 +29,50 @@ namespace gon {
 
 		virtual ~GonEngine();
 
+		void initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& gameobject_capacity);
+		
+		void runOnWindowMaximized();	// implementamos luego de onwindowsResize = 0
+		void runOnWindowMinimized();	// implementamos luego de onwindowsResize = 1
+		
 		void run();
-
-		static GonEngine& getGon();
-		static double getTime();
+		
+		static GonEngine& getGon();		
 		SWindow& getPtrWindow();
+		static const double getTime();		
 
 		void onEvent(Event& e);		
-		
-		void pushNode(u_ptr<Node> node);
-		void pushOverNode(u_ptr<Node> overnode);		
-		
+
+		void pushGameObject(u_ptr<GameObject> GObject);
+		void pushOverGameObject(u_ptr<GameObject> overGOobject);
+
+		//ProjectPropierties
+
 	private:
 		const bool onCloseWindow();
-	private:
-		bool m_gon_is_running;
 
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+	private:
+		bool  m_gon_is_running;
+		uint8_t m_if_window_maximized;
+		float m_dt; // DeltaTime
+		float m_previusFrameTime;
+		
+
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		u_ptr<SWindow>				m_window;
 		u_ptr<ImguiLayerContext>	m_imgui;
-		u_ptr<NLayersManager>		m_layers;
+		u_ptr<GameObjectsManager>	m_gameobjects_pile;
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-		u_ptr<VAO>					m_vao;
-		u_ptr<Shader>				m_shader;
+		std::function<void()> m_game_loop[2];
+		
+		
 
-		u_ptr<RenderManager>		m_render;
-
-		CameraMan m_cameraMan{ CameraMan(CamMode::Persp, 0.0f, 0.0f, 3.0f) };
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		static GonEngine* s_instance;		
+		static GonEngine* s_instance;
 	};
 
 
 	// entry-point forward declaration.
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	u_ptr<GonEngine> start_project();
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
 }

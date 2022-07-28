@@ -11,7 +11,7 @@
 
 #pragma warning( disable : 4100 )
 
-namespace gon {
+namespace Gon {
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
@@ -221,6 +221,8 @@ namespace gon {
 				static_cast<float>(y)
 			)
 		};		
+
+		
 		return position;
 	}
 

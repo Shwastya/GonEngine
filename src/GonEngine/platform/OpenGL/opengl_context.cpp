@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-namespace gon {
+namespace Gon {
 
 	OpenGLContext::OpenGLContext(GLFWwindow* GLFWwin)
 		: m_GLFWwindow(GLFWwin)

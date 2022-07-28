@@ -6,7 +6,6 @@ set(PROJECT_LIST
 
   
     SceneEditor
-    ExampleProject
 )
 
 

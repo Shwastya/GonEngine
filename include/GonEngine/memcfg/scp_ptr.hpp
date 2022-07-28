@@ -8,7 +8,7 @@
 #include <memory>
 
 
-namespace gon {
+namespace Gon {
 
 	// Scope for control lifetime and other
 	// sand class, etc.

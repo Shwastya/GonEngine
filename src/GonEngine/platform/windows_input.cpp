@@ -6,7 +6,7 @@
 #define GON_WIN	  static_cast<Window*>(&GonEngine::getGon().getPtrWindow()); // void* ptr
 #define GLFW_WIN  static_cast<GLFWwindow*>
 
-namespace gon {
+namespace Gon {
 
 	bool Input::isKeyPressed(KeyCode keycode)
 	{

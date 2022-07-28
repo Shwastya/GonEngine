@@ -2,7 +2,7 @@
 #include "GonEngine/renderer/vbo.hpp"
 
 
-namespace gon {
+namespace Gon {
 
 
 	struct OpenglVBO : public VBO

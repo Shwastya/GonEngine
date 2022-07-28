@@ -1,7 +1,7 @@
 #include "GonEngine/platform/OpenGL/opengl_vao.hpp"
 #include "GonEngine/renderer/api_context.hpp"
 
-namespace gon {
+namespace Gon {
 	
 	u_ptr<VAO> VAO ::create(const size_t reserve = 5)
 	{

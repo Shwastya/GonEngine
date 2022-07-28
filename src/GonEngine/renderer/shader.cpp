@@ -6,7 +6,7 @@
 #include "GonEngine/log.hpp"
 #include <sstream>
 
-namespace gon
+namespace Gon
 {
 	u_ptr<Shader>Shader::create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
 	{

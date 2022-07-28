@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 
-namespace gon
+namespace Gon
 {
     class Shader
     {
@@ -13,10 +13,10 @@ namespace gon
         Shader() = default;
         virtual ~Shader() = default;
 
-        /*Shader(const Shader&) = default;
+        Shader(const Shader&) = default;
         Shader(Shader&&) = default;
         Shader& operator=(const Shader&) = default;
-        Shader& operator=(Shader&&) = default;*/
+        Shader& operator=(Shader&&) = default;
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;

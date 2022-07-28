@@ -1,22 +1,16 @@
 #pragma once
-
-namespace gon {
+namespace Gon {
 
 	class ImguiLayerContext
 	{
-	public:
-		
-		ImguiLayerContext() = default;
+	public:		
+		ImguiLayerContext()  = default;
 		~ImguiLayerContext();
-
-		void onJoin();
-
-		void ImguiBegin();
-		void OnRender();
-		void ImguiEnd();
-
-		void onQuit();
-
+		void init();
+		void begin();
+		void onRender();
+		void end();
+		void close();
 		void GonColors();
 	};
 }

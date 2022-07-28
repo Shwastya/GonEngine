@@ -1,7 +1,7 @@
 #include "GonEngine/log.hpp" 
 #include "sinks/stdout_color_sinks.h"
 
-namespace gon
+namespace Gon
 {
 	// Logmanager implementation
 	LogManager::LogManager()

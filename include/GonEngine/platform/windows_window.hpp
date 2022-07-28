@@ -2,7 +2,7 @@
 #include "GonEngine/window.hpp"
 #include "GonEngine/platform/window_handler/window_handler.hpp"
 
-namespace gon {
+namespace Gon {
 
 	class RendererContext;
 	class Window : public SWindow

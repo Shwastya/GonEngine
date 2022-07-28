@@ -2,7 +2,7 @@
 
 #include "GonEngine/renderer/vao.hpp"
 
-namespace gon {
+namespace Gon {
 
 	class OpenglVAO : public VAO
 	{

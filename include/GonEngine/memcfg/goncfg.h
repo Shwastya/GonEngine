@@ -40,8 +40,8 @@ settings and configurations.
 
 // _______________________Logging Macros_______________________________________
 
-#define	GON		gon::LogManager::p().get().engineLogger()
-#define APP		gon::LogManager::p().get().clientLogger()
+#define	GON		Gon::LogManager::p().get().engineLogger()
+#define APP		Gon::LogManager::p().get().clientLogger()
 
 #if defined(_GON_LOG) // _GON_LOG_ is ON
 
@@ -59,7 +59,7 @@ settings and configurations.
 		#define APP_ERROR(...) APP->error (__VA_ARGS__)
 
 		#define GON_LOG_ON GON_WARN("Welcome to the Gon-Engine logging!");
-		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
+		#define GON_LOG_OFF	Gon::LogManager::p().get().shutDown();
 	#endif
 #else // _GON_LOG_ is OFF	
 
@@ -87,13 +87,13 @@ settings and configurations.
 		#define APP_ERROR(...) APP->error (__VA_ARGS__)
 		#define GON_TRACE(...) GON->trace (__VA_ARGS__)
 		#define GON_LOG_ON GON_TRACE("Gon-Engine only logging with asserts!");
-		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
+		#define GON_LOG_OFF	Gon::LogManager::p().get().shutDown();
 	#endif
 
 	#ifndef _DEBUG		
 		#define _BREAK_DEGUG ;
 		#define GON_LOG_ON GON_TRACE("Gon-Engine logging with asserts only...");
-		#define GON_LOG_OFF	gon::LogManager::p().get().shutDown();
+		#define GON_LOG_OFF	Gon::LogManager::p().get().shutDown();
 	#else
 		#ifndef _BREAK_DEGUG
 			#define _BREAK_DEGUG __debugbreak();

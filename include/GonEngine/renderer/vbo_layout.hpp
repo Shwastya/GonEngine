@@ -4,7 +4,7 @@
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"
 
-namespace gon {
+namespace Gon {
 
 	enum class DataType
 	{

@@ -1,7 +1,7 @@
 #pragma once
 #include "GonEngine/renderer/vbo.hpp"
 
-namespace gon
+namespace Gon
 {
 
 	struct VAO // virtual table of dispatchs 

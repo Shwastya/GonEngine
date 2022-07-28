@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace gon {
+namespace Gon {
 	
 	struct VAO;
 	class RendererAPI
@@ -18,23 +18,32 @@ namespace gon {
 		RendererAPI(RendererAPI&&) noexcept = delete;
 		RendererAPI& operator=(RendererAPI&&) noexcept = delete;
 
-		virtual void initDefaultConfiguration() = 0;
+		virtual void initConfig(const bool cullface = true, const bool depthtest = true, const bool alphablending = true) = 0;
 
 		virtual void setClearColor(const glm::vec4& color) const = 0;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
-		virtual void clear() = 0;
-		virtual void clearColor() = 0;
-		virtual void clearDepth() = 0;
+		virtual void clear()		= 0;	// color & depth
+		virtual void clearColor()	= 0;	// color only
+		virtual void clearDepth()	= 0;	// depth only
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-		virtual void Draw(const VAO* vao) const = 0;
+		// separate methods
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+		virtual void enableCullFace()		= 0;
+		virtual void disableCullFace()		= 0;
 
-		virtual void enableCullFace()  = 0;
-		virtual void disableCullFace() = 0;
+		virtual void enableDepthTest()		= 0;
+		virtual void disableDepthTest()		= 0;
+
+		virtual void enableAlphaBlending()	= 0;
+		virtual void disableAlphaBlending() = 0;
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 		virtual void linePolygonMode(const bool type) const = 0;
 
-
+		// Draw final call
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+		virtual void Draw(const VAO* vao) const = 0;
 		
 
 		

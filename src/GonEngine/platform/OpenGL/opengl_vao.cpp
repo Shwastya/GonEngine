@@ -2,7 +2,7 @@
 #include "GonEngine/platform/OpenGL/opengl_vbo.hpp"
 #include <glad/glad.h>
 
-namespace gon {
+namespace Gon {
 
 	static GLenum toOpenGLBaseType(DataType type)
 	{
@@ -27,7 +27,7 @@ namespace gon {
 	{
 		glGenVertexArrays(1, &m_id_vao);
 		m_vbo_vec.reserve(reserve);
-		GON_TRACE("[CREATED] An OpenGL VAO (Vertex Array Object). ");
+		GON_TRACE("[CREATED] VAO (Vertex Array Object). ");
 	}
 
 	OpenglVAO::~OpenglVAO()

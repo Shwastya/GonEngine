@@ -3,7 +3,7 @@
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"
 
-namespace gon {
+namespace Gon {
 
 	u_ptr<VBO> VBO::create(const float* vertices, const uint32_t size)
 	{

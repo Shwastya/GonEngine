@@ -4,7 +4,7 @@
 
 typedef unsigned int GLenum;
 
-namespace gon
+namespace Gon
 {
     class OpenGLShader : public Shader
     {
@@ -53,6 +53,9 @@ namespace gon
     private:
 
         void loadShader(const std::string& path, std::string* code);
+
+
+
         static void checkErrors(uint32_t shader, Type type);
 
     private:

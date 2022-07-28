@@ -4,7 +4,7 @@
 // posiblemente borrar-depurar
 #include "GonEngine/renderer/api_context.hpp"
 
-namespace gon
+namespace Gon
 {
 	class   Event;
 	struct  Position 

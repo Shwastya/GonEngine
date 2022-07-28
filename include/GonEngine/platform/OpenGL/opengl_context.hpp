@@ -3,7 +3,7 @@
 
 struct GLFWwindow;
 
-namespace gon {
+namespace Gon {
 
 	class OpenGLContext final : public APIContext
 	{

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <iostream>
 
-namespace gon {
+namespace Gon {
 
 
     class Geometry

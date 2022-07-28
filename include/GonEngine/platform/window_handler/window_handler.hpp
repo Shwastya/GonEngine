@@ -5,7 +5,7 @@
 
 struct GLFWwindow;
 
-namespace gon {
+namespace Gon {
 
 	enum class API;	class Event; struct WProps;
 

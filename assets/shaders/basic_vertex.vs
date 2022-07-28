@@ -14,9 +14,8 @@ uniform mat4 uView;
 uniform mat4 uProj;
 
 void main() {
-//  vPos = aBitang;
+
     vColor = aColor;
-    //gl_Position = vec4(aPos, 1.0);
+
     gl_Position = vec4(uProj * uView * uModel * vec4(aPos, 1.0));
 }
-// * uModel

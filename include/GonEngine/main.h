@@ -13,15 +13,15 @@
 
 #if defined(GON_WIN64) || defined(GON_WIN32)
 
-	int main()
+int main()
+{
+	GON_LOG_ON
 	{
-		GON_LOG_ON
-		{
-			gon::u_ptr<gon::GonEngine>projectApp{gon::start_project()};
-			projectApp->run();
-		}		
+		Gon::u_ptr<Gon::GonEngine> projectApp{Gon::start_project()};
+		projectApp->run();
+	}
 		GON_LOG_OFF
 		return 0;
-	}
+}
 
 #endif

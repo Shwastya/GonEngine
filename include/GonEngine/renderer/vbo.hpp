@@ -2,7 +2,7 @@
 #include "GonEngine/memcfg/scp_ptr.hpp"
 #include "GonEngine/renderer/vbo_layout.hpp"
 
-namespace gon {
+namespace Gon {
 
 	// Vertex Buffer Object
 	struct VBO

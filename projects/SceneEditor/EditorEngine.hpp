@@ -3,15 +3,22 @@
 
 #include <GonEngine/main.h>
 
-namespace gon {
+namespace Gon {
 
-	
+	struct Properties
+	{
+		const API Api			{ API::OpenGL };
+		const std::string Name	{ "UI-Editor" };
+		const int32_t Width		{ 600 };
+		const int32_t Height	{ 800 };
+		const size_t  Capacity	{ 1 };
+	};
+
+	static Properties* ThisProject;
 
 	class EditorEngine : public GonEngine
 	{
 	public:
-
-		/* (API | name | aspect - window | layers reserved) */
 		EditorEngine();
 		~EditorEngine();
 	};

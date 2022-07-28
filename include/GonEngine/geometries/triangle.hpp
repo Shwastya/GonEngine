@@ -2,7 +2,7 @@
 
 #include "GonEngine/geometries/geometry.hpp"
 
-namespace gon
+namespace Gon
 {
     class Triangle final : public Geometry
     {

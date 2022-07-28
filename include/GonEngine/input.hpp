@@ -2,7 +2,7 @@
 
 #include "GonEngine/events/keycodes.h"
 
-namespace gon
+namespace Gon
 {
 	struct MousePosition {
 

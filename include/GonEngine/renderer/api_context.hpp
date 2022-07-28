@@ -1,6 +1,6 @@
 #pragma once
 
-namespace gon {	
+namespace Gon {	
 
 	enum class API
 	{

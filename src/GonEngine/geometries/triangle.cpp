@@ -1,8 +1,9 @@
 #include "GonEngine/geometries/triangle.hpp"
 #include "GonEngine/log.hpp"
 #include "GonEngine/memcfg/goncfg.h"
-namespace gon
-{
+
+namespace Gon {
+
     Triangle::Triangle() : 
         Geometry
         (

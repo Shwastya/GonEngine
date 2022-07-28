@@ -8,10 +8,9 @@
 * NOTA:
 * Si no se va a implementar distintas librerias para logging
 * este polimorfismo me resultara inutil.
-* 
 */
 
-namespace gon
+namespace Gon
 {
 	struct SLog
 	{

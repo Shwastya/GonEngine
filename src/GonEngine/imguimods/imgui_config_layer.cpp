@@ -8,19 +8,14 @@
 #include "GonEngine/gon.hpp"
 #include <GLFW/glfw3.h>
 
-namespace gon 
-{
-	
-	
-	
+namespace Gon 
+{	
 	ImguiLayerContext::~ImguiLayerContext()
 	{
-		onQuit();
+		GON_TRACE("[DESTROYED] ImGui CFG context.");
 	}
-	void ImguiLayerContext::onJoin()
-	{
-		
-		
+	void ImguiLayerContext::init()
+	{		
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -48,11 +43,7 @@ namespace gon
 		// Setup Platform/Renderer backends
 		GonEngine& gonEngine = GonEngine::getGon();		
 		GLFWwindow* window = static_cast<GLFWwindow*>(gonEngine.getPtrWindow().getWindow());
-		
-		//if (window == NULL) GON_ASSERT("Windows is NULL", window);		
-
-		//glfwMakeContextCurrent(window);
-		//glfwSwapInterval(1); // Enable vsync
+				
 		ImGui_ImplGlfw_InitForOpenGL(window, true);		
 		ImGui_ImplOpenGL3_Init("#version 410");
 
@@ -60,17 +51,16 @@ namespace gon
 	}
 
 
-	void ImguiLayerContext::onQuit()
+	void ImguiLayerContext::close()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();	
-		GON_TRACE("[DESTROYED] ImGui CFG context.");
+		ImGui::DestroyContext();		
 	}
 
 	// Header
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImguiLayerContext::ImguiBegin()
+	void ImguiLayerContext::begin()
 	{
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -79,7 +69,7 @@ namespace gon
 	}
 	// Render
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImguiLayerContext::OnRender()
+	void ImguiLayerContext::onRender()
 	{
 		static bool show_demo_window = true;
 		ImGui::ShowDemoWindow(&show_demo_window);
@@ -87,7 +77,7 @@ namespace gon
 	// Footer
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	void ImguiLayerContext::ImguiEnd()
+	void ImguiLayerContext::end()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		GonEngine& gonEngine = GonEngine::getGon();

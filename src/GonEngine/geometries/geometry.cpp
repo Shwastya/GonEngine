@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 
 
-namespace gon {
+namespace Gon {
 
     // Float pointer scoped
     // -*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-

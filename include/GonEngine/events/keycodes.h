@@ -20,7 +20,7 @@
 // habria que hacer multiples definiciones para cada unos con condiciones
 // a nivel de preproceso. 
 
-namespace gon
+namespace Gon
 {
 	typedef enum class KeyCode : uint16_t
 	{
@@ -199,8 +199,8 @@ namespace gon
 	};
 }
 
-using GonKey = ::gon::Key;
-using GonButton = ::gon::Button;
+using GonKey = ::Gon::Key;
+using GonButton = ::Gon::Button;
 
 // FILE glfw3.h
 #define GON_KEY_SPACE              GonKey::Space

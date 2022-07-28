@@ -1,7 +1,7 @@
 #pragma once
 #include "keycodes.h"
 
-namespace gon 
+namespace Gon 
 {	
 
 	// -*-*-*-*-*-*-*-*-*-*- Event Super Class -*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-

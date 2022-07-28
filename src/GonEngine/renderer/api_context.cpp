@@ -2,7 +2,7 @@
 #include "GonEngine/renderer/api_context.hpp"
 
 
-namespace gon
+namespace Gon
 {
 
 	const API APIContext::setAPI(const bool GetSet = false, const API api = API::OpenGL)

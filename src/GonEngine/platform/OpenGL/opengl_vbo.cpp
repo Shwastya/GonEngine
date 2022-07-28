@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 
-namespace gon {
+namespace Gon {
 
 	OpenglVBO::OpenglVBO(const float* vertices, const uint32_t size)
 		:m_id_vbo(0)
