@@ -13,7 +13,7 @@ namespace Gon {
         Orthographic(const float x, const float y, const float z, const float orthodistant = 1.0f, const float rotation = 0.0f);
         Orthographic(const glm::vec3& position, const float orthodistant = 1.0f, const float rotation = 0.0f);       
         
-        ~Orthographic();
+        virtual ~Orthographic();
         
         virtual const std::pair<glm::mat4, glm::mat4> getViewProjectionMatrix() const override;        
 

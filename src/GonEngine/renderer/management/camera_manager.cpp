@@ -1,4 +1,4 @@
-#include "GonEngine/renderer/cameras/camera_manager.hpp"
+#include "GonEngine/renderer/management/camera_manager.hpp"
 #include "GonEngine/renderer/cameras/c_orthographic.hpp"
 #include "GonEngine/renderer/cameras/c_perspective.hpp"
 #include "GonEngine/memcfg/goncfg.h"

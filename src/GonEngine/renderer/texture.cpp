@@ -13,7 +13,7 @@ namespace Gon {
 		switch (APIContext::getAPI())
 		{
 		case API::None:
-			GON_ASSERT(false, "Not API selected for Texture.");
+			GON_ASSERT(false, "Not API selected for Texture");
 			return nullptr;
 		case API::OpenGL:
 			return std::make_unique<OpenGLTexture2D>(path, format);
@@ -24,10 +24,9 @@ namespace Gon {
 			GON_WARN("Vulkan not implemented. OpenGL Texture by default");
 			return std::make_unique<OpenGLTexture2D>(path, format);
 		default:
-			GON_ASSERT(false, "Unknown shader API.");
+			GON_ASSERT(false, "Unknown API for texture");
 			return nullptr;
 		}
-		return nullptr; // borrar
 	}
 
 	u_ptr<Texture2D> Texture2D::create(uint32_t width, uint32_t height)

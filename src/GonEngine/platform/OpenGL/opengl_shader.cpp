@@ -1,96 +1,135 @@
 #include "GonEngine/platform/OpenGL/opengl_shader.hpp"
 #include "GonEngine/memcfg/goncfg.h"
-#include "GonEngine/log.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include "GonEngine/log.hpp"
 #include <glad/glad.h>
 #include <fstream>
-#include <string>
-
 #include <iostream>
 #include <sstream>
 
-namespace Gon
-{
+namespace Gon {
 
-
-
+    GLenum OpenGLShader::getGLenumType(const Type type)
+    {
+        switch (type)
+        {
+            case Type::Vertex:      return GL_VERTEX_SHADER;
+            case Type::Fragment:    return GL_FRAGMENT_SHADER;
+            case Type::Geometry:    return GL_GEOMETRY_SHADER;
+        }
+        return GL_PROGRAM;
+    }    
     OpenGLShader::OpenGLShader(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
     {
+        const bool isGeometry{ static_cast<bool>(geometryPath.length()) };
         
         std::string vertexCode, fragmentCode, geometryCode;
-        loadShader(vertexPath, &vertexCode);
-        loadShader(fragmentPath, &fragmentCode);
+        uint32_t vertex{ 0 }, fragment{ 0 }, geometry{ 0 };
 
-        if (geometryPath != "none") 
+        loadShader(vertexPath, &vertexCode);
+        compileShader(vertexCode, vertex, Type::Vertex);
+
+        loadShader(fragmentPath, &fragmentCode);
+        compileShader(fragmentCode, fragment, Type::Fragment);
+
+        if (geometryPath.length())
         {
             loadShader(geometryPath, &geometryCode);
+            compileShader(geometryCode, geometry, Type::Geometry);
         }
+        createProgram(vertex, fragment, geometry, isGeometry);      
+    }    
+    OpenGLShader::OpenGLShader(const std::string& oneFilePath)
+    {
+        std::string source{ OpenGLShader::readFile(oneFilePath) };
+        ShaderSource shaderSource[3];
+        splitFileCode(source, shaderSource);
 
-        const char* vertexStr = vertexCode.c_str();
-        const uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vertexStr, nullptr);
-        glCompileShader(vertex);
-        checkErrors(vertex, Type::Vertex);
+        const bool isGeometry{ static_cast<bool>(shaderSource[2].m_code.length()) };
+        uint32_t vertex{ 0 }, fragment{ 0 }, geometry{ 0 };
 
-        const char* fragmentStr = fragmentCode.c_str();
-        const uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fragmentStr, nullptr);
-        glCompileShader(fragment);
-        checkErrors(fragment, Type::Fragment);
-
-        uint32_t geometry = 0;
-
-        if (geometryPath != "none") 
+        compileShader(shaderSource[0].m_code, vertex,   shaderSource[0].m_type);
+        compileShader(shaderSource[1].m_code, fragment, shaderSource[1].m_type);
+        if (isGeometry)
+            compileShader(shaderSource[2].m_code, geometry, shaderSource[2].m_type);
+        createProgram(vertex, fragment, geometry, isGeometry);
+    }
+    OpenGLShader::~OpenGLShader()
+    {
+        GON_TRACE("[DESTROYED] Shader source id: {0}.", m_id);
+        glDeleteProgram(m_id);
+    }
+    std::string OpenGLShader::readFile(const std::string& oneFilePath)
+    {
+        std::string result{};
+        std::ifstream in(oneFilePath, std::ios::in, std::ios::binary);
+        if (in)
         {
-            const char* geometryStr = geometryCode.c_str();
-            geometry = glCreateShader(GL_GEOMETRY_SHADER);
-            glShaderSource(geometry, 1, &geometryStr, nullptr);
-            glCompileShader(geometry);
-            checkErrors(geometry, Type::Geometry);
+            in.seekg(0, std::ios::end);
+            result.resize(in.tellg());
+            in.seekg(0, std::ios::beg);
+            in.read(&result[0], result.size());
+            in.close();
         }
+        else GON_ERROR("Error in load shader {0}", oneFilePath);
 
+        return result;
+    }
+    void OpenGLShader::splitFileCode(const std::string& source, ShaderSource* shaderSource)
+    {
+        const char* typeToken{ "#sourceToken" };
+        uint8_t idx{ 0 };
+        size_t pos{ source.find(typeToken, 0) };
+
+        while (pos != std::string::npos)
+        {
+            size_t eol{ source.find_first_of("\r\n", pos) };
+            GON_ASSERT(eol != std::string::npos, "Syntax Error");
+            size_t begin{ pos + strlen(typeToken) + 1 };
+            std::string type{ source.substr(begin, eol - begin) };
+            GON_ASSERT(type == "Vertex" || type == "Fragment" || type == "pixel", "Invalid shader type token");
+
+            size_t nextLinePos{ source.find_first_not_of("\r\n", eol) };
+            pos = source.find(typeToken, nextLinePos);
+
+            if (type == "Vertex") shaderSource[idx].m_type = Type::Vertex;
+            else shaderSource[idx].m_type = (type == "Fragment") ? Type::Fragment : Type::Geometry; 
+
+            shaderSource[idx].m_code = source.substr
+            (
+                nextLinePos, pos -
+                (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos)
+            );
+            ++idx;
+        }       
+    }
+    void OpenGLShader::compileShader(const std::string& source, uint32_t& shaderType, const Type type)
+    {
+        const char* sourceStr{ source.c_str() };
+        shaderType = glCreateShader(getGLenumType(type));
+        glShaderSource(shaderType, 1, &sourceStr, nullptr);
+        glCompileShader(shaderType);
+        checkErrors(shaderType, type);
+    }
+    void OpenGLShader::createProgram(const uint32_t& vertex, const uint32_t& fragment, const uint32_t& geometry, const bool isGeometry)
+    {
         m_id = glCreateProgram();
         glAttachShader(m_id, vertex);
         glAttachShader(m_id, fragment);
-        if (geometryPath != "none")
-        {
-            glAttachShader(m_id, geometry);
-        }
-
+        if (isGeometry) glAttachShader(m_id, geometry);
         glLinkProgram(m_id);
         checkErrors(m_id, Type::Program);
-
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        if (geometryPath != "none")
-        {
-            glDeleteShader(geometry);
-        }
-
-        
-    }
-
-    OpenGLShader::~OpenGLShader()
-    {
-        glDeleteProgram(m_id);
-    }
-
-    void OpenGLShader::bind() const
-    {
-        glUseProgram(m_id);
-    }
-
-    void OpenGLShader::unbind() const
-    {
-        glUseProgram(0);
-    }
-
+        if (isGeometry) glDeleteShader(geometry);
+        GON_TRACE("[CREATED] Shader source id: {0}", m_id);
+    }   
+    void OpenGLShader::bind()   const { glUseProgram(m_id); }
+    void OpenGLShader::unbind() const { glUseProgram(0);    }
     void OpenGLShader::loadShader(const std::string& path, std::string* code) 
     {
         std::ifstream file;
-
         file.open(path, std::ios_base::in);
-
         if (file) 
         {
             std::stringstream stream;
@@ -98,9 +137,8 @@ namespace Gon
             *code = stream.str();
             file.close();
         }
-        else GON_ERROR("Error in load shader {0}", path);
-    }
-
+        else GON_ERROR("Error in load shader {0}.", path);
+    }   
     void OpenGLShader::checkErrors(uint32_t shader, Type type) 
     {
         int success;
@@ -124,294 +162,52 @@ namespace Gon
             }
         }
     }
-
     void OpenGLShader::uniform(const char* name, int value) const
     {
         glUniform1i(glGetUniformLocation(m_id, name), value);
     }
-
     void OpenGLShader::uniform(const char* name, bool value) const
     {
         glUniform1i(glGetUniformLocation(m_id, name), static_cast<int>(value));
     }
-
     void OpenGLShader::uniform(const char* name, float value) const
     {
         glUniform1f(glGetUniformLocation(m_id, name), value);
     }
-
     void OpenGLShader::uniform(const char* name, float value1, float value2) const
     {
         glUniform2f(glGetUniformLocation(m_id, name), value1, value2);
     }
-
     void OpenGLShader::uniform(const char* name, float value1, float value2, float value3) const
     {
         glUniform3f(glGetUniformLocation(m_id, name), value1, value2, value3);
     }
-
     void OpenGLShader::uniform(const char* name, float value1, float value2, float value3, float value4) const
     {
         glUniform4f(glGetUniformLocation(m_id, name), value1, value2, value3, value4);
     }
-
     void OpenGLShader::uniform(const char* name, const glm::vec2& value) const
     {
         glUniform2fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(value));
     }
-
     void OpenGLShader::uniform(const char* name, const glm::vec3& value) const
     {
         glUniform3fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(value));
     }
-
     void OpenGLShader::uniform(const char* name, const glm::vec4& value) const
     {
         glUniform4fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(value));
     }
-
     void OpenGLShader::uniform(const char* name, const glm::mat2& value) const
     {
         glUniformMatrix2fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, glm::value_ptr(value));
     }
-
     void OpenGLShader::uniform(const char* name, const glm::mat3& value) const
     {        
         glUniformMatrix3fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, glm::value_ptr(value));
     }
-
     void OpenGLShader::uniform(const char* name, const glm::mat4& value) const
     {
         glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, glm::value_ptr(value));
     }
-
-
-
-
-
-   /* static GLenum TypeFormat(const std::string& T)
-    {
-        if (T == "V") return GL_VERTEX_SHADER;
-        if (T == "F") return GL_FRAGMENT_SHADER;
-        if (T == "G") return GL_GEOMETRY_SHADER;
-
-        GON_ERROR("Unknow shader format!");
-
-        return 0;
-    }
-    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
-       
-    {
-
-        std::unordered_map<GLenum, std::string> src;
-        src[GL_VERTEX_SHADER] = vertexPath;
-        src[GL_FRAGMENT_SHADER] = fragmentPath;
-
-        if (geometryPath != "0") src[GL_GEOMETRY_SHADER] = geometryPath;
-
-        CompileShader(src);
-    }
-
-    OpenGLShader::OpenGLShader(const std::string& name, const std::string& GLSLFile)
-        
-    {
-        std::string fileSrc = LoadShader(GLSLFile);
-        std::unordered_map<GLenum, std::string> shaderSrcs = SplitGLSLFile(fileSrc);
-        CompileShader(shaderSrcs);
-    }
-
-
-    OpenGLShader::~OpenGLShader()
-    {
-        glDeleteProgram(m_id);
-    }
-
-    void OpenGLShader::Bind() const
-    {
-        glUseProgram(m_id);
-    }
-
-    void OpenGLShader::Unbind() const
-    {
-        glUseProgram(0);
-    }*/
-
-    //const std::string& OpenGLShader::GetName() const
-    //{
-    //    return m_Name;
-    //}
-
-
-    //std::unordered_map<GLenum, std::string> OpenGLShader::SplitGLSLFile(const std::string& GLSLSource)
-    //{
-    //    std::string vertexCode, fragmentCode;
-
-    //    std::unordered_map<GLenum, std::string> shaderSrc;
-
-    //    const char* token = "#TYPE";
-    //    size_t tokenLenght = strlen(token);
-    //    size_t pos = GLSLSource.find(token, 0);
-
-    //    // La siguiente seccion de codigo habria que mejorar mucho la abstraccion
-    //    // De momento, por las prisas, siendo funcional, lo dejo asi
-
-    //    while (pos != std::string::npos)
-    //    {
-    //        size_t eol = GLSLSource.find_first_of("\r\n", pos);
-    //        if (!(eol != std::string::npos)) GON_ERROR("Shader syntax error!");
-
-    //        size_t begin = pos + tokenLenght + 1;
-    //        std::string T = GLSLSource.substr(begin, eol - begin);
-
-    //        size_t nextLinePos = GLSLSource.find_first_not_of("\r\n", eol);
-    //        pos = GLSLSource.find(token, nextLinePos);
-
-    //        shaderSrc[TypeFormat(T)] = GLSLSource.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? GLSLSource.size() - 1 : nextLinePos));
-    //    }
-    //    return shaderSrc;
-    //}
-
-    //void OpenGLShader::CompileShader(const std::unordered_map<GLenum, std::string>& srcs)
-    //{
-    //    uint32_t program = glCreateProgram();
-
-    //    // standar array de 3 por si usaramos SHADER de GEOMETRIA
-    //    std::array<GLenum, 3> IDShaders;
-
-    //    m_Nshaders = 0;
-
-    //    for (auto& value : srcs)
-    //    {
-    //        GLenum type = value.first;
-    //        const std::string& src = value.second;
-
-    //        const uint32_t shader = glCreateShader(type);
-    //        const char* srcStr = src.c_str();
-
-    //        glShaderSource(shader, 1, &srcStr, nullptr);
-    //        glCompileShader(shader);
-    //        CheckErrors(shader, Type::Shader);
-
-    //        glAttachShader(program, shader);
-    //        IDShaders[m_Nshaders] = (shader);
-    //        ++m_Nshaders;
-    //    }
-
-    //    m_id = program;
-    //    glLinkProgram(m_id);
-    //    CheckErrors(m_id, Type::Program);
-
-    //    for (int id = 0; id < m_Nshaders; ++id) glDeleteShader(id);
-    //}
-
-
-    //std::string OpenGLShader::LoadShader(const std::string& GLSLFilePath)
-    //{
-    //    GLSLFilePath;
-    //    /*std::ifstream in(GLSLFilePath, std::ios::in | std::ios::binary);
-    //    std::string result;
-
-    //    if (in)
-    //    {
-    //        in.seekg(0, std::ios::end);
-    //        result.resize(in.tellg());
-    //        in.seekg(0, std::ios::beg);
-    //        in.read(&result[0], result.size());
-    //        in.close();
-    //    }
-    //    else GON_ERROR("Error in load GLSL File: {0}", GLSLFilePath);
-
-    //    return result;*/
-
-    //    return std::string();
-    //}
-
-    //void OpenGLShader::CheckErrors(uint32_t checkErrors, Type type)
-    //{
-    //    int success;
-    //    char infoLog[512];
-    //    if (type != Type::Program)
-    //    {
-    //        glGetShaderiv(checkErrors, GL_COMPILE_STATUS, &success);
-    //        if (!success)
-    //        {
-    //            glGetShaderInfoLog(checkErrors, 512, nullptr, infoLog);
-    //            glDeleteShader(checkErrors);
-
-    //            GON_ERROR("{0}", infoLog);
-    //            //GON_ASSERT(false, "Error Compiling Shader!");                
-    //            return;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        glGetProgramiv(checkErrors, GL_LINK_STATUS, &success);
-    //        if (!success)
-    //        {
-    //            glGetProgramInfoLog(checkErrors, 512, nullptr, infoLog);
-    //            GON_ERROR("{0}", infoLog);
-    //            //GON_ASSERT(false, "Error Linking Program!");
-    //        }
-    //    }
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, int value) const
-    //{
-    //    glUniform1i(glGetUniformLocation(m_id, name), value);
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, bool value) const
-    //{
-    //    glUniform1i(glGetUniformLocation(m_id, name), static_cast<int>(value));
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, float value) const
-    //{
-    //    glUniform1f(glGetUniformLocation(m_id, name), value);
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, float value1, float value2) const
-    //{
-    //    glUniform2f(glGetUniformLocation(m_id, name), value1, value2);
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, float value1, float value2, float value3) const
-    //{
-    //    glUniform3f(glGetUniformLocation(m_id, name), value1, value2, value3);
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, float value1, float value2, float value3, float value4) const
-    //{
-    //    glUniform4f(glGetUniformLocation(m_id, name), value1, value2, value3, value4);
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, const glm::vec2& value) const
-    //{
-    //    glUniform2fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(value));
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, const glm::vec3& value) const
-    //{
-    //    glUniform3fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(value));
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, const glm::vec4& value) const
-    //{
-    //    glUniform4fv(glGetUniformLocation(m_id, name), 1, glm::value_ptr(value));
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, const glm::mat2& value) const
-    //{
-    //    glUniformMatrix2fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, glm::value_ptr(value));
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, const glm::mat3& value) const
-    //{
-    //    glUniformMatrix3fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, glm::value_ptr(value));
-    //}
-
-    //void OpenGLShader::Uniform(const char* name, const glm::mat4& value) const
-    //{
-    //    glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, glm::value_ptr(value));
-    //}
 }

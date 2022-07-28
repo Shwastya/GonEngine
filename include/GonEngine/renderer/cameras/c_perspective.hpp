@@ -16,7 +16,7 @@ namespace Gon {
 		Perspective(const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f), const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = k_Yaw, float pitch = k_Pitch);
 		Perspective(float posX, float posY, float posZ, float upX = 0.0f, float upY = 1.0f, float upZ = 0.0f, float yaw = k_Yaw, float pitch = k_Pitch);
 		
-		~Perspective();
+		virtual ~Perspective();
 	
 		virtual const std::pair<glm::mat4, glm::mat4> getViewProjectionMatrix() const override;	
 

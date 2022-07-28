@@ -6,8 +6,7 @@
 namespace Gon
 {
     class Shader
-    {
-        
+    {        
     public:
 
         Shader() = default;
@@ -20,8 +19,7 @@ namespace Gon
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
-
-        // Overload set uniforms functions
+    
         virtual void uniform(const char* name, int value) const = 0;
         virtual void uniform(const char* name, float value) const = 0;;
         virtual void uniform(const char* name, bool value) const = 0;
@@ -33,12 +31,9 @@ namespace Gon
         virtual void uniform(const char* name, const glm::vec4& value) const = 0;
         virtual void uniform(const char* name, const glm::mat2& value) const = 0;
         virtual void uniform(const char* name, const glm::mat3& value) const = 0;
-        virtual void uniform(const char* name, const glm::mat4& value) const = 0;
+        virtual void uniform(const char* name, const glm::mat4& value) const = 0;       
 
-        //virtual const std::string& GetName() const = 0;
-
-        static u_ptr<Shader> create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "none");
-        //static s_ptr<Shader> Create(const std::string& GLSLFilePath);
-
+        static u_ptr<Shader> create(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "");
+        static u_ptr<Shader> create(const std::string& oneFilePath);
     };
 }

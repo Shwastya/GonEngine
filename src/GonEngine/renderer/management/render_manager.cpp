@@ -1,5 +1,5 @@
 #include "GonEngine/platform/OpenGL/opengl_renderer_api.hpp"
-#include "GonEngine/renderer/system/render_manager.hpp"
+#include "GonEngine/renderer/management/render_manager.hpp"
 #include "GonEngine/renderer/api_context.hpp"
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"
@@ -30,7 +30,7 @@ namespace Gon {
 			GON_ASSERT(false, "Unknown renderer API.");
 			break;
 		}
-		m_renderer_api->initConfig();
+		m_renderer_api->initConfig(); // default init configuration
 	}
 	RenderManager::~RenderManager()	{ GON_TRACE("[DESTROYED] Renderer Manager."); }
 	

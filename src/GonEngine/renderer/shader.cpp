@@ -37,6 +37,35 @@ namespace Gon
 		}
 	}
 
+	u_ptr<Shader> Shader::create(const std::string& oneFilePath)
+	{
+		switch (APIContext::getAPI())
+		{
+		case API::None:
+			// is needed some code?
+			GON_WARN("not API selected for shader.");
+			return nullptr;
+
+		case API::OpenGL:
+
+			return std::make_unique<OpenGLShader>(oneFilePath);
+
+		case API::DirectX:
+
+			GON_WARN("DirectX not implemented. OpenGL shader by default");
+			return std::make_unique<OpenGLShader>(oneFilePath);
+
+
+		case API::Vulkan:
+			GON_WARN("Vulkan not implemented. OpenGL shader by default");
+			return std::make_unique<OpenGLShader>(oneFilePath);
+
+		default:
+			GON_WARN("Unknown shader API.");
+			return nullptr;
+		}
+	}
+
 	//s_ptr<Shader>Shader::Create(const std::string& GLSLFilePath)
 	//{
 	//	switch (RendererApi::_API())

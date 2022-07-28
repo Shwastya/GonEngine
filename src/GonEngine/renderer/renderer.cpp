@@ -1,5 +1,5 @@
-#include "GonEngine/renderer/cameras/camera_manager.hpp"
-#include "GonEngine/renderer/system/render_manager.hpp"
+#include "GonEngine/renderer/management/camera_manager.hpp"
+#include "GonEngine/renderer/management/render_manager.hpp"
 #include "GonEngine/platform/OpenGL/opengl_shader.hpp"
 #include "GonEngine/platform/OpenGL/opengl_vao.hpp"
 #include "GonEngine/renderer/renderer.hpp"
