@@ -18,7 +18,12 @@ namespace Gon {
 	{
 	public:
 
-		
+		enum WindowState 
+		{
+			Minimized = 0, 
+			Maximized = 1
+		};
+
 		GonEngine();
 
 		GonEngine(const GonEngine&) = default;

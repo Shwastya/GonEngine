@@ -21,10 +21,9 @@ namespace Gon {
 	private:
 
 		u_ptr<VAO>					m_vao, m_vao2;
-		u_ptr<Shader>				m_shader, m_shader2;		
-
 		u_ptr<Texture2D>			m_texture, m_alphaTexture;		
 
+		ShaderManager   m_shader;
 		SceneRenderer	m_render;
 		CameraMan		m_cameraMan{ CameraMan(CamMode::Persp, 0.0f, 0.0f, 3.0f) };
 

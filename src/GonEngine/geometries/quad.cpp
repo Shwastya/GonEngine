@@ -68,7 +68,7 @@ namespace Gon {
     }
     Quad::~Quad()
     {
-        GON_TRACE("[DESTROYED] Triangle from geometry.");
+        GON_TRACE("[DESTROYED] Quad from geometry.");
     }
     const uint32_t Quad::size()
     {

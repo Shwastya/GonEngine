@@ -24,8 +24,8 @@ namespace Gon {
 		m_window->setVsync(true);
 	
 		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));
-		m_game_loop[0] = [this]() { this->runOnWindowMinimized(); };
-		m_game_loop[1] = [this]() { this->runOnWindowMaximized(); };
+		m_game_loop[Minimized] = [this]() { this->runOnWindowMinimized(); };
+		m_game_loop[Maximized] = [this]() { this->runOnWindowMaximized(); };
 
 		m_gon_is_running = true;
 
