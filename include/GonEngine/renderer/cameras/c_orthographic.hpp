@@ -1,38 +1,62 @@
 #pragma once
-#include "GonEngine/renderer/cameras/camera.hpp"
+#include "GonEngine/renderer/camera.hpp"
 
 namespace Gon {
 
-    constexpr float m_zNear = -1.0f;
-    constexpr float m_zFar  =  1.0f;    
+    constexpr float k_zNear = -1.0f;
+    constexpr float k_zFar  =  1.0f;  
     
     class Orthographic : public Camera
     {
     public:
-        Orthographic() = default;
-        Orthographic(const float x, const float y, const float z, const float orthodistant = 1.0f, const float rotation = 0.0f);
-        Orthographic(const glm::vec3& position, const float orthodistant = 1.0f, const float rotation = 0.0f);       
-        
+        Orthographic(const float left = -1.0f, const float right = 1.0f, const float bottom = -1.0f, const float top = 1.0f);
+            
         virtual ~Orthographic();
         
-        virtual const std::pair<glm::mat4, glm::mat4> getViewProjectionMatrix() const override;        
+        virtual const glm::mat4& getViewMatrix()		const override;
+        virtual const glm::mat4& getProjectionMatrix()	const override;
 
-        virtual const glm::vec3& getPosition() override                 { return m_position; };
-        virtual void setPosition(const glm::vec3& position) override    { m_position = position; };
+        virtual const glm::vec3& getPosition()              override;
+        virtual void setPosition(const glm::vec3& position) override;
+        virtual void setRotation(const float rotate) override;
+
+        void updateProjectionMatrix(const float left, const float right, const float bottom, const float top);
+
+    private:    
+        void updateViewMatrix();
         
 
-        virtual void handleKeyboard(const Movement direction, const float dt) override {};
-        virtual void handleMouseMovement(const float xoffset, const float yoffset, const bool constrainPitch = true) override {};
-        virtual void handleMouseScroll(float yoffset) override {};
-    
-        // non-virtual
-        // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-        void setRotation(const float rot);
-      
-
-
-    private:        
-        float m_rotation, m_right, m_left, m_top, m_bottom;       
-       
+    private:          
+        float m_rotation;
     };
+
+
+
+
+
+    // Camera handlers
+    // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    class OrthoHandler : public CameraHandler
+    {
+    public:
+        OrthoHandler(const glm::vec3& position, const float ratio = 1.0f, const bool rotation = true);
+        virtual ~OrthoHandler() = default;
+
+        virtual void onUpdate(const DeltaTime dt)   override;
+        virtual void onEvent(Event& e)              override;   
+
+   // non virtual
+        const void updateApectRatio() const;
+
+    private:
+
+        glm::vec3 m_position;
+        float m_aspectRatio;
+        float m_zoom;
+        bool m_enableRotation; 
+        float m_rotate;
+        float m_speed;
+        float m_rotSpeed;
+    };
+
 }

@@ -9,11 +9,17 @@ namespace Gon
 		: GameObject(ntype, name),
 
 		m_vao{ VAO::create(2) }, m_vao2{ VAO::create(1) },
-		m_texture{Texture2D::create(k_albedo, Texture2D::Format::RGB)},
+		m_texture{ Texture2D::create(k_albedo, Texture2D::Format::RGB) },
 		m_alphaTexture{ Texture2D::create(k_blending, Texture2D::Format::RGBA) },
+		m_cameraMan(std::make_shared<CameraMan>
+			(
+				CamMode::Ortho,
+				1200.0f / 900.0f		
+		)),
 		m_quadColor(0.3f)
 	{
 		m_render.InitConfiguration(true, false, true);
+
 
 		/**********************************************************/
 		Triangle triangle;
@@ -60,6 +66,8 @@ namespace Gon
 
 		u_ptr<EBO> ebo2{ EBO::create(quad.getIndices(), quad.nIndices()) };
 		m_vao2->takeEBO(ebo2);		
+
+		m_render.shareCam(m_cameraMan);
 	}
 
 	void EditorLayer::onJoin()
@@ -70,25 +78,26 @@ namespace Gon
 	}
 	void EditorLayer::onEvent(Event& e)
 	{
+		m_cameraMan->handler()->onEvent(e);
+
 		if (e.getEventType() == EventType::KeyPressed)
 		{
 			OnKeyPressed& _e = dynamic_cast<OnKeyPressed&>(e);
 
 			if (_e.getKeyCode() == GON_KEY_C)
 			{
-				if (m_cameraMan.getCamMode() != CamMode::Ortho)
-					m_cameraMan.switchCam(CamMode::Ortho);
-				else m_cameraMan.switchCam(CamMode::Persp);
-			}
-			if (_e.getKeyCode() == GON_KEY_R)
-			{
-				m_cameraMan.setRotation(45.0f);
+				if (m_cameraMan->getCamMode() != CamMode::Ortho)
+					m_cameraMan->switchCam(CamMode::Ortho);
+				else m_cameraMan->switchCam(CamMode::Persp);
 			}
 		}
 	}
 	void EditorLayer::onUpdate(const DeltaTime dt)
 	{
-		m_render.begin(m_cameraMan.getCam());		
+		
+		m_cameraMan->handler()->onUpdate(dt);
+
+		m_render.begin();		
 		
 		m_shader[Basic2]->uniform("uTexture", 0);
 		m_texture->bind();

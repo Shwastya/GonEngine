@@ -1,19 +1,8 @@
 #pragma once
-#include <GonEngine/memcfg/scp_ptr.hpp>
+#include "GonEngine/memcfg/scp_ptr.hpp"
+#include "GonEngine/renderer/deltatime.hpp"
 
-namespace Gon {
-
-	class Event;
-
-	struct DeltaTime
-	{
-		DeltaTime(float time = 0.0f);
-		operator float() const;
-		const float Seconds() const;
-		const float MilliSeconds() const;
-	private:
-		float m_Time;
-	};
+namespace Gon {	
 
 	// GameObject type
 	enum class GOType
@@ -25,10 +14,9 @@ namespace Gon {
 		ImGui,
 		Object
 	};
-
 	
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-	
-	
+	class Event;
 	struct GameObject
 	{
 		GameObject(const GOType ntype, const std::string& name);

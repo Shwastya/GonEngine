@@ -9,13 +9,18 @@
 namespace Gon {
 	SceneRenderer::SceneRenderer()
 		: m_render(std::make_unique<RenderManager>()),
-		  m_data(std::make_unique<MatrixData>())		
+		  m_data(std::make_unique<MatrixData>())
+			
 	{
 		GON_TRACE("[CREATED] Scene Renderer.");
 	}
 	SceneRenderer::~SceneRenderer()
 	{
 		GON_TRACE("[DESTROYED] Scene Renderer.");
+	}
+	void SceneRenderer::shareCam(const s_ptr<CameraMan>& cameraman)
+	{
+		m_cameraMan = cameraman;
 	}
 	void SceneRenderer::InitConfiguration(const bool cullface, const bool depthtest, const bool alphablending)
 	{
@@ -24,9 +29,15 @@ namespace Gon {
 
 	void SceneRenderer::begin(const s_ptr<Camera>& camera)
 	{		
-		m_data->View		= camera->getViewProjectionMatrix().first;
-		m_data->Projection	= camera->getViewProjectionMatrix().second;
+		m_data->View		= camera->getViewMatrix();
+		m_data->Projection	= camera->getProjectionMatrix();
 
+		m_render->setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
+		m_render->clear();
+	}
+
+	void SceneRenderer::begin()
+	{
 		m_render->setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
 		m_render->clear();
 	}
@@ -40,8 +51,10 @@ namespace Gon {
 
 		shader->bind();
 		shader->uniform("uModel",	model);
-		shader->uniform("uView", m_data->View);
-		shader->uniform("uProj", m_data->Projection);
+		/*shader->uniform("uView", m_data->View);
+		shader->uniform("uProj", m_data->Projection);*/
+		shader->uniform("uView", m_cameraMan->getCam()->getViewMatrix());
+		shader->uniform("uProj", m_cameraMan->getCam()->getProjectionMatrix());
 
 		vao->bind();
 		m_render->Draw(vao);

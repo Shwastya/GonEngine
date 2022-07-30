@@ -7,41 +7,69 @@
 
 namespace Gon {
 
-    Perspective::Perspective(const glm::vec3& position, const glm::vec3& up, float yaw, float pitch)
-        : Camera(position),
+    Perspective::Perspective(const glm::vec3& up, float yaw, float pitch)
+        : Camera(glm::mat4(1.0f), glm::mat4(1.0f)),
         m_worldUp(up), m_yaw(yaw), m_pitch(pitch), m_fov(k_FOV), m_near(0.1f), m_far(100.0f)
     {
         GON_TRACE("[CREATED] Perspective camera.");
-        updateCameraVectors();
+        setPosition(glm::vec3{ 0.0f, 0.0f, 3.0f });
     }
 
-    Perspective::Perspective(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
-        : Camera(posX, posY, posZ), 
+    Perspective::Perspective(float upX, float upY, float upZ, float yaw, float pitch)
+        : Camera(glm::mat4(1.0f), glm::mat4(1.0f)),
         m_worldUp(glm::vec3(upX, upY, upZ)), m_yaw(yaw), m_pitch(pitch), m_fov(k_FOV), m_near(0.1f), m_far(100.0f)
     {
-
+        setPosition(glm::vec3{ 0.0f, 0.0f, 3.0f });
         GON_TRACE("[CREATED] Perspective camera.");
-        updateCameraVectors();
     }
 
     Perspective::~Perspective() { GON_TRACE("[DESTROYED] Perspective camera."); }
 
-    const std::pair<glm::mat4, glm::mat4> Perspective::getViewProjectionMatrix() const
-    {  
-        std::pair<glm::mat4, glm::mat4> w;        
-        w.first = glm::mat4(1.0f); w.second = glm::mat4(1.0f);
+    const glm::mat4& Perspective::getViewMatrix() const
+    {
+        return m_viewMatrix;
+    }
 
-        w.first   = glm::lookAt(m_position, m_position + m_front, m_up);
-        w.second  = glm::perspective
+    const glm::mat4& Perspective::getProjectionMatrix() const
+    {
+        return m_projectionMatrix;
+    }
+    const glm::vec3& Perspective::getPosition()
+    {
+        return m_position;
+    }
+    void Perspective::setPosition(const glm::vec3& position)
+    {
+        m_position = position;
+       // Perspective::updateCameraVectors();
+        Perspective::updateViewMatrix();
+    }
+
+    void Perspective::setRotation(const float rotate)
+    {
+        GON_WARN("{0}", rotate);
+    }
+
+    void Perspective::updateViewMatrix() {
+        m_viewMatrix = glm::lookAt(m_position, m_position + m_front, m_up);
+        m_projectionMatrix = glm::perspective
         (
             glm::radians(m_fov),
-            static_cast<float>(GonEngine::getGon().getPtrWindow().width()) / 
+            static_cast<float>(GonEngine::getGon().getPtrWindow().width()) /
             static_cast<float>(GonEngine::getGon().getPtrWindow().height()),
             m_near, m_far
         );
-        return w;
     }
-
+    void Perspective::updateProjectionMatrix()
+    {
+        m_projectionMatrix = glm::perspective
+        (
+            glm::radians(m_fov),
+            static_cast<float>(GonEngine::getGon().getPtrWindow().width()) /
+            static_cast<float>(GonEngine::getGon().getPtrWindow().height()),
+            m_near, m_far
+        );
+    }
     void Perspective::updateCameraVectors() {
         glm::vec3 front;
         front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
@@ -52,6 +80,5 @@ namespace Gon {
         m_right = glm::normalize(glm::cross(m_front, m_worldUp));
         m_up = glm::normalize(glm::cross(m_right, m_front));
     }
-
-
+        
 }

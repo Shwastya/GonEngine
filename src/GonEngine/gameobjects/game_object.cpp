@@ -4,14 +4,6 @@
 
 namespace Gon
 {
-	// DeltaTime
-	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-	DeltaTime::DeltaTime(float time) :m_Time(time) {}
-	DeltaTime::operator float() const { return m_Time; }
-	const float DeltaTime::Seconds() const { return m_Time; }
-	const float DeltaTime::MilliSeconds() const { return m_Time * 1000.0f; }
-
-
 	// Node interfaz class
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 	GameObject::GameObject(const GOType ntype, const std::string& name)
