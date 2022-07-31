@@ -22,7 +22,7 @@ namespace Gon {
 		void shareCam(const s_ptr<CameraMan>& cam);
 		void InitConfiguration(const bool cullface, const bool depthtest, const bool alphablending);
 
-		void begin(const s_ptr<Camera>& camera);
+		void begin(const glm::mat4& view, const glm::mat4 projection);
 		void begin();
 		void end();
 

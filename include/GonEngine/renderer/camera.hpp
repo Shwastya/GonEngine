@@ -14,28 +14,20 @@ namespace Gon {
 	{
 	public:
 
-		Camera() = default;
-
-		Camera(const glm::mat4 viewmatrix, const glm::mat4 projmatrix)
-			:	m_viewMatrix(viewmatrix), 
-				m_projectionMatrix(projmatrix),
-				m_position(0.0f)
-		{}
+		Camera(const glm::vec3& position) : m_position(position), m_viewMatrix(1.0f) {}
 
 		virtual ~Camera() = default;
 	
-		virtual const glm::mat4& getViewMatrix()		const = 0;
-		virtual const glm::mat4& getProjectionMatrix()	const = 0;
+		virtual const glm::mat4& getViewMatrix()		  = 0;
+		virtual void updateViewMatrix()					  = 0;
 
 		virtual const glm::vec3& getPosition()				= 0;
 		virtual void setPosition(const glm::vec3& position) = 0;
 		virtual void setRotation(const float rotate)		= 0;
 
 	protected:
-
 		glm::vec3 m_position;
 		glm::mat4 m_viewMatrix;
-		glm::mat4 m_projectionMatrix;
 	};
 
 
@@ -47,15 +39,25 @@ namespace Gon {
 	class CameraHandler 
 	{
 	public:
-		CameraHandler() = default;
+		CameraHandler() : m_projectionMatrix(1.0f), m_near(-1.0f), m_far(1.0f) {}
 		virtual ~CameraHandler() = default;
 
 		virtual void onUpdate(const DeltaTime dt) = 0;
 		virtual void onEvent(Event& e) = 0;	
 
+		virtual void setAspectRatio(const float aspectratio) = 0;
+		virtual const float  getAspectRatio()				 = 0;
+		virtual void updateProjectionMatrix()				 = 0;
+
+		virtual glm::mat4& getProjectionMatrix()			 = 0;
+
 		const u_ptr<Camera>& get() { return m_camera; }
 
+
+
 	protected:
+		glm::mat4 m_projectionMatrix;
+		float m_near, m_far;
 		u_ptr<Camera> m_camera;
 	};
 

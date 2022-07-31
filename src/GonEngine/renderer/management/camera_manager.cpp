@@ -1,6 +1,6 @@
 #include "GonEngine/renderer/management/camera_manager.hpp"
-#include "GonEngine/renderer/cameras/c_orthographic.hpp"
-#include "GonEngine/renderer/cameras/c_perspective.hpp"
+#include "GonEngine/renderer/cameras/camera_orthographic.hpp"
+#include "GonEngine/renderer/cameras/camera_perspective.hpp"
 
 #include "GonEngine/input.hpp"
 
@@ -11,23 +11,22 @@ namespace Gon {
 	CameraMan::CameraMan(const CamMode mode, const float aspectRatio)
 		: m_cameraHandler(nullptr), m_mode(mode)
 	{
-		initCam(aspectRatio);
-		GON_WARN("Message from CameraMan: With the constructor 'CameraMan(const CamMode mode)' you have to start the camera with 'initCam(const glm::vec3& position)'.");
+		m_Dg.AspectRatio = aspectRatio;
+		initCam();
+		GON_TRACE("[CREATED] CameraMan.");
 	}
 	CameraMan::~CameraMan()	{ GON_TRACE("[DESTROYED] CameraMan has dropped the camera.");}
 
-	void CameraMan::initCam(const float aspectRatio)
-	{
-		GON_TRACE("[CREATED] CameraMan.");
+	void CameraMan::initCam()
+	{		
 		switch (m_mode)
 		{
 		case CamMode::Ortho:
-			//m_camera = std::make_shared<Orthographic>();
-			m_cameraHandler = std::make_shared<OrthoHandler>(glm::vec3{0.0f,0.0f,0.0f}, aspectRatio);
+			m_cameraHandler = std::make_shared<OrthographicCameraHandler>(glm::vec3{ 0.0f, 0.0f, 0.0f }, m_Dg.AspectRatio);
 			GON_INFO("Camera-Man is now using an orthographic camera.");
 			break;
 		case CamMode::Persp:
-			//m_camera = std::make_shared<Perspective>();
+			m_cameraHandler = std::make_shared<PerspectiveCameraHandler>(glm::vec3{ 0.0f, 0.0f, 3.0f }, m_Dg.AspectRatio);
 			GON_INFO("Camera-Man is now using an perspective camera.");
 			break;
 		default:
@@ -40,19 +39,24 @@ namespace Gon {
 	void CameraMan::switchCam(const CamMode& mode) 
 	{
 		if (m_mode != mode)
-		{
-			m_cameraHandler.reset();
-			
+		{			
 			switch (mode)
 			{
 			case CamMode::Ortho:
-				//m_camera = std::make_shared<Orthographic>();
-				m_cameraHandler = std::make_shared<OrthoHandler>(glm::vec3{0.0f,0.0f,0.0f});
+				GON_INFO("Camera-Man is dropping the perspective camera. Saving data...");
+				m_Dg.Position = m_cameraHandler->get()->getPosition();
+				m_cameraHandler.reset();
+				m_cameraHandler = std::make_shared<OrthographicCameraHandler>(glm::vec3{m_Dg.Position.x, m_Dg.Position.y, 0.0f}, m_Dg.AspectRatio);			
 				m_mode = CamMode::Ortho;				
 				GON_INFO("Camera-Man is now using an orthographic camera.");
 				break;
-			case CamMode::Persp:	
-				//m_camera = std::make_shared<Perspective>();
+
+			case CamMode::Persp:
+				GON_INFO("Camera-Man is dropping the orthographic camera. Saving data...");
+				m_Dg.Position.x = m_cameraHandler->get()->getPosition().x;
+				m_Dg.Position.y = m_cameraHandler->get()->getPosition().y;
+				m_cameraHandler.reset();			
+				m_cameraHandler = std::make_shared<PerspectiveCameraHandler>(m_Dg.Position, m_Dg.AspectRatio);
 				m_mode = CamMode::Persp;
 				GON_INFO("Camera-Man is now using an perspective camera.");
 				break;
@@ -60,6 +64,11 @@ namespace Gon {
 		}
 	}
 	const u_ptr<Camera>& CameraMan::getCam() { return m_cameraHandler->get();  }
-	const s_ptr<CameraHandler>& CameraMan::handler() { return m_cameraHandler; }	
+	const s_ptr<CameraHandler>& CameraMan::handler() { return m_cameraHandler; }
+	const glm::mat4& CameraMan::projectionMatrix()
+	{
+		return m_cameraHandler->getProjectionMatrix();
+	}
+
 }
 

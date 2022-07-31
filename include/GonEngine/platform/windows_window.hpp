@@ -25,7 +25,7 @@ namespace Gon {
 
 		virtual void setVsync(bool toggle)				override;
 		virtual bool isVsync()					  const override;
-		virtual void setCaptureMode(bool& toggle) const override;
+		virtual void setCaptureMode(const bool toggle) const override;
 
 	private:		
 		u_ptr<WindowHandler> m_windowHandler;

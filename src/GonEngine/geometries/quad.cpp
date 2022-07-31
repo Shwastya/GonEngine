@@ -27,7 +27,7 @@ namespace Gon {
 
         const float half = size / 2.0f;
 
-        float positions[] = 
+        float positions[]  
         {   
             //upper right triangle
             half, half, 0.0f,                                  
@@ -39,7 +39,7 @@ namespace Gon {
             -half, -half, 0.0f 
         };
 
-        float uvs[] = 
+        float uvs[] 
         { 
             1.0f, 1.0f,
             1.0f, 0.0f,
@@ -50,7 +50,7 @@ namespace Gon {
             0.0f, 0.0f 
         };
 
-        float normals[] = 
+        float normals[] 
         { 
             0.0f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f,
@@ -61,7 +61,7 @@ namespace Gon {
             0.0f, 0.0f, 1.0f 
         };
 
-        uint32_t indices[] = { 0, 2, 1, 3 , 4, 5 };
+        uint32_t indices[]{ 0, 2, 1, 3 , 4, 5 };
 
         setData(m_vert.get(), positions, uvs, normals, false);
         memcpy(m_indices.get(), indices, sizeof(indices));

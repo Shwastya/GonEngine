@@ -27,10 +27,10 @@ namespace Gon {
 		m_render->initConfig(cullface, depthtest, alphablending);
 	}
 
-	void SceneRenderer::begin(const s_ptr<Camera>& camera)
+	void SceneRenderer::begin(const glm::mat4& view, const glm::mat4 projection)
 	{		
-		m_data->View		= camera->getViewMatrix();
-		m_data->Projection	= camera->getProjectionMatrix();
+		m_data->View		= view;
+		m_data->Projection	= projection;
 
 		m_render->setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
 		m_render->clear();
@@ -38,6 +38,9 @@ namespace Gon {
 
 	void SceneRenderer::begin()
 	{
+		m_data->View		= m_cameraMan->getCam()->getViewMatrix();
+		m_data->Projection	= m_cameraMan->projectionMatrix();
+
 		m_render->setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
 		m_render->clear();
 	}
@@ -53,8 +56,8 @@ namespace Gon {
 		shader->uniform("uModel",	model);
 		/*shader->uniform("uView", m_data->View);
 		shader->uniform("uProj", m_data->Projection);*/
-		shader->uniform("uView", m_cameraMan->getCam()->getViewMatrix());
-		shader->uniform("uProj", m_cameraMan->getCam()->getProjectionMatrix());
+		shader->uniform("uView", m_data->View);
+		shader->uniform("uProj", m_data->Projection);
 
 		vao->bind();
 		m_render->Draw(vao);

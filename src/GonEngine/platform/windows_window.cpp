@@ -54,8 +54,8 @@ namespace Gon {
 	{
 		m_windowHandler->callBack(cb);
 	}
-	int32_t Window::width()			{ return m_windowHandler->getHeight(); }
-	int32_t Window::height()		{ return m_windowHandler->getWidth(); }
+	int32_t Window::width()			{ return m_windowHandler->getWidth(); }
+	int32_t Window::height()		{ return m_windowHandler->getHeight(); }
 	Position Window::getPosition()
 	{
 		auto [x, y] = m_windowHandler->getPosition();
@@ -63,7 +63,7 @@ namespace Gon {
 	}
 	void Window::setVsync(bool toggle)	{ m_windowHandler->setVsync(toggle); }
 	bool Window::isVsync() const		{ return m_windowHandler->isVsync(); }
-	void Window::setCaptureMode(bool& toggle) const	{ m_windowHandler->setCapturemode(toggle);}
+	void Window::setCaptureMode(const bool toggle) const	{ m_windowHandler->setCapturemode(toggle);}
 }
 	
 
