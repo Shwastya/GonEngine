@@ -238,6 +238,11 @@ namespace Gon {
 		else glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
+	void WindowHandler::onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
+	{
+		m_Context->onWindowResize(x, y, width, height);
+	}
+
 	const bool WindowHandler::isVsync() const { return m_data.m_vsync; }
 
 	void WindowHandler::shutDown()	

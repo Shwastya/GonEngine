@@ -24,13 +24,24 @@ namespace Gon {
     };
 
 
+
     // Camera handlers
     // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    class OrthographicCameraHandler : public CameraHandler
+    class OrthoHandler : public CameraHandler
     {
     public:
-        OrthographicCameraHandler(const glm::vec3& position, const float aspectratio = 1.0f, const bool rotation = true);
-        virtual ~OrthographicCameraHandler() = default;
+
+        struct Data 
+        {
+            glm::vec3   Position        { glm::vec3{ 0.0f, 0.0f, 0.0f} };
+            float       Zoom            { 1.0f };
+            float       Rotate          { 0.0f };
+            bool        EnableRotation  { true };
+        };
+
+    public:
+        OrthoHandler(const float aspectratio = 1.0f, const OrthoHandler::Data& data = OrthoHandler::Data());
+        virtual ~OrthoHandler() = default;
 
         virtual void onUpdate(const DeltaTime dt)   override;
         virtual void onEvent(Event& e)              override;   
@@ -40,16 +51,13 @@ namespace Gon {
         virtual void updateProjectionMatrix()                override;
 
         virtual glm::mat4& getProjectionMatrix()             override;
-
         
-     
+        const Data getData() { return m_data; }
+        void  setData(const Data& data);     
 
     private:
-
-        glm::vec3   m_position;
-        float       m_aspectRatio;
-        bool        m_enableRotation; 
-        float       m_zoom, m_speed, m_rotate, m_rotSpeed;
+        Data  m_data;
+        float m_aspectRatio, m_speed, m_rotSpeed;
     };
 
 }

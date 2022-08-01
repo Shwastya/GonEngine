@@ -19,6 +19,7 @@ namespace Gon {
 		RendererAPI& operator=(RendererAPI&&) noexcept = delete;
 
 		virtual void initConfig(const bool cullface = true, const bool depthtest = true, const bool alphablending = true) = 0;
+		virtual void setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height) = 0;
 
 		virtual void setClearColor(const glm::vec4& color) const = 0;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	

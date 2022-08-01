@@ -60,7 +60,9 @@ namespace Gon
 
 		virtual void setVsync(bool toggle) = 0;
 		virtual bool isVsync() const = 0;
-		virtual void setCaptureMode(const bool toggle) const = 0;		
+		virtual void setCaptureMode(const bool toggle) const = 0;	
+
+		virtual void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height) = 0;
 
 		// Importante:
 		// Para que fuera completamente independientemente de la plataforma 

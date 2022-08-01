@@ -19,7 +19,11 @@ namespace Gon {
 	{ 
 		GON_TRACE("[DESTROYED] Orthographic camera"); 
 	}
-	const glm::mat4& CameraOrthographic::getViewMatrix()  { return m_viewMatrix; }
+	const glm::mat4& CameraOrthographic::getViewMatrix()  
+	{ 
+		updateViewMatrix();
+		return m_viewMatrix; 
+	}
 	void CameraOrthographic::updateViewMatrix() 
 	{
 		const glm::mat4 transform
@@ -35,85 +39,91 @@ namespace Gon {
 	void CameraOrthographic::setPosition(const glm::vec3& position)
 	{
 		m_position = position;
-		CameraOrthographic::updateViewMatrix();
 	}
 	void CameraOrthographic::setRotation(const float rotate)
 	{
 		m_rotation = rotate;
-		CameraOrthographic::updateViewMatrix();
 	}
 	
 
 
 	// Camera handlers
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	OrthographicCameraHandler::OrthographicCameraHandler(const glm::vec3& pos, const float ratio, const bool rotation)
-		:	m_position(pos), 
-			m_aspectRatio(ratio),
-			m_zoom(1.0f), 
-			m_enableRotation(rotation),	
-			m_speed(2.5f),
-			m_rotate(0.0f), m_rotSpeed(150.0f)			
-	{
-		m_camera = std::make_unique<CameraOrthographic>(pos);
-		OrthographicCameraHandler::updateProjectionMatrix();
+	OrthoHandler::OrthoHandler(const float ratio, const OrthoHandler::Data& data)
+		:	m_aspectRatio(ratio), m_speed(2.5f), m_rotSpeed(150.0f)			
+	{		
+		m_camera = std::make_unique<CameraOrthographic>(data.Position);
+		setData(data);
+
+		// On switch from perspective ensure the correct capture mouse mode. 
+		GonEngine::getGon().getPtrWindow().setCaptureMode(false);
 	}
-	void OrthographicCameraHandler::onUpdate(const DeltaTime dt)
+	void OrthoHandler::onUpdate(const DeltaTime dt)
 	{
 		if	(Input::isKeyPressed(GON_KEY_A))		
-			m_camera->setPosition({ m_position.x -= m_speed * dt, m_position.y, m_position.z });		
+			m_camera->setPosition
+			({ 
+				m_data.Position.x -= m_speed * dt, m_data.Position.y, m_data.Position.z
+			});		
 		else if (Input::isKeyPressed(GON_KEY_D))		
-			m_camera->setPosition({ m_position.x += m_speed * dt, m_position.y, m_position.z });		
+			m_camera->setPosition
+			({ 
+				m_data.Position.x += m_speed * dt, m_data.Position.y, m_data.Position.z
+			});		
 		if	(Input::isKeyPressed(GON_KEY_W))
-			m_camera->setPosition({ m_position.x, m_position.y += m_speed * dt, m_position.z });
+			m_camera->setPosition
+			({ 
+				m_data.Position.x, m_data.Position.y += m_speed * dt, m_data.Position.z
+			});
 		else if (Input::isKeyPressed(GON_KEY_S))
-			m_camera->setPosition({ m_position.x, m_position.y -= m_speed * dt, m_position.z });
+			m_camera->setPosition
+			({ 
+				m_data.Position.x, m_data.Position.y -= m_speed * dt, m_data.Position.z
+			});
 
-		if (m_enableRotation)
+		if (m_data.EnableRotation)
 		{
 			if (Input::isKeyPressed(GON_KEY_Q))
-			{
-				const float rot = m_rotate -= m_rotSpeed * dt;
-				m_camera->setRotation(rot);
-			}				
+				m_camera->setRotation(m_data.Rotate -= m_rotSpeed * dt);							
 			else if (Input::isKeyPressed(GON_KEY_E))
-			{
-				const float rot = m_rotate += m_rotSpeed * dt;
-				m_camera->setRotation(rot);
-			}
+				m_camera->setRotation(m_data.Rotate += m_rotSpeed * dt);
 		}
 	}
-	void OrthographicCameraHandler::onEvent(Event& e)
+	void OrthoHandler::onEvent(Event& e)
 	{
 		if (e.getEventType() == EventType::MouseScrolled)
 		{
 			OnMouseScrolled& _e = dynamic_cast<OnMouseScrolled&>(e);
 
-			m_zoom -= _e.GetYOffset() * k_Sensitivity;			
-			m_speed = m_zoom = std::max(m_zoom, 0.25f);
-			OrthographicCameraHandler::updateProjectionMatrix();
+			m_data.Zoom -= _e.GetYOffset() * m_mouseSensitivity;
+			m_speed = m_data.Zoom = std::max(m_data.Zoom, 0.25f);
 		}
 		if (e.getEventType() == EventType::WindowResize)
 		{
 			OnWindowResize& _e = dynamic_cast<OnWindowResize&>(e);
 			m_aspectRatio = static_cast<float>(_e.GetWidth()) / static_cast<float>(_e.GetHeight());
-			OrthographicCameraHandler::updateProjectionMatrix();
 		}
 	}
-	void OrthographicCameraHandler::setAspectRatio(const float aspectratio) { m_aspectRatio = aspectratio; }
-	const float OrthographicCameraHandler::getAspectRatio() {	return m_aspectRatio; }
-	void OrthographicCameraHandler::updateProjectionMatrix()
+	void OrthoHandler::setAspectRatio(const float aspectratio) { m_aspectRatio = aspectratio; }
+	const float OrthoHandler::getAspectRatio() {	return m_aspectRatio; }
+	void OrthoHandler::updateProjectionMatrix()
 	{		
 		m_projectionMatrix = glm::ortho
 		(
-			-m_aspectRatio * m_zoom,
-			m_aspectRatio * m_zoom,
-			-m_zoom,
-			m_zoom, m_near, m_far
+			-m_aspectRatio	* m_data.Zoom,
+			m_aspectRatio	* m_data.Zoom,
+			-m_data.Zoom,	m_data.Zoom,	
+			m_near,			m_far
 		);
 	}
-	glm::mat4& OrthographicCameraHandler::getProjectionMatrix()
+	glm::mat4& OrthoHandler::getProjectionMatrix()
 	{
+		updateProjectionMatrix();
 		return m_projectionMatrix;
-	}	
+	}
+	void OrthoHandler::setData(const Data& data)
+	{
+		m_data = data;
+		m_camera->setRotation(data.Rotate);
+	}
 }

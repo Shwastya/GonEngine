@@ -9,6 +9,7 @@ namespace Gon {
 		OpenGLRendererAPI() = default;
 
 		virtual void initConfig(const bool cullface, const bool depthtest, const bool alphablending) override;
+		virtual void setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height) override;
 
 		virtual void setClearColor(const glm::vec4& color) const override;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	

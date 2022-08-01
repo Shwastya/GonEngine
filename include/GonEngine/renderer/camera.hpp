@@ -7,9 +7,6 @@
 
 namespace Gon {
 
-	constexpr float k_Speed = 2.5f;
-	constexpr float k_Sensitivity = 0.1f;
-
 	class Camera
 	{
 	public:
@@ -39,7 +36,12 @@ namespace Gon {
 	class CameraHandler 
 	{
 	public:
-		CameraHandler() : m_projectionMatrix(1.0f), m_near(-1.0f), m_far(1.0f) {}
+		CameraHandler() 
+			: m_projectionMatrix(1.0f), 
+			  m_near(-1.0f), 
+			  m_far(1.0f),
+			  m_mouseSensitivity(0.1f) 
+		{}
 		virtual ~CameraHandler() = default;
 
 		virtual void onUpdate(const DeltaTime dt) = 0;
@@ -57,7 +59,7 @@ namespace Gon {
 
 	protected:
 		glm::mat4 m_projectionMatrix;
-		float m_near, m_far;
+		float m_near, m_far, m_mouseSensitivity;
 		u_ptr<Camera> m_camera;
 	};
 

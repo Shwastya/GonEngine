@@ -13,6 +13,7 @@ namespace Gon {
 		~RenderManager();
 
 		void initConfig(const bool cullface, const bool depthtest, const bool alphablending);
+		void setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height);
 
 		void setClearColor(const glm::vec4& color) const;
 

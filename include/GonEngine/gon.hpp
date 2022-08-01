@@ -6,6 +6,8 @@ namespace Gon {
 
 	class	SWindow;	
 	class	Event;
+	struct  OnWindowClose;
+	struct	OnWindowResize;
 	class	ImguiLayerContext;  
 	struct	GameObject; 
 	class	GameObjectsManager; 
@@ -36,8 +38,8 @@ namespace Gon {
 
 		void initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& gameobject_capacity);
 		
-		void runOnWindowMaximized();	// implementamos luego de onwindowsResize = 0
-		void runOnWindowMinimized();	// implementamos luego de onwindowsResize = 1
+		void runOnWindowMaximized();	
+		void runOnWindowMinimized() {};
 		
 		void run();
 		
@@ -50,16 +52,20 @@ namespace Gon {
 		void pushGameObject(u_ptr<GameObject> GObject);
 		void pushOverGameObject(u_ptr<GameObject> overGOobject);
 
-		//ProjectPropierties
+		// pensado para el uso de framebuffers en la parte del cliente
+		// seguramente no sea necesario, plantear eliminarlo
+		void disableGonViewPortControl() { m_gon_has_viewPort_control = false; }
+		void enableGonViewPortControl()  { m_gon_has_viewPort_control = true;  }
 
 	private:
-		const bool onCloseWindow();
+		const bool onWindowClose(OnWindowClose& e);
+		const bool onWindowResize(OnWindowResize& e);
 
 	private:
 		bool  m_gon_is_running;
 		uint8_t m_if_window_maximized;
 		float m_dt; // DeltaTime
-		float m_previusFrameTime;
+		float m_previus_frame_time;
 		
 
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -69,7 +75,7 @@ namespace Gon {
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 		std::function<void()> m_game_loop[2];
-		
+		bool m_gon_has_viewPort_control;
 		
 
 		static GonEngine* s_instance;

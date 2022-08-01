@@ -18,12 +18,16 @@ namespace Gon {
 	{
 		GON_TRACE("[DESTROYED] Scene Renderer.");
 	}
+	void SceneRenderer::setViewPorts(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
+	{
+		m_render->setViewPort(x, y, width, height);
+	}
 	void SceneRenderer::shareCam(const s_ptr<CameraMan>& cameraman)
 	{
 		m_cameraMan = cameraman;
 	}
 	void SceneRenderer::InitConfiguration(const bool cullface, const bool depthtest, const bool alphablending)
-	{
+	{		
 		m_render->initConfig(cullface, depthtest, alphablending);
 	}
 

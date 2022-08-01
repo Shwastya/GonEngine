@@ -19,8 +19,14 @@ namespace Gon {
 		SceneRenderer();
 		~SceneRenderer();	
 
+		// static functions
+		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+		void setViewPorts(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
+
 		void shareCam(const s_ptr<CameraMan>& cam);
 		void InitConfiguration(const bool cullface, const bool depthtest, const bool alphablending);
+
+	
 
 		void begin(const glm::mat4& view, const glm::mat4 projection);
 		void begin();
@@ -38,9 +44,10 @@ namespace Gon {
 		};
 
 		s_ptr<CameraMan> m_cameraMan;
+		u_ptr<MatrixData> m_data;
 
 		u_ptr<RenderManager> m_render;
-		u_ptr<MatrixData> m_data;
+		
 		
 	};
 }

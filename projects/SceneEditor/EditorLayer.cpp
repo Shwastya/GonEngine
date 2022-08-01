@@ -1,7 +1,7 @@
 #include "EditorLayer.hpp"
 
-constexpr char* k_albedo = ("../assets/textures/Rock_Ore_001_SD/Rock_Ore_001_COLOR.jpg");
-constexpr char* k_blending = ("../assets/textures/tree.png");
+constexpr char* k_albedo	= ("../assets/textures/Rock_Ore_001_SD/Rock_Ore_001_COLOR.jpg");
+constexpr char* k_blending	= ("../assets/textures/tree.png");
 
 namespace Gon
 {
@@ -11,7 +11,12 @@ namespace Gon
 		m_vao{ VAO::create(2) }, m_vao2{ VAO::create(1) },
 		m_texture{ Texture2D::create(k_albedo, Texture2D::Format::RGB) },
 		m_alphaTexture{ Texture2D::create(k_blending, Texture2D::Format::RGBA) },
-		m_cameraMan(std::make_shared<CameraMan>(CamMode::Persp, Gon_window_width / Gon_window_height)),
+		m_cameraMan(std::make_shared<CameraMan>
+		(
+			CamMode::Persp, 
+			Gon_window_width / Gon_window_height,
+			k_orthoData, k_perspData
+		)),
 		m_quadColor(0.3f)
 	{
 		m_render.InitConfiguration(true, false, true);
@@ -22,10 +27,10 @@ namespace Gon
 		u_ptr<VBO> vbo{ VBO::create(cube.get(),  cube.size()) };
 		vbo->setLayout
 		({
-			{ DataType::Float3, "aPos" },
-			{ DataType::Float2, "aUvs" },
+			{ DataType::Float3, "aPos"	  },
+			{ DataType::Float2, "aUvs"    },
 			{ DataType::Float3, "aNormal" },
-			{ DataType::Float3, "aTang" },
+			{ DataType::Float3, "aTang"   },
 			{ DataType::Float3, "aBitang" }
 		});
 		m_vao->takeVBO(vbo);

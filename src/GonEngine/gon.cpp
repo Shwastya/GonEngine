@@ -7,8 +7,9 @@ namespace Gon {
 	GonEngine::GonEngine()
 		: m_gon_is_running(false),
 		m_dt{ 0.0f }, 
-		m_previusFrameTime(0.0f),
-		m_if_window_maximized(1)
+		m_previus_frame_time(0.0f),
+		m_if_window_maximized(1),
+		m_gon_has_viewPort_control(true)
 	{
 		s_instance = this;		
 	}
@@ -46,7 +47,7 @@ namespace Gon {
 		}
 		m_imgui->end();
 	}
-	void GonEngine::runOnWindowMinimized() { GON_WARN("Window minimized"); }
+	//void GonEngine::runOnWindowMinimized()
 
 	void GonEngine::run()
 	{
@@ -58,8 +59,8 @@ namespace Gon {
 			m_window->swapBuffers();
 
 			const float currentFrameTime{ (float)getTime() };
-			m_dt = currentFrameTime - m_previusFrameTime;
-			m_previusFrameTime = currentFrameTime;
+			m_dt = currentFrameTime - m_previus_frame_time;
+			m_previus_frame_time = currentFrameTime;
 		}
 	}
 	
@@ -71,12 +72,14 @@ namespace Gon {
 		const double getTime{ glfwGetTime() };
 		return getTime;
 	}
+
+	// onEvents functions
+	// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	void GonEngine::onEvent(Event& e)
 	{
-		if (e.getEventType() == EventType::WindowClose)
-		{
-			onCloseWindow();;
-		}		
+		if (e.getEventType() == EventType::WindowClose)		  onWindowClose(dynamic_cast<OnWindowClose&>(e));
+		else if (e.getEventType() == EventType::WindowResize) onWindowResize(dynamic_cast<OnWindowResize&>(e));
+			
 
 		// gameobjects loop to propagate events
 		for (auto gameobject = (*m_gameobjects_pile).end(); gameobject != (*m_gameobjects_pile).begin();)
@@ -84,6 +87,7 @@ namespace Gon {
 			(*--gameobject)->onEvent(e);
 		}
 	}
+	// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	void GonEngine::pushGameObject(u_ptr<GameObject> GObject)
 	{
 		GObject->onJoin();
@@ -95,9 +99,20 @@ namespace Gon {
 		m_gameobjects_pile->pushOverGameObject(std::move(overGObject));		
 	}
 
-	const bool GonEngine::onCloseWindow()
+	// Window events handlers
+	// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+	const bool GonEngine::onWindowClose(OnWindowClose& e)
 	{
 		m_gon_is_running = false;
 		return true;
+	}
+	const bool GonEngine::onWindowResize(OnWindowResize& e)
+	{
+		m_if_window_maximized = static_cast<bool>(e.GetHeight());
+		
+		if (m_gon_has_viewPort_control)
+			m_window->onWindowResize(0, 0, e.GetWidth(), e.GetHeight());
+		
+		return false;
 	}
 }

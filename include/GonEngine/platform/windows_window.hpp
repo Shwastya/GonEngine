@@ -23,9 +23,11 @@ namespace Gon {
 		virtual void* getWindow() const override;
 		virtual void setCallBack(const std::function<void(Event&)>& cb) override;
 
-		virtual void setVsync(bool toggle)				override;
-		virtual bool isVsync()					  const override;
+		virtual void setVsync(bool toggle)					 override;
+		virtual bool isVsync()						   const override;
 		virtual void setCaptureMode(const bool toggle) const override;
+
+		virtual void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height) override;
 
 	private:		
 		u_ptr<WindowHandler> m_windowHandler;

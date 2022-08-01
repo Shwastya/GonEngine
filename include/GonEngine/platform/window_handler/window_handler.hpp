@@ -56,6 +56,8 @@ namespace Gon {
 		void setVsync(const bool toggle);
 		const bool isVsync() const;
 		void setCapturemode(const bool toggle);
+
+		void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
 		
 		void shutDown();		
 

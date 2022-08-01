@@ -3,12 +3,8 @@
 
 namespace Gon {
 
-	constexpr float k_Yaw			= -90.0f;
-	constexpr float k_Pitch			= 0.0f;	
-	constexpr float k_FOV			= 45.0f;
-
 	class CameraPerspective : public Camera
-	{
+	{	
 	public:
 
 		CameraPerspective(const glm::vec3& position);
@@ -35,11 +31,23 @@ namespace Gon {
 
 	// Camera handlers
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	class PerspectiveCameraHandler : public CameraHandler
+	class PerspHandler : public CameraHandler
 	{
 	public:
-		PerspectiveCameraHandler(const glm::vec3& position, const float ratio);
-		virtual ~PerspectiveCameraHandler() = default;
+
+		struct Data
+		{
+			glm::vec3   Position{ glm::vec3{ 0.0f, 0.0f, 3.0f} };
+			glm::vec3	Front	{};
+			glm::vec3	Right	{};
+			float		Yaw		{ -90.0f };
+			float		Pitch	{ 0.0f };
+			float		Fov		{ 45.0f };
+		};
+
+	public:
+		PerspHandler(const float ratio, const PerspHandler::Data& data = PerspHandler::Data());
+		virtual ~PerspHandler() = default;
 
 		virtual void onUpdate(const DeltaTime dt) override;
 		virtual void onEvent(Event& e)			  override;
@@ -52,19 +60,19 @@ namespace Gon {
 
 		bool onMouseMoved(OnMouseMoved& e);
 
+		const Data getData() { return m_data; }
+		void  setData(const Data& data);		
+
 	private:	
 		void updateCameraVectors();
 		void handleMouseMovement(float xoffset, float yoffset, bool constrainPitch);
 		void handleMouseScroll(const float yoffset);
 
 	private:
-		glm::vec3 m_position, m_front, m_right, m_worldUp;
+		Data m_data;
+		glm::vec3 m_worldUp;
 		float m_aspectRatio;
-		float m_yaw, m_pitch;
-		float m_fov;
-		float m_speed;
-		float m_near, m_far;
-		float m_mouseSentitivity;
+		float m_speed,m_near, m_far;
 		float m_firstMouse, m_lastX, m_lastY;
 		float m_enableMouseDisplacement;
 	};

@@ -1,6 +1,6 @@
 #pragma once
-
-#include "GonEngine/renderer/camera.hpp"
+#include "GonEngine/renderer/cameras/camera_orthographic.hpp"
+#include "GonEngine/renderer/cameras/camera_perspective.hpp"
 #include "GonEngine/memcfg/scp_ptr.hpp"
 #include "GonEngine/events/events.hpp"
 
@@ -14,32 +14,24 @@ namespace Gon {
 	class CameraMan
 	{
 	public:			
-		CameraMan(const CamMode mode, const float aspectRatio = 1.0f);
+		CameraMan(const CamMode mode, const float aspectRatio = 1.0f, const OrthoHandler::Data orthodata = OrthoHandler::Data(), PerspHandler::Data perpsdata = PerspHandler::Data());
 		~CameraMan();
-
-		struct DataGuard
-		{
-			glm::vec3 Position{ 0.0f, 0.0f, 0.0f };
-			// both
-			float AspectRatio	{ 1.0f };
-			// ortho attributes
-			float Zoom			{ 0.0f };
-			float Rotate		{ 0.0f };
-		};
 
 		const u_ptr<Camera>& getCam();
 		const s_ptr<CameraHandler>& handler();
 		const glm::mat4& projectionMatrix();
 
-		void initCam();
+		void initCam(const OrthoHandler::Data& orthodata, PerspHandler::Data& persdata);
 		void switchCam(const CamMode& mode);
 		void takeSelectedCam() { switchCam(m_mode); };
 		const CamMode getCamMode() { return m_mode; }		
 
 	private:
 		CamMode m_mode;
-		s_ptr<CameraHandler> m_cameraHandler;
-		DataGuard m_Dg;
+		OrthoHandler::Data m_orthoGuard;
+		PerspHandler::Data m_perspGuard;
+		s_ptr<CameraHandler> m_cameraHandler;		
+		float m_aspectRatio;
 	};
 
 }

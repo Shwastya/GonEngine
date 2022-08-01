@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 namespace Gon {	
 
@@ -26,6 +27,7 @@ namespace Gon {
 		virtual void init() = 0;
 		virtual void swapBuffers() = 0;
 
+		virtual void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height) = 0;
 		// non virtual
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*		
 		const static API setAPI(const bool GetSet, const API api);

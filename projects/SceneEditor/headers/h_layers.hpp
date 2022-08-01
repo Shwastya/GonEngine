@@ -1,4 +1,6 @@
 #pragma once
+#define Gon_window_width  static_cast<float>(GonEngine::getGon().getPtrWindow().width())
+#define Gon_window_height static_cast<float>(GonEngine::getGon().getPtrWindow().height())
 #include "GonEngine/renderer/management/render_manager.hpp"
 #include "GonEngine/renderer/management/camera_manager.hpp"
 #include "GonEngine/renderer/management/shader_manager.hpp"
@@ -22,8 +24,7 @@
 #include <imgui.h>
 
 
-#define Gon_window_width  static_cast<float>(GonEngine::getGon().getPtrWindow().width())
-#define Gon_window_height static_cast<float>(GonEngine::getGon().getPtrWindow().height())
+
 
 
 

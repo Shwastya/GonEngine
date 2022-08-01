@@ -64,6 +64,10 @@ namespace Gon {
 	void Window::setVsync(bool toggle)	{ m_windowHandler->setVsync(toggle); }
 	bool Window::isVsync() const		{ return m_windowHandler->isVsync(); }
 	void Window::setCaptureMode(const bool toggle) const	{ m_windowHandler->setCapturemode(toggle);}
+	void Window::onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
+	{
+		m_windowHandler->onWindowResize(x ,y, width, height);
+	}
 }
 	
 

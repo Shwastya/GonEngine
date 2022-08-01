@@ -38,6 +38,10 @@ namespace Gon {
 	{
 		m_renderer_api->initConfig(cullface, depthtest, alphablending);
 	}
+	void RenderManager::setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height)
+	{
+		m_renderer_api->setViewPort(x, y, width, height);
+	}
 	void RenderManager::setClearColor(const glm::vec4& color) const
 	{
 		m_renderer_api->setClearColor(color);

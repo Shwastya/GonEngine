@@ -38,68 +38,39 @@ namespace Gon {
 
     // Camera handlers
     // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    PerspectiveCameraHandler::PerspectiveCameraHandler(const glm::vec3& pos, const float ratio)
-        : m_position(pos),
-          m_worldUp(glm::vec3{0.0f, 1.0f, 0.0f}),
-          m_aspectRatio(ratio),
-          m_yaw(-90.0f), 
-          m_pitch(0.0f),
-          m_fov(45.0f),
-          m_speed(2.5f),
-          m_near(0.1f),
-          m_far(100.0f),
-          m_mouseSentitivity(0.1f),
-          m_firstMouse(true),
-          m_enableMouseDisplacement(false)
-    {
-        m_camera = std::make_unique<CameraPerspective>(pos);        
-
-        PerspectiveCameraHandler::updateCameraVectors(); 
-        m_camera->setPosition(pos);
-        updateProjectionMatrix();
+    PerspHandler::PerspHandler(const float ratio, const PerspHandler::Data& data)
+        : m_worldUp(glm::vec3{0.0f, 1.0f, 0.0f}), 
+          m_aspectRatio(ratio), m_speed(2.5f), m_near(0.1f), m_far(100.0f),
+          m_firstMouse(true), m_enableMouseDisplacement(false)
+    {                
+        m_camera = std::make_unique<CameraPerspective>(data.Position);        
+        setData(data);
     }
 
-    void PerspectiveCameraHandler::onUpdate(const DeltaTime dt)
+    void PerspHandler::onUpdate(const DeltaTime dt)
     {
-
-        if (Input::isKeyPressed(GON_KEY_W)) 
-        {
-            m_position += m_front * (m_speed * dt); m_camera->setPosition(m_position);
-            updateProjectionMatrix();
-        } 
-        else if (Input::isKeyPressed(GON_KEY_S))
-        {
-            m_position -= m_front * (m_speed * dt); m_camera->setPosition(m_position);
-            updateProjectionMatrix();
-        }
-        if (Input::isKeyPressed(GON_KEY_A)) 
-        {
-            m_position -= m_right * (m_speed * dt); m_camera->setPosition(m_position);
-            updateProjectionMatrix();
-        }
-        else if (Input::isKeyPressed(GON_KEY_D)) 
-        {
-            m_position += m_right * (m_speed * dt); m_camera->setPosition(m_position);
-            updateProjectionMatrix();
-        } 
+        if (Input::isKeyPressed(GON_KEY_W))        
+            m_camera->setPosition(m_data.Position += m_data.Front * (m_speed * dt));        
+        else if (Input::isKeyPressed(GON_KEY_S))        
+            m_camera->setPosition(m_data.Position -= m_data.Front * (m_speed * dt));
+        if (Input::isKeyPressed(GON_KEY_A))        
+            m_camera->setPosition(m_data.Position -= m_data.Right * (m_speed * dt));
+        else if (Input::isKeyPressed(GON_KEY_D))
+            m_camera->setPosition(m_data.Position += m_data.Right * (m_speed * dt));
        
-        if (Input::isMouseButtonPressed(Gon::MouseButton::Left))
-        {
-            m_enableMouseDisplacement = true;            
-            GonEngine::getGon().getPtrWindow().setCaptureMode(true);
-        }
+        if (Input::isMouseButtonPressed(Gon::MouseButton::Right))        
+            GonEngine::getGon().getPtrWindow().setCaptureMode(m_enableMouseDisplacement = true);        
         else
         {
             if (!m_firstMouse)
             {
                 m_firstMouse = true;
-                m_enableMouseDisplacement = false;
-                GonEngine::getGon().getPtrWindow().setCaptureMode(false);
+                GonEngine::getGon().getPtrWindow().setCaptureMode(m_enableMouseDisplacement = false);
             }            
         }
     }
 
-    void PerspectiveCameraHandler::onEvent(Event& e)
+    void PerspHandler::onEvent(Event& e)
     {
         if (m_enableMouseDisplacement)
         {
@@ -110,61 +81,67 @@ namespace Gon {
         if (e.getEventType() == EventType::MouseScrolled)
             handleMouseScroll(dynamic_cast<OnMouseScrolled&>(e).GetYOffset());
 
+        if (e.getEventType() == EventType::WindowResize)
+        {
+            OnWindowResize& _e = dynamic_cast<OnWindowResize&>(e);
+            m_aspectRatio = static_cast<float>(_e.GetWidth()) / static_cast<float>(_e.GetHeight());
+        }
+
     }
 
-    void PerspectiveCameraHandler::setAspectRatio(const float aspectratio) { m_aspectRatio = aspectratio; }
-    const float PerspectiveCameraHandler::getAspectRatio() { return m_aspectRatio; }
-    void PerspectiveCameraHandler::updateProjectionMatrix()
+    void PerspHandler::setAspectRatio(const float aspectratio) { m_aspectRatio = aspectratio; }
+    const float PerspHandler::getAspectRatio() { return m_aspectRatio; }
+    void PerspHandler::updateProjectionMatrix()
     {       
-        m_projectionMatrix = glm::perspective(glm::radians(m_fov), m_aspectRatio, m_near, m_far);        
+        m_projectionMatrix = glm::perspective(glm::radians(m_data.Fov), m_aspectRatio, m_near, m_far);        
     }
 
-    glm::mat4& PerspectiveCameraHandler::getProjectionMatrix()
+    glm::mat4& PerspHandler::getProjectionMatrix()
     {        
+        updateProjectionMatrix();
         return m_projectionMatrix;
     }    
 
-    void PerspectiveCameraHandler::updateCameraVectors()
+    void PerspHandler::updateCameraVectors()
     {    
         glm::vec3 front;
-        front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-        front.y = sin(glm::radians(m_pitch));
-        front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+        front.x = cos(glm::radians(m_data.Yaw)) * cos(glm::radians(m_data.Pitch));
+        front.y = sin(glm::radians(m_data.Pitch));
+        front.z = sin(glm::radians(m_data.Yaw)) * cos(glm::radians(m_data.Pitch));
 
-        m_front = glm::normalize(front);
-        dynamic_cast<CameraPerspective&>(*m_camera).setFront(m_front);
+        m_data.Front = glm::normalize(front);
+        dynamic_cast<CameraPerspective&>(*m_camera).setFront(m_data.Front);
 
-        m_right = glm::normalize(glm::cross(m_front, m_worldUp));
-
-        const glm::vec3 up{ glm::normalize(glm::cross(m_right, m_front))};
-        dynamic_cast<CameraPerspective&>(*m_camera).setUp(up);
+        m_data.Right = glm::normalize(glm::cross(m_data.Front, m_worldUp));
+        dynamic_cast<CameraPerspective&>(*m_camera).setUp
+        (
+            glm::normalize(glm::cross(m_data.Right, m_data.Front))
+        );
     }
 
-    void PerspectiveCameraHandler::handleMouseMovement(float xoffset, float yoffset, bool constrainPitch)
+    void PerspHandler::handleMouseMovement(float xoffset, float yoffset, bool constrainPitch)
     {
-        const float xoff = xoffset * m_mouseSentitivity;
-        const float yoff = yoffset * m_mouseSentitivity;
+        const float xoff = xoffset * m_mouseSensitivity;
+        const float yoff = yoffset * m_mouseSensitivity;
 
-        m_yaw   += xoff;
-        m_pitch += yoff;
+        m_data.Yaw   += xoff;
+        m_data.Pitch += yoff;
 
         if (constrainPitch)
         {
-            if (m_pitch > 89.0f)  m_pitch = 89.0f;
-            if (m_pitch < -89.0f) m_pitch = -89.0f;
+            if (m_data.Pitch > 89.0f)  m_data.Pitch = 89.0f;
+            if (m_data.Pitch < -89.0f) m_data.Pitch = -89.0f;
         }
         updateCameraVectors();       
     }
-    void PerspectiveCameraHandler::handleMouseScroll(const float yoffset)
+    void PerspHandler::handleMouseScroll(const float yoffset)
     {
-        if (m_fov >= 0.1f && m_fov <= 140.0f) m_fov -= yoffset;
-        if (m_fov <= 0.1f) m_fov    = 0.1f;
-        if (m_fov >= 140.0f) m_fov  = 140.0f;
-        updateProjectionMatrix();
-    }
-    
+        if (m_data.Fov >= 0.1f && m_data.Fov <= 140.0f) m_data.Fov -= yoffset;
+        if (m_data.Fov <= 0.1f) m_data.Fov = 0.1f;
+        if (m_data.Fov >= 140.0f) m_data.Fov = 140.0f;
+    }    
 
-    bool PerspectiveCameraHandler::onMouseMoved(OnMouseMoved& e)
+    bool PerspHandler::onMouseMoved(OnMouseMoved& e)
     {
         if (m_firstMouse)
         {
@@ -180,6 +157,12 @@ namespace Gon {
 
         handleMouseMovement(Xoffset, Yoffset, true);
         return false;
+    }
+
+    void PerspHandler::setData(const Data& data)
+    {
+        m_data = data;
+        updateCameraVectors();
     }
 
 
