@@ -959,7 +959,8 @@ template <typename T> struct divtest_table_entry {
   T mod_inv;
   T max_quotient;
 };
-
+#pragma warning( push )
+#pragma warning( disable : 6385 )
 // Returns true iff x is divisible by pow(5, exp).
 inline bool divisible_by_power_of_5(uint32_t x, int exp) FMT_NOEXCEPT {
   FMT_ASSERT(exp <= 10, "too large exponent");
@@ -972,6 +973,7 @@ inline bool divisible_by_power_of_5(uint32_t x, int exp) FMT_NOEXCEPT {
       {0x3ed61f49, 0x000001b7}};
   return x * divtest_table[exp].mod_inv <= divtest_table[exp].max_quotient;
 }
+
 inline bool divisible_by_power_of_5(uint64_t x, int exp) FMT_NOEXCEPT {
   FMT_ASSERT(exp <= 23, "too large exponent");
   static constexpr const divtest_table_entry<uint64_t> divtest_table[] = {
@@ -1082,7 +1084,7 @@ template <> struct cache_accessor<float> {
         0x8f7e32ce7bea5c6f, 0xb35dbf821ae4f38b, 0xe0352f62a19e306e};
     return pow10_significands[k - float_info<float>::min_k];
   }
-
+#pragma warning( pop )
   static carrier_uint compute_mul(carrier_uint u,
                                   const cache_entry_type& cache) FMT_NOEXCEPT {
     return umul96_upper32(u, cache);

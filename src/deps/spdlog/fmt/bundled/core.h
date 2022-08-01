@@ -1700,6 +1700,8 @@ FMT_CONSTEXPR auto make_arg(const T& value) -> basic_format_arg<Context> {
 // The type template parameter is there to avoid an ODR violation when using
 // a fallback formatter in one translation unit and an implicit conversion in
 // another (not recommended).
+#pragma warning( push )
+#pragma warning( disable : 4996 )
 template <bool IS_PACKED, typename Context, type, typename T,
           FMT_ENABLE_IF(IS_PACKED)>
 FMT_CONSTEXPR FMT_INLINE auto make_arg(T&& val) -> value<Context> {
@@ -1730,7 +1732,7 @@ FMT_CONSTEXPR FMT_INLINE auto make_arg(T&& val) -> value<Context> {
       "formatter<T> specialization: https://fmt.dev/latest/api.html#udt");
   return {arg};
 }
-
+#pragma warning( pop )
 template <bool IS_PACKED, typename Context, type, typename T,
           FMT_ENABLE_IF(!IS_PACKED)>
 inline auto make_arg(const T& value) -> basic_format_arg<Context> {

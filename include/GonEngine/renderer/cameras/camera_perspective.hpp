@@ -15,7 +15,6 @@ namespace Gon {
 
 		virtual const glm::vec3& getPosition()				override;
 		virtual void setPosition(const glm::vec3& position) override;
-		virtual void setRotation(const float rotate)		override;
 
 		void setUp(const glm::vec3& up)			{ m_up = up; }
 		void setFront(const glm::vec3& front)	{ m_front = front; }

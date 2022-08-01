@@ -11,7 +11,7 @@ namespace Gon
 	{
 		static uint32_t id = 0;
 		m_id = id++;
-		GON_TRACE("[CREATED] GameObject '{0}' id: {1}.",m_name, m_id);
+		GON_TRACE("[CREATED] Layer '{0}' id: {1}",m_name, m_id);
 	}
 
 	// Node Stack Manager
@@ -19,22 +19,22 @@ namespace Gon
 	GameObjectsManager::GameObjectsManager(const size_t reserve_capacity) : m_idxLast(0)
 	{
 		m_gameObjects.reserve(reserve_capacity);
-		GON_TRACE("[CREATED] GameObjects Manager. Capacity: {0}", m_gameObjects.capacity());
+		GON_TRACE("[CREATED] LayerManager: Capacity = {0}", m_gameObjects.capacity());
 	}
 	GameObjectsManager::~GameObjectsManager()
 	{
-		GON_TRACE("[DESTROYED] GameObjects manager.");
+		GON_TRACE("[DESTROYED] LayerManager");
 	}
 	void GameObjectsManager::pushGameObject(u_ptr<GameObject> GObject)
 	{
-		GON_INFO("[GameObject id: {0}] '{1}' pushed to the first half of the list.", GObject->getId(), GObject->getName());
+		GON_INFO("[Layer id: {0}] '{1}' pushed to the first half of the list", GObject->getId(), GObject->getName());
 		m_gameObjects.emplace(m_gameObjects.begin() + m_idxLast,std::move(GObject));
 		m_idxLast++;
 
 	}
 	void GameObjectsManager::pushOverGameObject(u_ptr<GameObject> overGObject)
 	{
-		GON_INFO("[GameObject id: {0}] '{1}' pushed to the second half of the list.", overGObject->getId(), overGObject->getName());
+		GON_INFO("[Layer id: {0}] '{1}' pushed to the second half of the list", overGObject->getId(), overGObject->getName());
 		m_gameObjects.emplace_back(std::move(overGObject));
 	}
 	void GameObjectsManager::popGameObject(u_ptr<GameObject> GObject)
@@ -43,7 +43,7 @@ namespace Gon
 
 		if (it != m_gameObjects.end())
 		{
-			GON_TRACE("[GameObject {0}] deleted.", m_idxLast);
+			GON_TRACE("[Layer {0}] deleted", m_idxLast);
 			m_gameObjects.erase(it);
 			m_idxLast--;
 		}
@@ -54,7 +54,7 @@ namespace Gon
 
 		if (it != m_gameObjects.end())
 		{
-			GON_TRACE("[GameObject {0}] deleted.", m_gameObjects.size());
+			GON_TRACE("[Layer {0}] deleted", m_gameObjects.size());
 			m_gameObjects.erase(it);
 		}
 	}
@@ -72,7 +72,7 @@ namespace Gon
 	}
 	GameObject::~GameObject()
 	{
-		GON_TRACE("[DESTROYED] GameObject '{0}' id: {1}.", m_name, m_id);
+		GON_TRACE("[DESTROYED] Layer '{0}' id: {1}", m_name, m_id);
 	}
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 }

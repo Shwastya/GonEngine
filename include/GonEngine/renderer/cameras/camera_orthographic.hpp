@@ -15,10 +15,9 @@ namespace Gon {
 
         virtual const glm::vec3& getPosition()              override;
         virtual void setPosition(const glm::vec3& position) override;
-        virtual void setRotation(const float rotate)        override;        
 
-    private:    
-      
+    public:
+        void setRotation(const float rotate);      
     private:          
         float m_rotation;
     };

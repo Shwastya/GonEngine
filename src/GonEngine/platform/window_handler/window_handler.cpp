@@ -38,16 +38,13 @@ namespace Gon {
 		switch (APIContext::getAPI())
 		{
 		case API::OpenGL:
-			GON_TRACE("OpenGL API context.");
 			m_Context = std::make_unique<OpenGLContext>(m_window);
 			break;
 		case API::DirectX:
-			GON_TRACE("Context API selected: DirectX");
 			GON_WARN("DirectX is not implemented yet. OpenGl will be started instead.");
 			m_Context = std::make_unique<OpenGLContext>(m_window);
 			break;
 		case API::Vulkan:
-			GON_TRACE("Context API selected:: Vulkan");
 			GON_WARN("Vulkan is not implemented yet. OpenGl will be started instead.");
 			m_Context = std::make_unique<OpenGLContext>(m_window);
 			break;

@@ -38,14 +38,13 @@ settings and configurations.
 #endif
 
 
-// _______________________Logging Macros_______________________________________
-
-#define	GON		Gon::LogManager::p().get().engineLogger()
-#define APP		Gon::LogManager::p().get().clientLogger()
-
 #if defined(_GON_LOG) // _GON_LOG_ is ON
 
-	#if defined(_DEBUG) // _GON_LOG_ is ON	
+	#define	GON		Gon::LogManager::p().get().engineLogger()
+	#define APP		Gon::LogManager::p().get().clientLogger()
+
+	#if defined(_DEBUG) // _GON_LOG_ is ON			
+
 		// CORE Logs
 		#define GON_TRACE(...) GON->trace (__VA_ARGS__)
 		#define GON_INFO(...)  GON->info  (__VA_ARGS__)
@@ -56,12 +55,15 @@ settings and configurations.
 		#define APP_TRACE(...) APP->trace (__VA_ARGS__)
 		#define APP_INFO(...)  APP->info  (__VA_ARGS__)
 		#define APP_WARN(...)  APP->warn  (__VA_ARGS__)
-		#define APP_ERROR(...) APP->error (__VA_ARGS__)
-
+		#define APP_ERROR(...) APP->error (__VA_ARGS__)		
+		
 		#define GON_LOG_ON GON_WARN("Welcome to the Gon-Engine logging!");
-		#define GON_LOG_OFF	Gon::LogManager::p().get().shutDown();
+		#define GON_LOG_OFF	Gon::LogManager::p().get().shutDown(); printfMemoryUsage();		
+
 	#endif
 #else // _GON_LOG_ is OFF	
+	
+	#define MEMORY_USAGE()
 
 	// CORE Logs
 	#define GON_TRACE(...) 
@@ -82,6 +84,10 @@ settings and configurations.
 
 // asserts
 #if defined(_GON_ASSERTS) // ASSERST or _GON_LOG is ON
+
+#define	GON		Gon::LogManager::p().get().engineLogger()
+#define APP		Gon::LogManager::p().get().clientLogger()
+
 	#ifndef _GON_LOG
 		#define GON_ERROR(...) GON->error (__VA_ARGS__)
 		#define APP_ERROR(...) APP->error (__VA_ARGS__)

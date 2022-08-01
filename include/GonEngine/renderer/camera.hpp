@@ -20,7 +20,6 @@ namespace Gon {
 
 		virtual const glm::vec3& getPosition()				= 0;
 		virtual void setPosition(const glm::vec3& position) = 0;
-		virtual void setRotation(const float rotate)		= 0;
 
 	protected:
 		glm::vec3 m_position;

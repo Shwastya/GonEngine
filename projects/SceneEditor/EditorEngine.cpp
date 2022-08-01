@@ -6,7 +6,7 @@ namespace Gon {
 
 	EditorEngine::EditorEngine() //: GonEngine(API::OpenGL, "Scene Editor", 1920, 1080, 15)
 	{
-		APP_WARN("Starting App: 'UI-Editor'.");
+		APP_WARN("Starting App: 'UI-Editor'");
 
 		// Init and set
 		GonEngine::getGon().initEngine
@@ -25,7 +25,7 @@ namespace Gon {
 
 	EditorEngine::~EditorEngine()
 	{
-		APP_WARN("Shutting down 'Scene-Editor' app.");
+		APP_WARN("Shutting down 'UI-Editor' app");
 	}
 
 	extern u_ptr<GonEngine> start_project()

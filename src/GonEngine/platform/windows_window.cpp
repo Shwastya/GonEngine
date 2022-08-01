@@ -23,7 +23,7 @@ namespace Gon {
 	Window::~Window()
 	{
 		m_windowHandler->shutDown();
-		GON_TRACE("[DESTROYED] GLFW '{0}' Window.", m_windowHandler->getTitle());
+		GON_TRACE("[DESTROYED] GLFW '{0}' Window", m_windowHandler->getTitle());
 	}
 	void Window::init()
 	{
@@ -31,14 +31,10 @@ namespace Gon {
 			m_windowHandler->initGLFW();
 			_GLFW_On = true;
 		}
-		if (m_fullScreen) {
-			GON_TRACE("Initializing GLFW fullscreen mode...");
-			m_windowHandler->initFullScreenWindow();
-		}
-		else {
-			GON_TRACE("Initializing GLFW windowed mode...");
-			m_windowHandler->initWindowedWindow();
-		}		
+		if (m_fullScreen) m_windowHandler->initFullScreenWindow();		
+		else m_windowHandler->initWindowedWindow();
+
+
 		//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 		m_windowHandler->initContext();
 		//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-

@@ -84,9 +84,15 @@ namespace Gon {
 		if (m_data.EnableRotation)
 		{
 			if (Input::isKeyPressed(GON_KEY_Q))
-				m_camera->setRotation(m_data.Rotate -= m_rotSpeed * dt);							
+			dynamic_cast<CameraOrthographic&>(*m_camera).setRotation
+			(
+				m_data.Rotate -= m_rotSpeed * dt
+			);
 			else if (Input::isKeyPressed(GON_KEY_E))
-				m_camera->setRotation(m_data.Rotate += m_rotSpeed * dt);
+			dynamic_cast<CameraOrthographic&>(*m_camera).setRotation
+			(
+				m_data.Rotate += m_rotSpeed * dt
+			);
 		}
 	}
 	void OrthoHandler::onEvent(Event& e)
@@ -124,6 +130,6 @@ namespace Gon {
 	void OrthoHandler::setData(const Data& data)
 	{
 		m_data = data;
-		m_camera->setRotation(data.Rotate);
+		dynamic_cast<CameraOrthographic&>(*m_camera).setRotation(data.Rotate);
 	}
 }

@@ -26,8 +26,6 @@ namespace Gon {
     {
         m_position = position;
     }
-    void CameraPerspective ::setRotation(const float rotate) { GON_WARN("{0}", rotate); }
-
     void CameraPerspective ::updateViewMatrix() 
     {
         m_viewMatrix = glm::lookAt(m_position, m_position + m_front, m_up);
