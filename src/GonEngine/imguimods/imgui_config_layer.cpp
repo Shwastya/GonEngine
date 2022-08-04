@@ -9,17 +9,24 @@
 #include <GLFW/glfw3.h>
 
 namespace Gon 
-{	
-	ImguiLayerContext::~ImguiLayerContext()
+{
+	ImGuiContext::ImGuiContext(const NodeType ntype, const std::string& name)
+		: Node(ntype, name)
+	{
+		GON_TRACE("[CREATED] Layer: (Type: {0}) > (Name: {1}) > (Id: {2})", NodeTypeToString(m_nodeType), m_name, m_id);
+	}
+
+	ImGuiContext::~ImGuiContext()
 	{
 		GON_TRACE("[DESTROYED] ImGui CFG context.");
 	}
-	void ImguiLayerContext::init()
-	{		
+
+	void ImGuiContext::onJoin()
+	{
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		
+
 		ImGuiIO& io = ImGui::GetIO(); //(void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -39,55 +46,49 @@ namespace Gon
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
-	
+
 		// Setup Platform/Renderer backends
-		GonEngine& gonEngine = GonEngine::getGon();		
+		GonEngine& gonEngine = GonEngine::getGon();
 		GLFWwindow* window = static_cast<GLFWwindow*>(gonEngine.getPtrWindow().getWindow());
-				
-		ImGui_ImplGlfw_InitForOpenGL(window, true);		
+
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 
 		GON_TRACE("[CREATED] ImGui CFG layer.");
 	}
 
-
-	void ImguiLayerContext::close()
+	void ImGuiContext::onQuit()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();		
+		ImGui::DestroyContext();
 	}
 
-	// Header
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImguiLayerContext::begin()
-	{
-		// Start the Dear ImGui frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();	
-	}
-	// Render
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void ImguiLayerContext::onRender()
+	void ImGuiContext::onRender()
 	{
 		static bool show_demo_window = true;
 		ImGui::ShowDemoWindow(&show_demo_window);
 	}
-	// Footer
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	void ImguiLayerContext::end()
+	void ImGuiContext::Begin()
+	{
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+	}
+
+	void ImGuiContext::End()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		GonEngine& gonEngine = GonEngine::getGon();
-		 
+
 		io.DisplaySize = ImVec2
 		{
 			static_cast<float>(gonEngine.getPtrWindow().width()),
 			static_cast<float>(gonEngine.getPtrWindow().height())
 		};
-		
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -98,9 +99,9 @@ namespace Gon
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
 		}
-
 	}
-	void ImguiLayerContext::GonColors()
+
+	void ImGuiContext::GonColors()
 	{
 	}
 

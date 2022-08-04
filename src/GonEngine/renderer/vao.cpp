@@ -3,9 +3,9 @@
 
 namespace Gon {
 	
-	u_ptr<VAO> VAO ::create(const size_t reserve = 5)
+	u_ptr<VAO> VAO::create(const size_t reserve = 5)
 	{
-		switch ( APIContext::getAPI())
+		switch (APIContext::getAPI())
 		{
 		case API::None:
 			GON_ASSERT(false, "Not API selected for VAO.");

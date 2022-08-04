@@ -1,7 +1,7 @@
 #pragma once
-#include "GonEngine/imguimods/imgui_config_layer.hpp"
 #include "GonEngine/platform/windows_window.hpp"
-#include "GonEngine/gameobjects/gameobject.hpp"
+#include "GonEngine/renderer/renderer.hpp"
+#include "GonEngine/nodes/n_layer.hpp"
 #include "GonEngine/events/events.hpp"
 #include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp"

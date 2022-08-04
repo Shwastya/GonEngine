@@ -5,7 +5,7 @@
 
 namespace Gon {
 	CameraMan::CameraMan(const CamMode mode, const float aspectRatio, const OrthoHandler::Data orthodata, PerspHandler::Data perpsdata)
-		: m_cameraHandler(nullptr), m_mode(mode)
+		: m_cameraHandler(nullptr), m_mode(mode), m_switchKey(Key::C)
 	{
 		m_aspectRatio = aspectRatio;
 		initCam(orthodata, perpsdata);
@@ -64,9 +64,31 @@ namespace Gon {
 	}
 	const u_ptr<Camera>& CameraMan::getCam() { return m_cameraHandler->get();  }
 	const s_ptr<CameraHandler>& CameraMan::handler() { return m_cameraHandler; }
-	const glm::mat4& CameraMan::projectionMatrix()
+
+	const glm::mat4& CameraMan::View()
+	{
+		return m_cameraHandler->get()->getViewMatrix();
+	}
+
+	const glm::mat4& CameraMan::Projection()
 	{
 		return m_cameraHandler->getProjectionMatrix();
+	}
+
+	void CameraMan::onEvent(Event& e)
+	{
+		handler()->onEvent(e);
+
+		if (e.getEventType() == EventType::KeyPressed)
+		{
+			OnKeyPressed& _e = dynamic_cast<OnKeyPressed&>(e);
+
+			if (_e.getKeyCode() == m_switchKey)
+			{
+				if (m_mode != CamMode::Ortho) switchCam(CamMode::Ortho);
+				else switchCam(CamMode::Persp);
+			}
+		}
 	}
 
 }

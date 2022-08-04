@@ -13,6 +13,7 @@ namespace Gon {
         virtual ~Cube();
 
         const uint32_t  size();
+
         const uint32_t* getIndices();
         const uint32_t  nIndices();
 

@@ -19,15 +19,21 @@ namespace Gon {
 
 		const u_ptr<Camera>& getCam();
 		const s_ptr<CameraHandler>& handler();
-		const glm::mat4& projectionMatrix();
+
+		const glm::mat4& View();
+		const glm::mat4& Projection();
+
+		void onEvent(Event& e);
 
 		void initCam(const OrthoHandler::Data& orthodata, PerspHandler::Data& persdata);
+		void setSwitchKey(const Key newKey) { m_switchKey = newKey; };
 		void switchCam(const CamMode& mode);
 		void takeSelectedCam() { switchCam(m_mode); };
 		const CamMode getCamMode() { return m_mode; }		
 
 	private:
 		CamMode m_mode;
+		Key m_switchKey;
 		OrthoHandler::Data m_orthoGuard;
 		PerspHandler::Data m_perspGuard;
 		s_ptr<CameraHandler> m_cameraHandler;		

@@ -1,6 +1,7 @@
 #pragma once
 #include "GonEngine/renderer/api_context.hpp"
 #include "GonEngine/memcfg/scp_ptr.hpp"
+#include "GonEngine/imguimods/imgui_config_layer.hpp"
 
 
 namespace Gon {
@@ -9,9 +10,10 @@ namespace Gon {
 	class	Event;
 	struct  OnWindowClose;
 	struct	OnWindowResize;
-	class	ImguiLayerContext;  
-	struct	GameObject; 
-	class	GameObjectsManager; 
+	class	ImguiLayerContext; 
+	//class	ImGuiContext;
+	struct	Layer; 
+	class	LayersManager; 
 	class	RenderManager;	
 	class	Shader; 
 	struct	VAO; 
@@ -37,11 +39,14 @@ namespace Gon {
 
 		virtual ~GonEngine();
 
-		void initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& gameobject_capacity);
+		void initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& Layer_capacity);
 		
 		void runOnWindowMaximized();	
 		void runOnWindowMinimized() {};
 		
+		void update();
+		void render();
+
 		void run();
 		
 		static GonEngine& getGon();		
@@ -50,11 +55,9 @@ namespace Gon {
 
 		void onEvent(Event& e);		
 
-		void pushGameObject(u_ptr<GameObject> GObject);
-		void pushOverGameObject(u_ptr<GameObject> overGOobject);
+		void pushLayer(u_ptr<Layer> Layer);
+		void pushOverLayer(u_ptr<Layer> overGOobject);
 
-		// pensado para el uso de framebuffers en la parte del cliente
-		// seguramente no sea necesario, plantear eliminarlo
 		void disableGonViewPortControl() { m_gon_has_viewPort_control = false; }
 		void enableGonViewPortControl()  { m_gon_has_viewPort_control = true;  }
 
@@ -68,20 +71,17 @@ namespace Gon {
 		float m_dt; // DeltaTime
 		float m_previus_frame_time;
 		
-
+		ImGuiContext m_UI{ ImGuiContext(NodeType::ImGui, "ImGui-Layer") };
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		u_ptr<SWindow>				m_window;
-		u_ptr<ImguiLayerContext>	m_imgui;
-		u_ptr<GameObjectsManager>	m_gameobjects_pile;
+		u_ptr<LayersManager>	m_layers_pile;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 		std::function<void()> m_game_loop[2];
-		bool m_gon_has_viewPort_control;
-		
+		bool m_gon_has_viewPort_control;		
 
 		static GonEngine* s_instance;
 	};
-
 
 	// entry-point forward declaration.
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

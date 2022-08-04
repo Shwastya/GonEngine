@@ -13,18 +13,19 @@ namespace Gon {
 	}; 
 	constexpr PerspHandler::Data k_perspData
 	{
-		glm::vec3{ 0.0f, 0.0f, 2.5f} , // Position
+		glm::vec3{ 0.0f, 0.0f, 3.0f} , // Position
 		glm::vec3{}, glm::vec3{}	 , // Front & Right
 		{ -90.0f }					 , // Yaw				
 		{ 0.0f   }					 , // Pitch			
 		{ 45.0f  }					 , // Fov
 	};
 
-	class EditorLayer : public GameObject
+	class EditorLayer : public Layer
 	{
 	public:
 
-		EditorLayer(const GOType ntype, const std::string& name);
+		EditorLayer(const NodeType ntype, const std::string& name);
+		~EditorLayer();
 
 		void onJoin() override;
 		void onQuit() override;
@@ -35,16 +36,10 @@ namespace Gon {
 		void onRender() override;
 
 	private:		
-
-		u_ptr<VAO>			m_vao, m_vao2;
-		u_ptr<Texture2D>	m_texture, m_alphaTexture;	
-		s_ptr<CameraMan>	m_cameraMan;		
-
-		ShaderManager		m_shader;
-		SceneRenderer		m_render;
-		 
+		u_ptr<Texture2D>	m_texture[3];
+		u_ptr<CameraMan>	m_cameraMan;		 
 
 	private:
-		glm::vec3 m_quadColor{1.0f, 0.0f, 0.0f};
+		//glm::vec3 m_quadColor{1.0f, 0.0f, 0.0f};
 	};
 }

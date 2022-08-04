@@ -4,44 +4,50 @@
 
 namespace Gon {	
 
-	class RendererAPI; struct VAO;
+	// Forward declarations
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+	class RendererAPI;
+	struct VAO;
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	class RenderManager
+	class RenderCall
 	{
 	public:
-		RenderManager();
-		~RenderManager();
+		RenderCall()	= delete;
+		~RenderCall()	= delete;
 
-		void initConfig(const bool cullface, const bool depthtest, const bool alphablending);
-		void setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height);
+		static void init(const bool cullface, const bool depthtest, const bool alphablending);
+		static void reset();
 
-		void setClearColor(const glm::vec4& color) const;
+		static void setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height);
+
+		static void setClearColor(const glm::vec4& color);
 
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
-		void clear();
-		void clearColor();
-		void clearDepth(); 
+		static void clear();
+		static void clearColor();
+		static void clearDepth();
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 		
 		// separate methods
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		void enableCullFace();
-		void disableCullFace();
+		static void enableCullFace();
+		static void disableCullFace();
 
-		void enableDepthTest();
-		void disableDepthTest();
+		static void enableDepthTest();
+		static void disableDepthTest();
 
-		void enableAlphaBlending();
-		void disableAlphaBlending();
+		static void enableAlphaBlending();
+		static void disableAlphaBlending();
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-		void linePolygonMode(const bool type) const;
+		static void linePolygonMode(const bool type);
 
 		// Draw final call
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
-		void Draw(const VAO* vao) const;
+		static void Draw(const VAO* vao);
 
 	private:
-		u_ptr<RendererAPI> m_renderer_api;
+		static u_ptr<RendererAPI> s_renderer_api;
 	};
 }

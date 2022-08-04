@@ -24,11 +24,12 @@ namespace Gon {
 		APIContext(APIContext&&) noexcept = delete;
 		APIContext& operator=(APIContext&&) noexcept = delete;
 
-		virtual void init() = 0;
-		virtual void swapBuffers() = 0;
+		virtual void init()			= 0;
+		virtual void swapBuffers()	= 0;
 
 		virtual void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height) = 0;
-		// non virtual
+
+		// static non virtual
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*		
 		const static API setAPI(const bool GetSet, const API api);
 		const static API getAPI();

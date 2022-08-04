@@ -7,8 +7,7 @@ namespace Gon {
 
     enum IDShader
     {
-        Basic1 = 0,
-        Basic2
+        Basic = 0,
     };
 
     // The simplest idea now:
@@ -30,6 +29,8 @@ namespace Gon {
         {
             return m_storage[id].get();
         }
+
+        
 
     private:
         std::array<u_ptr<Shader>, 2> m_storage;

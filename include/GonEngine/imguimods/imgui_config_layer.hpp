@@ -1,16 +1,22 @@
 #pragma once
+#include "GonEngine/nodes/node.hpp"
+
 namespace Gon {
 
-	class ImguiLayerContext
+	class ImGuiContext : public Node
 	{
-	public:		
-		ImguiLayerContext()  = default;
-		~ImguiLayerContext();
-		void init();
-		void begin();
-		void onRender();
-		void end();
-		void close();
+	public:
+		ImGuiContext(const NodeType ntype, const std::string& name);
+		virtual ~ImGuiContext();
+
+
+		virtual void onJoin() override;
+		virtual void onQuit() override;
+		virtual void onRender() override;
+
+		// Non virtual
+		void Begin();
+		void End();
 		void GonColors();
 	};
 }

@@ -15,14 +15,7 @@ namespace Gon {
         GON_TRACE("[CREATED] Quad from geometry.");
 
         // positions, uvs, normals, tangents, bitangents
-        const size_t totSize =
-            (m_nVertices * 3) +
-            (m_nVertices * 2) +
-            (m_nVertices * 3) +
-            (m_nVertices * 3) +
-            (m_nVertices * 3);
-
-        m_vert.init(totSize);
+        m_vert.init(84);
         m_indices.init(m_nElements);
 
         const float half = size / 2.0f;

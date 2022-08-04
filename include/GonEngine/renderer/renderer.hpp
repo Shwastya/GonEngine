@@ -2,52 +2,29 @@
 #include "GonEngine/memcfg/scp_ptr.hpp"
 #include <glm/glm.hpp>
 
+#define Vec3	const glm::vec3&
+#define Vec4	const glm::vec4&
+#define Texture	const Texture2D*
+
+#define _current s_utils->SType
+#define _shader	 s_utils->Shader
+
+#define _model	 s_utils->Model
+#define _view	 s_utils->View
+#define _proj	 s_utils->Projection
+
 namespace Gon {
 
-	// Forward declarations
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	struct VAO;
-	class Camera;
-	class Shader;
-	class CameraMan;
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
-	class SceneRenderer
+	class Renderer
 	{
 	public:
 
-		SceneRenderer();
-		~SceneRenderer();	
+		Renderer()	= delete;
+		~Renderer() = delete;	
 
-		// static functions
-		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		void setViewPorts(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
+		static void init(const bool cullface, const bool depthtest, const bool alphablending);
+		static void reset();
 
-		void shareCam(const s_ptr<CameraMan>& cam);
-		void InitConfiguration(const bool cullface, const bool depthtest, const bool alphablending);
-
-	
-
-		void begin(const glm::mat4& view, const glm::mat4 projection);
-		void begin();
-		void end();
-
-		void submit(const VAO* vao, const Shader* shader, const glm::mat4& model = glm::mat4{ 0.1f });
-
-	protected:
-
-		
-		struct MatrixData
-		{
-			glm::mat4 View;  
-			glm::mat4 Projection;
-		};
-
-		s_ptr<CameraMan> m_cameraMan;
-		u_ptr<MatrixData> m_data;
-
-		u_ptr<RenderManager> m_render;
-		
-		
+		static void setViewPorts(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
 	};
 }

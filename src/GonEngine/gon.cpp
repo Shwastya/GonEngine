@@ -2,7 +2,7 @@
 
 namespace Gon {	
 
-	GonEngine* GonEngine::s_instance = nullptr;
+	GonEngine* GonEngine::s_instance{ nullptr };
 
 	GonEngine::GonEngine()
 		: m_gon_is_running(false),
@@ -17,9 +17,11 @@ namespace Gon {
 	GonEngine::~GonEngine()
 	{
 		GON_WARN("Shutting down Gon-Engine.");
-		m_imgui->close();
+		m_UI.onQuit();		
+		for (auto& Layers : (*m_layers_pile)) Layers->onQuit();
+		Renderer::reset();
 	}
-	void GonEngine::initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& gameobject_capacity)
+	void GonEngine::initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& Layer_capacity)
 	{
 		m_window = SWindow::create({ name, api, width, height });
 		m_window->setVsync(true);
@@ -29,25 +31,38 @@ namespace Gon {
 		m_game_loop[Maximized] = [this]() { this->runOnWindowMaximized(); };
 
 		m_gon_is_running = true;
+		m_UI.onJoin();
 
-		m_imgui = std::make_unique<ImguiLayerContext>();
-		m_imgui->init();
-		m_gameobjects_pile = std::make_unique<GameObjectsManager>(gameobject_capacity);
+		Renderer::init(true, true, true);
+		m_layers_pile = std::make_unique<LayersManager>(Layer_capacity);
 		
 	}
 	void GonEngine::runOnWindowMaximized()
 	{
-		m_imgui->begin();
+		update();
+		render();
+	}
+
+	void GonEngine::update()
+	{
+		
+		for (auto& Layers : (*m_layers_pile))
 		{
-			for (auto& gameobjects : (*m_gameobjects_pile))
+			Layers->onUpdate(m_dt);
+		}		
+	}
+
+	void GonEngine::render()
+	{
+		m_UI.Begin();
+		{
+			for (auto& Layers : (*m_layers_pile))
 			{
-				gameobjects->onUpdate(m_dt);
-				gameobjects->onRender();
+				Layers->onRender();
 			}
 		}
-		m_imgui->end();
+		m_UI.End();
 	}
-	//void GonEngine::runOnWindowMinimized()
 
 	void GonEngine::run()
 	{
@@ -81,22 +96,22 @@ namespace Gon {
 		else if (e.getEventType() == EventType::WindowResize) onWindowResize(dynamic_cast<OnWindowResize&>(e));
 			
 
-		// gameobjects loop to propagate events
-		for (auto gameobject = (*m_gameobjects_pile).end(); gameobject != (*m_gameobjects_pile).begin();)
+		// Layers loop to propagate events
+		for (auto Layer = (*m_layers_pile).end(); Layer != (*m_layers_pile).begin();)
 		{
-			(*--gameobject)->onEvent(e);
+			(*--Layer)->onEvent(e);
 		}
 	}
 	// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void GonEngine::pushGameObject(u_ptr<GameObject> GObject)
+	void GonEngine::pushLayer(u_ptr<Layer> Layer)
 	{
-		GObject->onJoin();
-		m_gameobjects_pile->pushGameObject(std::move(GObject));		
+		Layer->onJoin();
+		m_layers_pile->pushLayer(std::move(Layer));		
 	}
-	void GonEngine::pushOverGameObject(u_ptr<GameObject> overGObject)
+	void GonEngine::pushOverLayer(u_ptr<Layer> overLayer)
 	{
-		overGObject->onJoin();
-		m_gameobjects_pile->pushOverGameObject(std::move(overGObject));		
+		overLayer->onJoin();
+		m_layers_pile->pushOverLayer(std::move(overLayer));		
 	}
 
 	// Window events handlers

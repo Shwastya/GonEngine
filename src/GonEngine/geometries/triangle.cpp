@@ -10,20 +10,12 @@ namespace Gon {
             // 1 face * 1 triangle * 3 vertices
             (1 * 1 * 3),    // m_nVertices
             (1 * 1 * 3)     // m_nElements
-
         )
     { 
         GON_TRACE("[CREATED] Triangle from geometry.");
 
         // positions, uvs, normals, tangents, bitangents
-        const size_t totSize = 
-            (m_nVertices * 3) +
-            (m_nVertices * 2) +
-            (m_nVertices * 3) +
-            (m_nVertices * 3) +
-            (m_nVertices * 3);
-
-        m_vert.init(totSize);
+        m_vert.init(42);
         m_indices.init(m_nElements);
 
         float positions[]

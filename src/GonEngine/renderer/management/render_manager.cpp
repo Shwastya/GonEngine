@@ -5,64 +5,66 @@
 #include "GonEngine/log.hpp"
 
 namespace Gon {
+	
+	
+	u_ptr<RendererAPI> RenderCall::s_renderer_api{ nullptr };
 
-	RenderManager::RenderManager() : m_renderer_api(nullptr)
+	void RenderCall::init(const bool cullface, const bool depthtest, const bool alphablending)
 	{
-		GON_TRACE("[CREATED] Renderer Manager.");
+		GON_TRACE("[STATIC INITIALIZATION] Renderer API.");
 
-		switch (APIContext::getAPI()) 
+		switch (APIContext::getAPI())
 		{
-		case API::None:			
+		case API::None:
 			GON_ASSERT(false, "Not renderer API selected.");
 			break;
 		case API::OpenGL:
-			m_renderer_api = std::make_unique<OpenGLRendererAPI>();
+			s_renderer_api = std::make_unique<OpenGLRendererAPI>();
 			break;
 		case API::DirectX:
 			GON_WARN("DirectX not implemented. OpenGL renderer by default");
-			m_renderer_api = std::make_unique<OpenGLRendererAPI>();
+			s_renderer_api = std::make_unique<OpenGLRendererAPI>();
 			break;
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL renderer by default");
-			m_renderer_api = std::make_unique<OpenGLRendererAPI>();
+			s_renderer_api = std::make_unique<OpenGLRendererAPI>();
 			break;
 		default:
 			GON_ASSERT(false, "Unknown renderer API.");
 			break;
 		}
-		m_renderer_api->initConfig(); // default init configuration
+		s_renderer_api->initConfig(cullface, depthtest, alphablending);
 	}
-	RenderManager::~RenderManager()	{ GON_TRACE("[DESTROYED] Renderer Manager."); }
-	
-	void RenderManager::initConfig(const bool cullface, const bool depthtest, const bool alphablending)
+	void RenderCall::reset()	
+	{ 
+		s_renderer_api.reset();
+		s_renderer_api = nullptr;
+	}
+	void RenderCall::setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height)
 	{
-		m_renderer_api->initConfig(cullface, depthtest, alphablending);
+		s_renderer_api->setViewPort(x, y, width, height);
 	}
-	void RenderManager::setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height)
+	void RenderCall::setClearColor(const glm::vec4& color)
 	{
-		m_renderer_api->setViewPort(x, y, width, height);
+		s_renderer_api->setClearColor(color);
 	}
-	void RenderManager::setClearColor(const glm::vec4& color) const
-	{
-		m_renderer_api->setClearColor(color);
-	}
-	void RenderManager::clear()					{ m_renderer_api->clear();}
-	void RenderManager::clearColor()			{ m_renderer_api->clearColor();}
-	void RenderManager::clearDepth()			{ m_renderer_api->clearColor();}	
-	void RenderManager::enableCullFace()		{ m_renderer_api->enableCullFace();}
-	void RenderManager::disableCullFace()		{ m_renderer_api->disableCullFace();}
-	void RenderManager::enableDepthTest()		{ m_renderer_api->enableDepthTest();}
-	void RenderManager::disableDepthTest()		{ m_renderer_api->disableDepthTest();}
-	void RenderManager::enableAlphaBlending()	{ m_renderer_api->enableAlphaBlending();}
-	void RenderManager::disableAlphaBlending()	{ m_renderer_api->disableAlphaBlending();}
+	void RenderCall::clear()				{ s_renderer_api->clear();}
+	void RenderCall::clearColor()			{ s_renderer_api->clearColor();}
+	void RenderCall::clearDepth()			{ s_renderer_api->clearColor();}	
+	void RenderCall::enableCullFace()		{ s_renderer_api->enableCullFace();}
+	void RenderCall::disableCullFace()		{ s_renderer_api->disableCullFace();}
+	void RenderCall::enableDepthTest()		{ s_renderer_api->enableDepthTest();}
+	void RenderCall::disableDepthTest()		{ s_renderer_api->disableDepthTest();}
+	void RenderCall::enableAlphaBlending()	{ s_renderer_api->enableAlphaBlending();}
+	void RenderCall::disableAlphaBlending()	{ s_renderer_api->disableAlphaBlending();}
 
-	void RenderManager::linePolygonMode(const bool type) const
+	void RenderCall::linePolygonMode(const bool type)
 	{
-		m_renderer_api->linePolygonMode(type);
+		s_renderer_api->linePolygonMode(type);
 	}
-	void RenderManager::Draw(const VAO* vao) const
+	void RenderCall::Draw(const VAO* vao)
 	{
-		m_renderer_api->Draw(vao);
+		s_renderer_api->Draw(vao);
 	}
 }
 
