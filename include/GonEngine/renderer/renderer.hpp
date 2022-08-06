@@ -2,18 +2,12 @@
 #include "GonEngine/memcfg/scp_ptr.hpp"
 #include <glm/glm.hpp>
 
-#define Vec3	const glm::vec3&
-#define Vec4	const glm::vec4&
-#define Texture	const Texture2D*
-
-#define _current s_utils->SType
-#define _shader	 s_utils->Shader
-
-#define _model	 s_utils->Model
-#define _view	 s_utils->View
-#define _proj	 s_utils->Projection
 
 namespace Gon {
+
+	#define _model	 Renderer::s_matrixData->Model
+	#define _view	 Renderer::s_matrixData->View
+	#define _proj	 Renderer::s_matrixData->Projection
 
 	class Renderer
 	{
@@ -26,5 +20,15 @@ namespace Gon {
 		static void reset();
 
 		static void setViewPorts(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
+		static void onWindowResize(const uint32_t width, const uint32_t height);
+
+		struct MatrixData
+		{
+			glm::mat4 Model		 { 1.0f };
+			glm::mat4 View		 { 1.0f };
+			glm::mat4 Projection { 1.0f };
+		};
+
+		static u_ptr<MatrixData> s_matrixData;
 	};
 }

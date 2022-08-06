@@ -9,7 +9,7 @@ namespace Gon {
 	public:
 		virtual ~Texture() = default;
 
-		virtual uint32_t getWidth() const = 0;
+		virtual uint32_t getWidth()	 const = 0;
 		virtual uint32_t getHeight() const = 0;
 
 		virtual void setData(void* data, uint32_t size) = 0;
@@ -26,6 +26,10 @@ namespace Gon {
 			RGB,
 			RGBA
 		};
+		virtual ~Texture2D() = default;
+
+		virtual void  setTilingScale(const float scale) = 0; 
+		virtual const float getTilingScale() const		= 0; 
 
 		static u_ptr<Texture2D> create(const std::string& path, Texture2D::Format format);
 		static u_ptr<Texture2D> create(const uint32_t width, const uint32_t height);		

@@ -15,18 +15,7 @@ namespace Gon {
 		Object
 	};
 
-	static const std::string NodeTypeToString(const NodeType nodetype)
-	{
-		switch (nodetype)
-		{
-			case NodeType::Layer:	return "Layer";
-			case NodeType::Project: return "Project";
-			case NodeType::Engine:  return "Engine";
-			case NodeType::ImGui:	return "ImGui";
-			case NodeType::Object:	return "GameObject";
-			default: return "None";
-		}
-	}
+	
 
 	class Event;
 	struct Node
@@ -42,7 +31,12 @@ namespace Gon {
 
 		virtual void onJoin()	= 0;
 		virtual void onQuit()	= 0;
-		virtual void onRender() = 0;
+
+		// Non virtual
+		const std::string NodeTypeToString(const NodeType nodetype);
+		
+			
+		
 
 	public:
 		const uint32_t		getId()	  { return m_id; };

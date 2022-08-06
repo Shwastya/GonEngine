@@ -26,10 +26,6 @@ namespace Gon {
 		glm::mat4 m_viewMatrix;
 	};
 
-
-
-
-
 	// Camera handlers
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	class CameraHandler 
@@ -44,22 +40,25 @@ namespace Gon {
 		virtual ~CameraHandler() = default;
 
 		virtual void onUpdate(const DeltaTime dt) = 0;
-		virtual void onEvent(Event& e) = 0;	
+		virtual void onEvent(Event& e) = 0;
 
 		virtual void setAspectRatio(const float aspectratio) = 0;
 		virtual const float  getAspectRatio()				 = 0;
 		virtual void updateProjectionMatrix()				 = 0;
 
-		virtual glm::mat4& getProjectionMatrix()			 = 0;
+		virtual const glm::mat4& getProjectionMatrix()		 = 0;
+		virtual const glm::mat4& getViewMatrix()			 = 0;
+		
+		virtual void enablePrimeWindowResize()				 = 0;
+		virtual void disablePrimeWindowResize()				 = 0;
 
 		const u_ptr<Camera>& get() { return m_camera; }
-
-
 
 	protected:
 		glm::mat4 m_projectionMatrix;
 		float m_near, m_far, m_mouseSensitivity;
 		u_ptr<Camera> m_camera;
+		bool m_enabled_prime_window{ true };
 	};
 
 }

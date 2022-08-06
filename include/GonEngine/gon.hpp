@@ -61,9 +61,15 @@ namespace Gon {
 		void disableGonViewPortControl() { m_gon_has_viewPort_control = false; }
 		void enableGonViewPortControl()  { m_gon_has_viewPort_control = true;  }
 
+		void closeGonEngine() { m_gon_is_running = false; }
+
+		
+
 	private:
 		const bool onWindowClose(OnWindowClose& e);
 		const bool onWindowResize(OnWindowResize& e);
+
+		
 
 	private:
 		bool  m_gon_is_running;

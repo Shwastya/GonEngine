@@ -48,21 +48,23 @@ namespace Gon {
 		PerspHandler(const float ratio, const PerspHandler::Data& data = PerspHandler::Data());
 		virtual ~PerspHandler() = default;
 
-		virtual void onUpdate(const DeltaTime dt) override;
-		virtual void onEvent(Event& e)			  override;
+		virtual void onUpdate(const DeltaTime dt)			 override;
+		virtual void onEvent(Event& e)						 override;
 
 		virtual void setAspectRatio(const float aspectratio) override;
 		virtual const float  getAspectRatio()                override;
 		virtual void updateProjectionMatrix()				 override;
 
-		virtual glm::mat4& getProjectionMatrix() override;		
+		virtual const glm::mat4& getProjectionMatrix()		 override;
+		virtual const glm::mat4& getViewMatrix()			 override;
 
+		virtual void enablePrimeWindowResize()  override { m_enabled_prime_window = true; }
+		virtual void disablePrimeWindowResize() override { m_enabled_prime_window = false; }
+	
+	private:
 		bool onMouseMoved(OnMouseMoved& e);
-
 		const Data getData() { return m_data; }
-		void  setData(const Data& data);		
-
-	private:	
+		void  setData(const Data& data);	
 		void updateCameraVectors();
 		void handleMouseMovement(float xoffset, float yoffset, bool constrainPitch);
 		void handleMouseScroll(const float yoffset);

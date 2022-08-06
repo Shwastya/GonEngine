@@ -19,15 +19,15 @@ namespace Gon {
 			GON_ASSERT(false, "Not renderer API selected.");
 			break;
 		case API::OpenGL:
-			s_renderer_api = std::make_unique<OpenGLRendererAPI>();
+			s_renderer_api = make_u_ptr<OpenGLRendererAPI>();
 			break;
 		case API::DirectX:
 			GON_WARN("DirectX not implemented. OpenGL renderer by default");
-			s_renderer_api = std::make_unique<OpenGLRendererAPI>();
+			s_renderer_api = make_u_ptr<OpenGLRendererAPI>();
 			break;
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL renderer by default");
-			s_renderer_api = std::make_unique<OpenGLRendererAPI>();
+			s_renderer_api = make_u_ptr<OpenGLRendererAPI>();
 			break;
 		default:
 			GON_ASSERT(false, "Unknown renderer API.");

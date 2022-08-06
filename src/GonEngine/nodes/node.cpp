@@ -11,4 +11,16 @@ namespace Gon
 		static uint32_t id = 0;
 		m_id = id++;
 	}
+	const std::string Node::NodeTypeToString(const NodeType nodetype)
+	{
+		switch (nodetype)
+		{
+			case NodeType::Layer:	return "Layer";
+			case NodeType::Project: return "Project";
+			case NodeType::Engine:  return "Engine";
+			case NodeType::ImGui:	return "ImGui";
+			case NodeType::Object:	return "GameObject";
+			default: return "None";
+		}
+	}
 }

@@ -8,14 +8,15 @@ namespace Gon {
 	ShaderManager::ShaderManager()
 		: m_storage
 	({
-		Shader::create("../assets/shaders/basic.glsl"),	// Basic1
+		Shader::create("../assets/shaders/color/basic.glsl"),	// Basic1
+		Shader::create("../assets/shaders/text/basic.glsl"),
+
 	})
 	{
 		GON_TRACE("[CREATED] ShaderManager: Archived Shaders");
 	}
-
 	ShaderManager::~ShaderManager()
 	{
-		GON_TRACE("[DESTROYED] ShaderManager");
-	}		
+		GON_TRACE("[DESTROYED] ShaderManager");		
+	}
 }

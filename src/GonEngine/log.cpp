@@ -1,22 +1,16 @@
+#include "GonEngine/memcfg/goncfg.h"
 #include "GonEngine/log.hpp" 
 #include "sinks/stdout_color_sinks.h"
 
+
 namespace Gon
 {
-	// Logmanager implementation
+	
 	LogManager::LogManager()
 	{
-		//m_Log = new Log();
 		m_log = std::make_unique<SpdLog>();
 	}
-
-	// encapsulado con unique m_Log, no necesita destructor.
-	/*LogManager::~LogManager()
-	{
-		delete m_Log;
-	}*/
-
-	// Return Singleton instance
+	
 	LogManager& LogManager::p()
 	{
 		static LogManager instance;
@@ -30,8 +24,6 @@ namespace Gon
 
 	void LogManager::switchLog(const LogType type)
 	{
-		// for future logging 
-		// switching implementations 
 		switch (type)
 		{
 		case LogType::LT_Spdlog:
@@ -92,7 +84,7 @@ namespace Gon
 
 	void SpdLog::shutDown()
 	{
-		LogManager::p().get().engineLogger()->warn("Closing logging system, good bye!");
+		LogManager::p().get().engineLogger()->warn("Closing logging system, bye!");
 		m_alive = false;
 		m_clientLogger.reset();
 		m_engineLogger.reset();

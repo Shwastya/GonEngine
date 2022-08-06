@@ -38,15 +38,15 @@ namespace Gon {
 		switch (APIContext::getAPI())
 		{
 		case API::OpenGL:
-			m_Context = std::make_unique<OpenGLContext>(m_window);
+			m_Context = make_u_ptr<OpenGLContext>(m_window);
 			break;
 		case API::DirectX:
 			GON_WARN("DirectX is not implemented yet. OpenGl will be started instead.");
-			m_Context = std::make_unique<OpenGLContext>(m_window);
+			m_Context = make_u_ptr<OpenGLContext>(m_window);
 			break;
 		case API::Vulkan:
 			GON_WARN("Vulkan is not implemented yet. OpenGl will be started instead.");
-			m_Context = std::make_unique<OpenGLContext>(m_window);
+			m_Context = make_u_ptr<OpenGLContext>(m_window);
 			break;
 		}
 
@@ -64,7 +64,7 @@ namespace Gon {
 	
 		GLFWmonitor* PrimaryMonitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* m = glfwGetVideoMode(PrimaryMonitor);
-
+		
 		m_window = glfwCreateWindow
 		(
 			m->width, 
@@ -235,17 +235,36 @@ namespace Gon {
 		else glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
-	void WindowHandler::onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
-	{
-		m_Context->onWindowResize(x, y, width, height);
-	}
-
 	const bool WindowHandler::isVsync() const { return m_data.m_vsync; }
 
 	void WindowHandler::shutDown()	
 	{ 
 		glfwDestroyWindow(m_window);
 		glfwTerminate(); 
+	}
+	void WindowHandler::fullScreenMode()
+	{
+		GLFWmonitor* PrimaryMonitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* m = glfwGetVideoMode(PrimaryMonitor);
+
+		glfwGetWindowPos(m_window, &m_windowed_Xpos, &m_windowed_Ypos);
+		glfwGetWindowSize(m_window, &m_save_width, &m_save_height);
+
+		glfwSetWindowMonitor
+		(
+			m_window,
+			PrimaryMonitor,
+			0, 0,
+			m->width,
+			m->height,
+			m->refreshRate
+		);
+	}
+	void WindowHandler::windowedMode()
+	{
+		glfwSetWindowMonitor(m_window, NULL,
+			m_windowed_Xpos, m_windowed_Ypos,
+			m_save_width, m_save_height, 0);
 	}
 }
 

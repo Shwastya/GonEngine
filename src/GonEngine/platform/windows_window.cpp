@@ -9,14 +9,14 @@ namespace Gon {
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 	u_ptr<SWindow> SWindow::create(const WProps& data)
 	{		
-		return std::make_unique<Window>(data);
+		return make_u_ptr<Window>(data);
 	}
 	//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
 	static bool _GLFW_On = false;
 
 	Window::Window(const WProps& window_props)
-		:m_windowHandler(std::make_unique<WindowHandler>(window_props))
+		:m_windowHandler(make_u_ptr<WindowHandler>(window_props))
 	{
 		init();
 	}
@@ -60,10 +60,16 @@ namespace Gon {
 	void Window::setVsync(bool toggle)	{ m_windowHandler->setVsync(toggle); }
 	bool Window::isVsync() const		{ return m_windowHandler->isVsync(); }
 	void Window::setCaptureMode(const bool toggle) const	{ m_windowHandler->setCapturemode(toggle);}
-	void Window::onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
+	void Window::enableFullScreenWindow()
 	{
-		m_windowHandler->onWindowResize(x ,y, width, height);
+		m_windowHandler->fullScreenMode();
 	}
+
+	void Window::enableWindowedWindow()
+	{
+		m_windowHandler->windowedMode();
+	}
+
 }
 	
 

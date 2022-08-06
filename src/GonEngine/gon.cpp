@@ -25,16 +25,16 @@ namespace Gon {
 	{
 		m_window = SWindow::create({ name, api, width, height });
 		m_window->setVsync(true);
-	
+		
 		m_window->setCallBack(std::bind(&GonEngine::onEvent, this, std::placeholders::_1));
-		m_game_loop[Minimized] = [this]() { this->runOnWindowMinimized(); };
-		m_game_loop[Maximized] = [this]() { this->runOnWindowMaximized(); };
+		m_game_loop[Minimized] = [&] { runOnWindowMinimized(); };
+		m_game_loop[Maximized] = [&] { runOnWindowMaximized(); };
 
 		m_gon_is_running = true;
 		m_UI.onJoin();
 
 		Renderer::init(true, true, true);
-		m_layers_pile = std::make_unique<LayersManager>(Layer_capacity);
+		m_layers_pile = make_u_ptr<LayersManager>(Layer_capacity);
 		
 	}
 	void GonEngine::runOnWindowMaximized()
@@ -125,9 +125,8 @@ namespace Gon {
 	{
 		m_if_window_maximized = static_cast<bool>(e.GetHeight());
 		
-		if (m_gon_has_viewPort_control)
-			m_window->onWindowResize(0, 0, e.GetWidth(), e.GetHeight());
-		
+		if (m_gon_has_viewPort_control)			
+			Renderer::onWindowResize(e.GetWidth(), e.GetHeight());		
 		return false;
 	}
 }

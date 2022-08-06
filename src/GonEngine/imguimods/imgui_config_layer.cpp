@@ -36,8 +36,8 @@ namespace Gon
 		//io.ConfigViewportsNoTaskBarIcon = true;
 
 		// Setup Dear ImGui style
-		//ImGui::StyleColorsDark();
-		ImGui::StyleColorsLight();
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsLight();
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -62,12 +62,6 @@ namespace Gon
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-	}
-
-	void ImGuiContext::onRender()
-	{
-		static bool show_demo_window = true;
-		ImGui::ShowDemoWindow(&show_demo_window);
 	}
 
 	void ImGuiContext::Begin()

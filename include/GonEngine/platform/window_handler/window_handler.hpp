@@ -55,15 +55,17 @@ namespace Gon {
 
 		void setVsync(const bool toggle);
 		const bool isVsync() const;
-		void setCapturemode(const bool toggle);
-
-		void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
-		
+		void setCapturemode(const bool toggle);		
 		void shutDown();		
+
+		void fullScreenMode();
+		void windowedMode();
 
 	private:		
 		WindowData m_data;
 		GLFWwindow* m_window;	
 		u_ptr<APIContext> m_Context;
+		int32_t m_windowed_Xpos{ 0 }, m_windowed_Ypos{ 0 };
+		int32_t m_save_width{ 0 }, m_save_height{ 0 };
 	};
 }

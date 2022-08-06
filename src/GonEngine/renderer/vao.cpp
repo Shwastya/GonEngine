@@ -11,13 +11,13 @@ namespace Gon {
 			GON_ASSERT(false, "Not API selected for VAO.");
 			return nullptr;
 		case API::OpenGL:
-			return std::make_unique<OpenglVAO>(reserve);
+			return make_u_ptr<OpenglVAO>(reserve);
 		case API::DirectX:
 			GON_WARN("DirectX not implemented. OpenGL VBO by default");
-			return std::make_unique<OpenglVAO>(reserve);
+			return make_u_ptr<OpenglVAO>(reserve);
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL VBO by default");
-			return std::make_unique<OpenglVAO>(reserve);
+			return make_u_ptr<OpenglVAO>(reserve);
 		default:
 			GON_ASSERT(false, "Unknown shader API.");
 			return nullptr;

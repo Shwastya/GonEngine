@@ -16,13 +16,13 @@ namespace Gon {
 			GON_ASSERT(false, "Not API selected for Texture");
 			return nullptr;
 		case API::OpenGL:
-			return std::make_unique<OpenGLTexture2D>(path, format);
+			return make_u_ptr<OpenGLTexture2D>(path, format);
 		case API::DirectX:
 			GON_WARN("DirectX not implemented. OpenGL Texture by default");
-			return std::make_unique<OpenGLTexture2D>(path, format);
+			return make_u_ptr<OpenGLTexture2D>(path, format);
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL Texture by default");
-			return std::make_unique<OpenGLTexture2D>(path, format);
+			return make_u_ptr<OpenGLTexture2D>(path, format);
 		default:
 			GON_ASSERT(false, "Unknown API for texture");
 			return nullptr;
@@ -31,6 +31,7 @@ namespace Gon {
 
 	u_ptr<Texture2D> Texture2D::create(uint32_t width, uint32_t height)
 	{
+		width, height;
 		return u_ptr<Texture2D>();
 	}
 

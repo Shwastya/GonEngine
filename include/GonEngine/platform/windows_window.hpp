@@ -27,8 +27,8 @@ namespace Gon {
 		virtual bool isVsync()						   const override;
 		virtual void setCaptureMode(const bool toggle) const override;
 
-		virtual void onWindowResize(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height) override;
-
+		virtual void enableFullScreenWindow()	override;
+		virtual void enableWindowedWindow()		override;
 	private:		
 		u_ptr<WindowHandler> m_windowHandler;
 		bool m_fullScreen = false;

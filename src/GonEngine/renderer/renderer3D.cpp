@@ -1,5 +1,4 @@
 #pragma once
-#include "GonEngine/renderer/management/shader_manager.hpp" 
 #include "GonEngine/renderer/management/render_manager.hpp" 
 #include "GonEngine/platform/OpenGL/opengl_texture.hpp" 
 #include "GonEngine/platform/OpenGL/opengl_shader.hpp" 
@@ -12,15 +11,10 @@
 #include "GonEngine/gon.hpp"
 
 namespace Gon {
+		
+	u_ptr<Renderer3D::Buffer3D> Renderer3D::s_buffer{ nullptr };
 
-	u_ptr<Renderer3D::Utils3D> Renderer3D::s_utils{ nullptr };
-
-	enum  Geometries 
-	{ 
-		triangle = 0, quad, cube
-	};
-
-	
+		
 
 	VBOLayout Renderer3D::getLayout()
 	{
@@ -36,7 +30,7 @@ namespace Gon {
 
 	void Renderer3D::init()
 	{
-		s_utils = std::make_unique<Utils3D>();
+		s_buffer = make_u_ptr<Buffer3D>();
 		
 		// Al iniciar Renderer3D
 		// Cargaremos en el VAO todas las geometrias de las que disponemos
@@ -44,48 +38,43 @@ namespace Gon {
 		// Ocuparemos más memorias pero tenemos velocidad
 		// Hasta mejor idea:
 
-		
 		Triangle T;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*		
-		s_utils->Vao[triangle] = VAO::create(1);
+		s_buffer->Vao[TRIANGLE] = VAO::create(1);
 
 		u_ptr<VBO> vbo{ VBO::create(T.get(),  T.size()) };
 		vbo->setLayout(getLayout());
-		s_utils->Vao[triangle]->takeVBO(vbo);
+		s_buffer->Vao[TRIANGLE]->takeVBO(vbo);
 
 		u_ptr<EBO> ebo{ EBO::create(T.getIndices(), T.nIndices()) };
-		s_utils->Vao[triangle]->takeEBO(ebo);
+		s_buffer->Vao[TRIANGLE]->takeEBO(ebo);
 
 		Quad Q(1.0f);
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
-		s_utils->Vao[quad] = VAO::create(1);
+		s_buffer->Vao[QUAD] = VAO::create(1);
 
 		vbo = VBO::create(Q.get(),  Q.size());
 		vbo->setLayout(getLayout());
-		s_utils->Vao[quad]->takeVBO(vbo);
+		s_buffer->Vao[QUAD]->takeVBO(vbo);
 
 		ebo = EBO::create(Q.getIndices(), Q.nIndices());
-		s_utils->Vao[quad]->takeEBO(ebo);
+		s_buffer->Vao[QUAD]->takeEBO(ebo);
 
 		Cube C(1.0f);
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
-		s_utils->Vao[cube] = VAO::create(1);
+		s_buffer->Vao[CUBE] = VAO::create(1);
 
 		vbo = VBO::create(C.get(),  C.size());
 		vbo->setLayout(getLayout());
-		s_utils->Vao[cube]->takeVBO(vbo);
+		s_buffer->Vao[CUBE]->takeVBO(vbo);
 
 		ebo = EBO::create(C.getIndices(), C.nIndices());
-		s_utils->Vao[cube]->takeEBO(ebo);
-
-		vbo.reset(); ebo.reset();
-		
-
+		s_buffer->Vao[CUBE]->takeEBO(ebo);
 	}
+
 	void Renderer3D::reset()
 	{
-		s_utils.reset();		
-		s_utils = nullptr;
+		s_buffer.reset();		
 	}
 
 	void Renderer3D::beginScene()
@@ -96,7 +85,6 @@ namespace Gon {
 	{
 		_view = view;
 		_proj  = projection;
-
 	}
 
 	void Renderer3D::TRSsubmit()
@@ -105,6 +93,7 @@ namespace Gon {
 		_shader[_current]->uniform("uModel", _model);
 		_shader[_current]->uniform("uView",  _view);
 		_shader[_current]->uniform("uProj",  _proj);	
+		_model = glm::mat4(1.0f);
 	}
 	
 	void Renderer3D::endScene()
@@ -112,272 +101,316 @@ namespace Gon {
 		_shader[_current]->unbind();
 	}
 
-	// Quad
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void Renderer3D::drawQuad(Vec3 t, Vec4 r, Vec3 s, Texture albedo)
-	{	
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
+	void Renderer3D::draw3D(const Obj obj3D, Vec3 t, Vec4 r, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader				
 		_model = glm::translate(_model, t);
-		_model = glm::rotate(_model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
+		_model = glm::rotate   (_model, glm::radians(r.x), { r.y, r.z, r.w });
+		_model = glm::scale    (_model, s);
+
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
 	}
-	void Renderer3D::drawQuad(Vec4 r, Vec3 s, Texture albedo)
+	void Renderer3D::draw3D(const Obj obj3D, Vec4 r, Vec3 s, Texture albedo, Color colormask)
 	{
-		_current = Basic;
+		_current = BasicText;
 		// Model Transforms an set current Shader	
-		_model = glm::mat4(1.0f);
 		_model = glm::rotate(_model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
+		_model = glm::scale (_model, s); 
+		
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
 	}
 
-	void Renderer3D::drawQuad(Vec3 s, Texture albedo)
+	void Renderer3D::draw3D(const Obj obj3D, Vec3 s, Texture albedo, Color colormask)
 	{
-		_current = Basic;
+		_current = BasicText;
 		// Model Transforms an set current Shader	
-		_model = glm::mat4(1.0f);
 		_model = glm::scale(_model, s);
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
 	}
-	void Renderer3D::drawQuad(Texture albedo)
+	void Renderer3D::draw3D(const Obj obj3D, Texture albedo, Color colormask)
 	{
-		_current = Basic;
+		_current = BasicText;
 		// Model Transforms an set current Shader	
-		_model = glm::mat4(1.0f);
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
 	}
 
-	void Renderer3D::drawRotateQuad(Vec3 t, Vec4 r, Vec3 s, Texture albedo)
+	void Renderer3D::drawRotate3D(const Obj obj3D, Vec3 t, Vec4 r, Vec3 s, Texture albedo, Color colormask)
 	{
-		_current = Basic;
+		_current = BasicText;
 		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
 		_model = glm::translate(_model, t);
+		_model = glm::rotate   (_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
+		_model = glm::scale    (_model, s); 
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
+	}
+
+	void Renderer3D::drawRotate3D(const Obj obj3D, Vec4 r, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader		
 		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
+		_model = glm::scale (_model, s);
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
 	}
 
-	void Renderer3D::drawRotateQuad(Vec4 r, Vec3 s, Texture albedo)
+	void Renderer3D::drawRotate3D(const Obj obj3D, Vec4 r, Texture albedo, Color colormask)
 	{
-		_current = Basic;
+		_current = BasicText;
 		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
-		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
-	}
-
-	void Renderer3D::drawRotateQuad(Vec4 r, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
-		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[quad].get());
-		s_utils->Vao[quad]->unbind();
-	}
-
-	// Cube
-	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-	void Renderer3D::drawCube(Vec3 t, Vec4 r, Vec3 s, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
-		_model = glm::translate(_model, t);
-		_model = glm::rotate(_model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
-	}
-	void Renderer3D::drawCube(Vec4 r, Vec3 s, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader	
-		_model = glm::mat4(1.0f);
-		_model = glm::rotate(_model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
-	}
-
-	void Renderer3D::drawCube(Vec3 s, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader	
-		_model = glm::mat4(1.0f);
-		_model = glm::scale(_model, s);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
-	}
-	void Renderer3D::drawCube(Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader	
-		_model = glm::mat4(1.0f);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
-	}
-
-	void Renderer3D::drawRotateCube(Vec3 t, Vec4 r, Vec3 s, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
-		_model = glm::translate(_model, t);
-		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
-	}
-
-	void Renderer3D::drawRotateCube(Vec4 r, Vec3 s, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
-		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		_model = glm::scale(_model, s);
-		_shader[_current]->uniform("uTexture", 0);
-		// bind albedo and submit TRS Uniforms
-		albedo->bind();
-		TRSsubmit();
-		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
-	}
-
-	void Renderer3D::drawRotateCube(Vec4 r, Texture albedo)
-	{
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
 		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[cube]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[cube]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		s_buffer->Vao[obj3D]->unbind();
 	}
-
+	
 	// Alpha
-	void Renderer3D::drawBlending(Vec3 t, Vec4 r, Vec3 s, Texture albedo)
+	void Renderer3D::drawBlending(Vec3 t, Vec4 r, Vec3 s, Texture albedo, Color colormask)
 	{
-		_current = Basic;
+		_current = BasicText;
 		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
 		_model = glm::translate(_model, t);
+		_model = glm::rotate   (_model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
+		_model = glm::scale	   (_model, s);
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[QUAD]->bind();
+		RenderCall::Draw(s_buffer->Vao[QUAD].get());
+		s_buffer->Vao[QUAD]->unbind();
+	}
+	void Renderer3D::drawBlending(Vec3 t, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader		
+		_model = glm::translate(_model, t);
+		_model = glm::scale	   (_model, s);
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[QUAD]->bind();
+		RenderCall::Draw(s_buffer->Vao[QUAD].get());
+		s_buffer->Vao[QUAD]->unbind();
+	}
+
+
+	void Renderer3D::drawPolygon3D(const Obj obj3D, Vec3 t, Vec4 r, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader				
+		_model = glm::translate(_model, t);
+		_model = glm::rotate(_model, glm::radians(r.x), { r.y, r.z, r.w });
+		_model = glm::scale(_model, s);
+
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
+	}
+	void Renderer3D::drawPolygon3D(const Obj obj3D, Vec4 r, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader	
 		_model = glm::rotate(_model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
 		_model = glm::scale(_model, s);
+
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
 	}
-	void Renderer3D::drawBlending(Vec3 t, Vec3 s, Texture albedo)
+
+	void Renderer3D::drawPolygon3D(const Obj obj3D, Vec3 s, Texture albedo, Color colormask)
 	{
-		_current = Basic;
-		// Model Transforms an set current Shader		
-		_model = glm::mat4(1.0f);
-		_model = glm::translate(_model, t);
+		_current = BasicText;
+		// Model Transforms an set current Shader	
 		_model = glm::scale(_model, s);
 		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
 		// bind albedo and submit TRS Uniforms
 		albedo->bind();
 		TRSsubmit();
 		// bind VAO an DRAW
-		s_utils->Vao[quad]->bind();
-		RenderCall::Draw(s_utils->Vao[cube].get());
-		s_utils->Vao[quad]->unbind();
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
 	}
+	void Renderer3D::drawPolygon3D(const Obj obj3D, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader	
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
+	}
+
+
+	void Renderer3D::drawRotatePolygon3D(const Obj obj3D, Vec3 t, Vec4 r, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader		
+		_model = glm::translate(_model, t);
+		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
+		_model = glm::scale(_model, s);
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
+	}
+
+	void Renderer3D::drawRotatePolygon3D(const Obj obj3D, Vec4 r, Vec3 s, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader		
+		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
+		_model = glm::scale(_model, s);
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
+	}
+
+	void Renderer3D::drawRotatePolygon3D(const Obj obj3D, Vec4 r, Texture albedo, Color colormask)
+	{
+		_current = BasicText;
+		// Model Transforms an set current Shader		
+		_model = glm::rotate(_model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colormask);
+
+		// bind albedo and submit TRS Uniforms
+		albedo->bind();
+		TRSsubmit();
+		// bind VAO an DRAW
+		s_buffer->Vao[obj3D]->bind();
+		RenderCall::linePolygonMode(true);
+		RenderCall::Draw(s_buffer->Vao[obj3D].get());
+		RenderCall::linePolygonMode(false);
+		s_buffer->Vao[obj3D]->unbind();
+	}
+
+	void Renderer3D::setAlbedo(Texture albedo, Color colorMask)
+	{
+		_shader[_current]->uniform("uTexture", 0);
+		_shader[_current]->uniform("uTextScale", albedo->getTilingScale());
+		_shader[_current]->uniform("uColorMask", colorMask);
+	}	
 }
+

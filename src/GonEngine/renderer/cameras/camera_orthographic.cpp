@@ -52,7 +52,7 @@ namespace Gon {
 	OrthoHandler::OrthoHandler(const float ratio, const OrthoHandler::Data& data)
 		:	m_aspectRatio(ratio), m_speed(2.5f), m_rotSpeed(150.0f)			
 	{		
-		m_camera = std::make_unique<CameraOrthographic>(data.Position);
+		m_camera = make_u_ptr<CameraOrthographic>(data.Position);
 		setData(data);
 
 		// On switch from perspective ensure the correct capture mouse mode. 
@@ -98,20 +98,17 @@ namespace Gon {
 	void OrthoHandler::onEvent(Event& e)
 	{
 		if (e.getEventType() == EventType::MouseScrolled)
-		{
-			OnMouseScrolled& _e = dynamic_cast<OnMouseScrolled&>(e);
+			handleMouseScroll(dynamic_cast<OnMouseScrolled&>(e));
 
-			m_data.Zoom -= _e.GetYOffset() * m_mouseSensitivity;
-			m_speed = m_data.Zoom = std::max(m_data.Zoom, 0.25f);
-		}
-		if (e.getEventType() == EventType::WindowResize)
+			
+		if (m_enabled_prime_window && (e.getEventType() == EventType::WindowResize))
 		{
 			OnWindowResize& _e = dynamic_cast<OnWindowResize&>(e);
 			m_aspectRatio = static_cast<float>(_e.GetWidth()) / static_cast<float>(_e.GetHeight());
 		}
 	}
 	void OrthoHandler::setAspectRatio(const float aspectratio) { m_aspectRatio = aspectratio; }
-	const float OrthoHandler::getAspectRatio() {	return m_aspectRatio; }
+	const float OrthoHandler::getAspectRatio() { return m_aspectRatio; }
 	void OrthoHandler::updateProjectionMatrix()
 	{		
 		m_projectionMatrix = glm::ortho
@@ -122,14 +119,24 @@ namespace Gon {
 			m_near,			m_far
 		);
 	}
-	glm::mat4& OrthoHandler::getProjectionMatrix()
+	const glm::mat4& OrthoHandler::getProjectionMatrix()
 	{
 		updateProjectionMatrix();
 		return m_projectionMatrix;
+	}
+	const glm::mat4& OrthoHandler::getViewMatrix()
+	{
+		return m_camera->getViewMatrix();
 	}
 	void OrthoHandler::setData(const Data& data)
 	{
 		m_data = data;
 		dynamic_cast<CameraOrthographic&>(*m_camera).setRotation(data.Rotate);
+	}
+	const bool OrthoHandler::handleMouseScroll(const OnMouseScrolled& e)
+	{
+		m_data.Zoom -= e.GetYOffset() * m_mouseSensitivity;
+		m_speed = m_data.Zoom = std::max(m_data.Zoom, 0.25f);
+		return false;
 	}
 }

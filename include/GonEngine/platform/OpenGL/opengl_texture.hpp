@@ -36,6 +36,8 @@ namespace Gon {
 		virtual void setData(void* data, uint32_t size) override;
 		virtual uint32_t getTextureID() const override { return m_textID; }
 
+		virtual void  setTilingScale(const float scale) override { m_scale = scale; };
+		virtual const float getTilingScale() const		override { return m_scale; }; // hasta 255
 
 		void setWrap(Wrap s, Wrap t);
 		void setFilter(Filter mag, Filter min, Filter mipMapMag = Filter::None, Filter mipMapMin = Filter::None);
@@ -49,11 +51,13 @@ namespace Gon {
 
 		OpenGLTexture2D::Format m_format = OpenGLTexture2D::Format::RGB;
 
-		uint32_t m_width	= 0;
-		uint32_t m_height	= 0;
-		uint32_t m_depth	= 0; // channels
+		uint32_t m_width	{ 0 };
+		uint32_t m_height	{ 0 };
+		uint32_t m_depth	{ 0 };	// channels
+		float  m_scale		{ 1.0f };	// hasta 255
 
 		uint32_t m_textID;
+		
 
 		std::pair<Wrap, Wrap> m_wrap
 		{

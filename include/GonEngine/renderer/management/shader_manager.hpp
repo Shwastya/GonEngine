@@ -7,7 +7,8 @@ namespace Gon {
 
     enum IDShader
     {
-        Basic = 0,
+        BasicColor   = 0,
+        BasicText 
     };
 
     // The simplest idea now:
@@ -28,9 +29,7 @@ namespace Gon {
         const Shader* ShaderManager::operator[](const IDShader id) const
         {
             return m_storage[id].get();
-        }
-
-        
+        }        
 
     private:
         std::array<u_ptr<Shader>, 2> m_storage;

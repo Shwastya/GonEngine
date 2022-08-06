@@ -22,7 +22,7 @@ namespace Gon {
 
 	class EditorLayer : public Layer
 	{
-	public:
+	public:		
 
 		EditorLayer(const NodeType ntype, const std::string& name);
 		~EditorLayer();
@@ -35,11 +35,18 @@ namespace Gon {
 
 		void onRender() override;
 
-	private:		
-		u_ptr<Texture2D>	m_texture[3];
-		u_ptr<CameraMan>	m_cameraMan;		 
+	private:	
 
-	private:
-		//glm::vec3 m_quadColor{1.0f, 0.0f, 0.0f};
+		u_ptr<Texture2D>	m_texture[4];
+		u_ptr<CameraMan>	m_cameraMan;
+		u_ptr<FrameBuffer>  m_frameBuffer;
+
+		ImGuiDockSpace m_dock_space{ ImGuiDockSpace(NodeType::ImGui, "DockSpace-Layer") };
+		glm::vec2 m_viewPort{ 0.0f, 0.0f };
+	
+		bool m_windowFocused{ false };
+		bool m_windowHovered{ false };
+
+		GON_UI_TIMING_VECS_DEFS;
 	};
 }

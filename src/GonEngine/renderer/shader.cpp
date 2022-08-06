@@ -19,17 +19,17 @@ namespace Gon
 
 		case API::OpenGL:
 
-			return std::make_unique<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
+			return make_u_ptr<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
 
 		case API::DirectX:
 
 			GON_WARN("DirectX not implemented. OpenGL shader by default");
-			return std::make_unique<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
+			return make_u_ptr<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
 
 
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL shader by default");
-			return std::make_unique<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
+			return make_u_ptr<OpenGLShader>(vertexPath, fragmentPath, geometryPath);
 
 		default:
 			GON_WARN("Unknown shader API.");
@@ -48,17 +48,17 @@ namespace Gon
 
 		case API::OpenGL:
 
-			return std::make_unique<OpenGLShader>(oneFilePath);
+			return make_u_ptr<OpenGLShader>(oneFilePath);
 
 		case API::DirectX:
 
 			GON_WARN("DirectX not implemented. OpenGL shader by default");
-			return std::make_unique<OpenGLShader>(oneFilePath);
+			return make_u_ptr<OpenGLShader>(oneFilePath);
 
 
 		case API::Vulkan:
 			GON_WARN("Vulkan not implemented. OpenGL shader by default");
-			return std::make_unique<OpenGLShader>(oneFilePath);
+			return make_u_ptr<OpenGLShader>(oneFilePath);
 
 		default:
 			GON_WARN("Unknown shader API.");

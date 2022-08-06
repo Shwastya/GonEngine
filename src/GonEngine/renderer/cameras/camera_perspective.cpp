@@ -41,7 +41,7 @@ namespace Gon {
           m_aspectRatio(ratio), m_speed(2.5f), m_near(0.1f), m_far(100.0f),
           m_firstMouse(true), m_enableMouseDisplacement(false)
     {                
-        m_camera = std::make_unique<CameraPerspective>(data.Position);        
+        m_camera = make_u_ptr<CameraPerspective>(data.Position);
         setData(data);
     }
 
@@ -70,21 +70,17 @@ namespace Gon {
 
     void PerspHandler::onEvent(Event& e)
     {
-        if (m_enableMouseDisplacement)
-        {
-            if (e.getEventType() == EventType::MouseMoved)
-                onMouseMoved(dynamic_cast<OnMouseMoved&>(e));
-        }
+        if (m_enableMouseDisplacement && (e.getEventType() == EventType::MouseMoved))
+                onMouseMoved(dynamic_cast<OnMouseMoved&>(e));        
         
         if (e.getEventType() == EventType::MouseScrolled)
             handleMouseScroll(dynamic_cast<OnMouseScrolled&>(e).GetYOffset());
 
-        if (e.getEventType() == EventType::WindowResize)
+        if (m_enabled_prime_window && (e.getEventType() == EventType::WindowResize))
         {
             OnWindowResize& _e = dynamic_cast<OnWindowResize&>(e);
             m_aspectRatio = static_cast<float>(_e.GetWidth()) / static_cast<float>(_e.GetHeight());
         }
-
     }
 
     void PerspHandler::setAspectRatio(const float aspectratio) { m_aspectRatio = aspectratio; }
@@ -94,11 +90,16 @@ namespace Gon {
         m_projectionMatrix = glm::perspective(glm::radians(m_data.Fov), m_aspectRatio, m_near, m_far);        
     }
 
-    glm::mat4& PerspHandler::getProjectionMatrix()
+    const glm::mat4& PerspHandler::getProjectionMatrix()
     {        
         updateProjectionMatrix();
         return m_projectionMatrix;
-    }    
+    }
+
+    const glm::mat4& PerspHandler::getViewMatrix()
+    {
+        return m_camera->getViewMatrix();
+    }
 
     void PerspHandler::updateCameraVectors()
     {    

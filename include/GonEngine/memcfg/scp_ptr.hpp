@@ -15,6 +15,11 @@ namespace Gon {
 
 	template<typename T>
 	using u_ptr = std::unique_ptr<T>;
+	template<typename T, typename ...Args>
+	constexpr u_ptr<T> make_u_ptr(Args&& ... args)
+	{
+		return std::make_unique<T>(std::forward<Args>(args)...);
+	}
 
 	template<typename T>
 	using s_ptr  = std::shared_ptr<T>;

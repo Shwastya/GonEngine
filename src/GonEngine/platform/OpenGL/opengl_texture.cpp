@@ -18,7 +18,7 @@ namespace Gon {
 	}
 
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path, Texture2D::Format format)
-		: m_path(path), m_format(format)
+		: m_path(path), m_format(format), m_scale(1.0f)
 	{
 		stbi_set_flip_vertically_on_load(true);
 
@@ -48,7 +48,7 @@ namespace Gon {
 	}
 	// set data directly to GPU
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
-		: m_width(width), m_height(height)
+		: m_width(width), m_height(height), m_scale(1.0f)
 	{
 		m_internalFormat = GL_RGBA8;
 		m_dataFormat = GL_RGBA;

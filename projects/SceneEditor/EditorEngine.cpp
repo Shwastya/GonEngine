@@ -1,7 +1,5 @@
 #include "EditorEngine.hpp"
 
-
-
 namespace Gon {
 
 	EditorEngine::EditorEngine() //: GonEngine(API::OpenGL, "Scene Editor", 1920, 1080, 15)
@@ -13,12 +11,12 @@ namespace Gon {
 		(
 			API::OpenGL, 
 			"UI-Editor", 
-			1200, 
-			900,
+			1920, 
+			1080,
 			2
 		);
 
-		pushLayer(std::make_unique<EditorLayer>(NodeType::Project, "EditorLayer"));
+		pushLayer(make_u_ptr<EditorLayer>(NodeType::Project, "EditorLayer"));
 		// pushLayer ....
 		// pushLayer ....		
 	}
@@ -30,6 +28,6 @@ namespace Gon {
 
 	extern u_ptr<GonEngine> start_project()
 	{
-		return std::make_unique<EditorEngine>();
+		return make_u_ptr<EditorEngine>();
 	}
 }

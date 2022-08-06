@@ -1,4 +1,5 @@
 #pragma once
+#include "GonEngine/renderer/camera.hpp"
 #include "GonEngine/renderer/cameras/camera_orthographic.hpp"
 #include "GonEngine/renderer/cameras/camera_perspective.hpp"
 #include "GonEngine/memcfg/scp_ptr.hpp"
@@ -6,9 +7,10 @@
 
 namespace Gon {
 
-	enum class CamMode
+	enum CamMode
 	{
-		Ortho = 0, Persp
+		Ortho = 0, 
+		Persp
 	};	
 
 	class CameraMan
@@ -25,19 +27,20 @@ namespace Gon {
 
 		void onEvent(Event& e);
 
-		void initCam(const OrthoHandler::Data& orthodata, PerspHandler::Data& persdata);
-		void setSwitchKey(const Key newKey) { m_switchKey = newKey; };
-		void switchCam(const CamMode& mode);
-		void takeSelectedCam() { switchCam(m_mode); };
-		const CamMode getCamMode() { return m_mode; }		
+		void setKeySwitch(const Key newkey)			{ m_switchKey = newkey; }
+		void switchCamMode(const CamMode mode)		{ m_mode = mode; }
+
+		void enablePrimeWindowResize();
+		void disablePrimeWindowResize();
+
+		void refreshAspectRatio(const glm::vec2 viewport);
+
+		const CamMode  getCamMode()  { return m_mode; }
 
 	private:
-		CamMode m_mode;
-		Key m_switchKey;
-		OrthoHandler::Data m_orthoGuard;
-		PerspHandler::Data m_perspGuard;
-		s_ptr<CameraHandler> m_cameraHandler;		
-		float m_aspectRatio;
-	};
+		s_ptr<CameraHandler> m_cameraHandler[2];
 
+		CamMode	 m_mode;
+		Key m_switchKey;		
+	};
 }

@@ -5,6 +5,8 @@ set(INCLUDE_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/stb
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/spdlog
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/entt
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugtools
     )
 
 #Common Dependency Files
@@ -29,6 +31,8 @@ set(DEPS_SRC_FILES_COMMON
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/imgui_internal.h
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/entt/entt.hpp
+
 
 
 
@@ -41,6 +45,11 @@ set(DEPS_SRC_FILES_COMMON
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_glfw.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/deps/imgui/backends/imgui_impl_opengl3.cpp
+
+    # debug tools
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugtools/memory_tracking.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugtools/timer.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugtools/timer.cpp
 
 
 
