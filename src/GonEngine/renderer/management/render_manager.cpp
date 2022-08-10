@@ -7,9 +7,9 @@
 namespace Gon {
 	
 	
-	u_ptr<RendererAPI> RenderCall::s_renderer_api{ nullptr };
+	u_ptr<RendererAPI> RenderMan::s_renderer_api{ nullptr };
 
-	void RenderCall::init(const bool cullface, const bool depthtest, const bool alphablending)
+	void RenderMan::init(const bool cullface, const bool depthtest, const bool alphablending)
 	{
 		GON_TRACE("[STATIC INITIALIZATION] Renderer API.");
 
@@ -35,36 +35,44 @@ namespace Gon {
 		}
 		s_renderer_api->initConfig(cullface, depthtest, alphablending);
 	}
-	void RenderCall::reset()	
+	void RenderMan::reset()	
 	{ 
 		s_renderer_api.reset();
 		s_renderer_api = nullptr;
 	}
-	void RenderCall::setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height)
+	void RenderMan::setViewPort(const uint32_t x, const uint32_t y, const uint32_t width, uint32_t height)
 	{
 		s_renderer_api->setViewPort(x, y, width, height);
 	}
-	void RenderCall::setClearColor(const glm::vec4& color)
+	void RenderMan::setClearColor(const glm::vec4& color)
 	{
 		s_renderer_api->setClearColor(color);
 	}
-	void RenderCall::clear()				{ s_renderer_api->clear();}
-	void RenderCall::clearColor()			{ s_renderer_api->clearColor();}
-	void RenderCall::clearDepth()			{ s_renderer_api->clearColor();}	
-	void RenderCall::enableCullFace()		{ s_renderer_api->enableCullFace();}
-	void RenderCall::disableCullFace()		{ s_renderer_api->disableCullFace();}
-	void RenderCall::enableDepthTest()		{ s_renderer_api->enableDepthTest();}
-	void RenderCall::disableDepthTest()		{ s_renderer_api->disableDepthTest();}
-	void RenderCall::enableAlphaBlending()	{ s_renderer_api->enableAlphaBlending();}
-	void RenderCall::disableAlphaBlending()	{ s_renderer_api->disableAlphaBlending();}
+	void RenderMan::clear()					{ s_renderer_api->clear();}
+	void RenderMan::clearColor()			{ s_renderer_api->clearColor();}
+	void RenderMan::clearDepth()			{ s_renderer_api->clearColor();}	
+	void RenderMan::enableCullFace()		{ s_renderer_api->enableCullFace();}
+	void RenderMan::disableCullFace()		{ s_renderer_api->disableCullFace();}
+	void RenderMan::enableDepthTest()		{ s_renderer_api->enableDepthTest();}
+	void RenderMan::disableDepthTest()		{ s_renderer_api->disableDepthTest();}
+	void RenderMan::setFalseDepthMask()		{ s_renderer_api->setFalseDepthMask();}
+	void RenderMan::setTrueDepthMask()		{ s_renderer_api->setTrueDepthMask();}
+	void RenderMan::enableEqualDepthTest()	{ s_renderer_api->enableEqualDepthTest();}
+	void RenderMan::disableEqualDepthTest()	{ s_renderer_api->disableEqualDepthTest();}
+	void RenderMan::enableAlphaBlending()	{ s_renderer_api->enableAlphaBlending();}
+	void RenderMan::disableAlphaBlending()	{ s_renderer_api->disableAlphaBlending();}
 
-	void RenderCall::linePolygonMode(const bool type)
+	void RenderMan::linePolygonMode(const bool type)
 	{
 		s_renderer_api->linePolygonMode(type);
 	}
-	void RenderCall::Draw(const VAO* vao)
+	void RenderMan::Draw(const VAO* vao)
 	{
 		s_renderer_api->Draw(vao);
+	}
+	void RenderMan::Draw(const uint32_t count)
+	{
+		s_renderer_api->Draw(count);
 	}
 }
 

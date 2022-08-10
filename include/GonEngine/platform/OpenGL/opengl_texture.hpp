@@ -1,6 +1,7 @@
 #pragma once
 #include "GonEngine/renderer/texture.hpp"
-#include "GonEngine/platform/OpenGL/opengl_shader.hpp"
+
+typedef unsigned int GLenum;
 
 namespace Gon {
 
@@ -28,8 +29,8 @@ namespace Gon {
 		OpenGLTexture2D(uint32_t width, uint32_t height);
 		virtual ~OpenGLTexture2D();
 
-		virtual uint32_t getWidth()  const override { return m_width; };
-		virtual uint32_t getHeight() const override { return m_height; };
+		virtual uint32_t getWidth()  const override { return m_width;  };
+		virtual uint32_t getHeight() const override { return m_height;  };
 
 		virtual void bind(uint32_t unit) const override;
 
@@ -67,7 +68,7 @@ namespace Gon {
 		std::pair<Filter, Filter> m_filter
 		{
 			Filter::Linear,
-			Filter::Linear
+			Filter::None
 		};
 		std::pair<Filter, Filter> m_filterMipMap
 		{

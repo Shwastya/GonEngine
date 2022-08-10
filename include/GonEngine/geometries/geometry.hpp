@@ -1,10 +1,10 @@
 #pragma once
 #define N_V static_cast<size_t>(m_nVertices) 
+#include "GonEngine/platform/OpenGL/opengl_vao.hpp"
+#include "GonEngine/memcfg/scp_ptr.hpp"
 #include <cstdint>
-#include <iostream>
 
 namespace Gon {
-
 
     class Geometry
     {
@@ -22,7 +22,6 @@ namespace Gon {
 
     protected:
 
-
         // RAII patterns
         struct ScpFloat
         {   
@@ -34,7 +33,6 @@ namespace Gon {
 
             float* get() const;
             
-            // overload operators
             float& operator[](uint32_t idx);
 
         private:
@@ -49,7 +47,7 @@ namespace Gon {
             ~ScpUint32();
 
             uint32_t* get() const;
-            // overload operator            
+                  
             uint32_t& operator[](uint32_t idx);
 
         private:
@@ -65,9 +63,9 @@ namespace Gon {
             const float* normals, bool TangBitang = true);
 
     protected:
-
+        
+        u_ptr<VAO> m_vao;
         uint32_t m_nVertices{ 0 };
         uint32_t m_nElements{ 0 };
-        //const std::string m_name{ nullptr };
     };
 }

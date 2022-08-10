@@ -6,12 +6,8 @@ set(PROJECT_LIST
 
   
     SceneEditor
+    Tests
 )
-
-
-
-
-
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Config types" FORCE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

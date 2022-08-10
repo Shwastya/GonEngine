@@ -15,7 +15,7 @@ namespace Gon {
         GON_TRACE("[CREATED] Triangle from geometry.");
 
         // positions, uvs, normals, tangents, bitangents
-        m_vert.init(42);
+        //m_vert.init(42);
         m_indices.init(m_nElements);
 
         float positions[]
@@ -41,23 +41,15 @@ namespace Gon {
 
         for (uint32_t i = 0; i < 3; ++i) m_indices[i] = i;
 
-        setData(m_vert.get(), positions, uvs, normals, true);
+        setData(m_vert, positions, uvs, normals, true);
     }
     Triangle::~Triangle()
     {
         GON_TRACE("[DESTROYED] Triangle from geometry.");
     }
     const uint32_t Triangle::size()
-    {
-        const uint32_t vboSize
-        {
-            (sizeof(float) * m_nVertices * 3) +
-            (sizeof(float) * m_nVertices * 2) +
-            (sizeof(float) * m_nVertices * 3) +
-            (sizeof(float) * m_nVertices * 3) +
-            (sizeof(float) * m_nVertices * 3)
-        };
-        return vboSize;
+    {        
+        return sizeof(m_vert);
     }
     const uint32_t* Triangle::getIndices()
     {

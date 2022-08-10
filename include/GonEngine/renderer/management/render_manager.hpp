@@ -10,11 +10,11 @@ namespace Gon {
 	struct VAO;
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-	class RenderCall
+	class RenderMan
 	{
 	public:
-		RenderCall()	= delete;
-		~RenderCall()	= delete;
+		RenderMan()	= default;
+		~RenderMan() = default;
 
 		static void init(const bool cullface, const bool depthtest, const bool alphablending);
 		static void reset();
@@ -37,6 +37,12 @@ namespace Gon {
 		static void enableDepthTest();
 		static void disableDepthTest();
 
+		static void setFalseDepthMask();
+		static void setTrueDepthMask();
+
+		static void enableEqualDepthTest();
+		static void disableEqualDepthTest();
+
 		static void enableAlphaBlending();
 		static void disableAlphaBlending();
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -46,6 +52,7 @@ namespace Gon {
 		// Draw final call
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 		static void Draw(const VAO* vao);
+		static void Draw(const uint32_t count);
 
 	private:
 		static u_ptr<RendererAPI> s_renderer_api;

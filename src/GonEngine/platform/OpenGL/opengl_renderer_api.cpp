@@ -17,6 +17,7 @@ namespace Gon {
 
 		// Se habilita el test de profundidad para las geometrias 3D
 		if (depthtest) OpenGLRendererAPI::enableDepthTest();
+		//if (depthtest) OpenGLRendererAPI::enableEqualDepthTest();
 		else OpenGLRendererAPI::disableDepthTest();
 
 		// Se habilita el Alpha Blending (alpha|depth channel textures)
@@ -53,7 +54,6 @@ namespace Gon {
 	void OpenGLRendererAPI::disableCullFace()
 	{
 		glDisable(GL_CULL_FACE);	
-		glCullFace(GL_BACK);
 	}
 	void OpenGLRendererAPI::enableDepthTest()
 	{
@@ -63,7 +63,22 @@ namespace Gon {
 	void OpenGLRendererAPI::disableDepthTest()
 	{
 		glDisable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS); // (el mas habitual) el que tiene la prof. mas pequenya es el que queda
+	}
+	void OpenGLRendererAPI::setFalseDepthMask()
+	{
+		glDepthMask(GL_FALSE);
+	}
+	void OpenGLRendererAPI::setTrueDepthMask()
+	{
+		glDepthMask(GL_TRUE);
+	}
+	void OpenGLRendererAPI::enableEqualDepthTest()
+	{		
+		glDepthFunc(GL_LEQUAL);
+	}
+	void OpenGLRendererAPI::disableEqualDepthTest()
+	{
+		glDepthFunc(GL_LEQUAL);
 	}
 	void OpenGLRendererAPI::enableAlphaBlending()
 	{
@@ -73,7 +88,6 @@ namespace Gon {
 	void OpenGLRendererAPI::disableAlphaBlending()
 	{
 		glDisable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 	void OpenGLRendererAPI::linePolygonMode(const bool type) const
@@ -86,5 +100,10 @@ namespace Gon {
 	void OpenGLRendererAPI::Draw(const VAO* vao) const
 	{
 		glDrawElements(GL_TRIANGLES, vao->getEBO()->nIndices(), GL_UNSIGNED_INT, nullptr);
+	}
+	void OpenGLRendererAPI::Draw(const uint32_t count) const
+	{
+		glDrawArrays(GL_TRIANGLES, 0, count);
+		
 	}
 }

@@ -3,11 +3,22 @@
 
 namespace Gon
 {
-	const char* k_albedo_ore	{ "../assets/textures/Rock_Ore_001_SD/Rock_Ore_001_COLOR.jpg" };
-	const char* k_albedo_alien	{ "../assets/textures/Alien-muscle/Alien_Muscle_001_COLOR.jpg" };
-	const char* k_albedo_lava	{ "../assets/textures/Lava_002/Lava_002_COLOR.jpg" };
-	const char* k_blending		{ "../assets/textures/tree.png" };
+	constexpr char* k_albedo_ore	{ "../assets/textures/Rock_Ore_001_SD/Rock_Ore_001_COLOR.jpg" };
+	constexpr char* k_albedo_alien	{ "../assets/textures/Alien-muscle/Alien_Muscle_001_COLOR.jpg" };
+	constexpr char* k_albedo_lava	{ "../assets/textures/Lava_002/Lava_002_COLOR.jpg" };
+	constexpr char* k_blending		{ "../assets/textures/tree.png" };
 
+	const std::vector<std::string>k_cubemap
+	{
+		{"../assets/textures/cubemaps/skybox/right.jpg"},   // +X
+		{"../assets/textures/cubemaps/skybox/left.jpg"},    // -X
+		{"../assets/textures/cubemaps/skybox/top.jpg"},     // +Y
+		{"../assets/textures/cubemaps/skybox/bottom.jpg"},  // -Y
+		{"../assets/textures/cubemaps/skybox/front.jpg"},   // +Z
+		{"../assets/textures/cubemaps/skybox/back.jpg"},    // -Z
+	};
+	
+	
 	EditorLayer::EditorLayer(const NodeType ntype, const std::string& name)
 		: Layer(ntype, name)			
 	{
@@ -15,6 +26,9 @@ namespace Gon
 		m_texture[1] = Texture2D::create(k_albedo_alien, Texture2D::Format::RGB);
 		m_texture[2] = Texture2D::create(k_blending, Texture2D::Format::RGBA);
 		m_texture[3] = Texture2D::create(k_albedo_lava, Texture2D::Format::RGB);
+
+		m_cubemapText = CubeMapText::create(k_cubemap, CubeMapText::Format::RGB);
+		
 	}
 
 	EditorLayer::~EditorLayer()	{}
@@ -23,7 +37,7 @@ namespace Gon
 	{
 		m_viewPort = { (gonWindowWidth / 1.5f), (gonWindowHeight / 1.5f) };
 
-		m_cameraMan = make_u_ptr<CameraMan>
+		m_cameraMan = make_s_ptr<CameraMan>
 		(
 			CamMode::Persp,
 			m_viewPort.x / m_viewPort.y,
@@ -39,6 +53,7 @@ namespace Gon
 		};
 		m_frameBuffer = FrameBuffer::create(frameBufferProps);
 
+		//Renderer::linkCameraHandler();
 	}
 	void EditorLayer::onQuit()
 	{
@@ -60,23 +75,30 @@ namespace Gon
 				m_frameBuffer->bind();
 				
 				GON_UI_TIMING("Render setting");
-				RenderCall::setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
-				RenderCall::clear();
+				RenderMan::setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
+				RenderMan::clear();
 			}
 			// Render Runtime
 			{				
-				GON_UI_TIMING("Render runTime");
-				Renderer3D::beginScene(m_cameraMan->View(), m_cameraMan->Projection());				
-				
-				Renderer3D::drawRotate3D(Renderer3D::CUBE, { -0.1f, 0.2f, -0.2f }, { 90.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.2f }, m_texture[3].get());
-				Renderer3D::drawRotate3D(Renderer3D::CUBE, { 0.0f, -0.1f, 0.3f }, { -90.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.23f }, m_texture[3].get());
-				Renderer3D::drawRotate3D(Renderer3D::CUBE, { -0.4f, 0.3f, 0.3f }, { -50.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.4f }, m_texture[1].get(), { 1.0, 1.0, 1.0, 0.5 });
-				Renderer3D::drawRotatePolygon3D(Renderer3D::CUBE, { 0.6f, 0.55f, -0.6f }, { 23.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.36f }, m_texture[1].get());
-				Renderer3D::drawRotate3D(Renderer3D::CUBE, { 0.15f, 0.3f, 0.3f }, { +32.0f, 0.5f, 0.3f, 0.7f }, glm::vec3{ 0.23f }, m_texture[1].get(), { 1.0, 1.0, 1.0, 0.5 });
-				Renderer3D::draw3D(Renderer3D::QUAD, { 0.0f, -0.35f, 0.0f }, { -55.0f, 1.0f, 0.0f, 0.0f }, glm::vec3{ 1.8f }, m_texture[0].get(), { 1.0, 1.0, 1.0, 1.0 });
-				Renderer3D::drawBlending({ 0.6f, 0.0f, 0.0f }, glm::vec3{ 0.5f }, m_texture[2].get());				
-				
-				Renderer3D::endScene();
+				GON_UI_TIMING("Render runTime");				
+
+				Renderer::beginScene(m_cameraMan->View(), m_cameraMan->Projection());				
+				{
+					
+					Renderer::drawSkyBox(m_cubemapText.get());
+
+					Renderer::drawRotatePolygon3D(CUBE, { 0.6f, 0.55f, -0.6f }, { 23.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.36f }, m_texture[1].get());
+					Renderer::drawRotate3D(CUBE, { -0.1f, 0.2f, -0.2f }, { 90.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.2f }, m_texture[3].get());
+					Renderer::draw3D(QUAD, { 0.0f, -0.35f, 0.0f }, { -55.0f, 1.0f, 0.0f, 0.0f }, glm::vec3{ 1.8f }, m_texture[0].get());
+					Renderer::drawBlending({ 0.6f, 0.0f, 0.0f }, glm::vec3{ 0.5f }, m_texture[2].get());
+					Renderer::drawRotate3D(CUBE, { 0.0f, -0.1f, 0.3f }, { -90.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.23f }, m_texture[3].get());
+					Renderer::drawRotate3D(CUBE, { -0.4f, 0.3f, 0.3f }, { -50.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.4f }, m_texture[1].get(), { 0.5, 0.0, 1.0, 0.5 });
+					Renderer::drawRotate3D(CUBE, { 0.15f, 0.3f, 0.3f }, { +32.0f, 0.5f, 0.3f, 0.7f }, glm::vec3{ 0.23f }, m_texture[1].get(), { 1.0, 1.0, 1.0, 0.5 });
+
+					
+					
+				}			
+				Renderer::endScene();
 
 				m_frameBuffer->unbind();
 			}

@@ -87,7 +87,8 @@ namespace Gon {
     const float PerspHandler::getAspectRatio() { return m_aspectRatio; }
     void PerspHandler::updateProjectionMatrix()
     {       
-        m_projectionMatrix = glm::perspective(glm::radians(m_data.Fov), m_aspectRatio, m_near, m_far);        
+        //m_projectionMatrix = glm::perspective(glm::radians(m_data.Fov), m_aspectRatio, m_near, m_far);        
+        m_projectionMatrix = glm::perspective(glm::radians(m_data.Fov), m_aspectRatio, m_near, m_far);
     }
 
     const glm::mat4& PerspHandler::getProjectionMatrix()

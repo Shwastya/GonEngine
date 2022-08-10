@@ -106,7 +106,7 @@ namespace Gon
 	{
 		// Pinta sobre el FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fboID);
-		RenderCall::setViewPort(0, 0, m_textProps.Width, m_textProps.Height);
+		RenderMan::setViewPort(0, 0, m_textProps.Width, m_textProps.Height);
 	}
 	void OpenGLFrameBuffer::unbind() const
 	{

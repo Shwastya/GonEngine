@@ -17,9 +17,10 @@ namespace Gon {
 	GonEngine::~GonEngine()
 	{
 		GON_WARN("Shutting down Gon-Engine.");
+		Renderer::reset();
 		m_UI.onQuit();		
 		for (auto& Layers : (*m_layers_pile)) Layers->onQuit();
-		Renderer::reset();
+		
 	}
 	void GonEngine::initEngine(const API api, const std::string& name, const int32_t& width, const int32_t& height, const size_t& Layer_capacity)
 	{

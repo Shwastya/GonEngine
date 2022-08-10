@@ -1,7 +1,8 @@
+#include "GonEngine/platform/OpenGL/opengl_vao.hpp"
 #include "GonEngine/geometries/geometry.hpp"
 #include <glm/detail/func_geometric.inl>
-#include "GonEngine/log.hpp"
 #include "GonEngine/memcfg/goncfg.h"
+#include "GonEngine/log.hpp"
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <glad/glad.h>
@@ -152,43 +153,6 @@ namespace Gon {
             memset(biTangents.get(), 0, (length) * sizeof(float));
         }
 
-       /* uint32_t idx{ 0 };
-
-        for (idx = 0; idx < m_nVertices * 3; idx += 3)
-        {
-            vbo[idx] = positions[idx]; vbo[idx + 1] = positions[idx + 1]; vbo[idx + 2] = positions[idx + 2];
-        }
-
-        uint32_t x = 0, y = idx;
-        for (idx = idx; idx < (y + (m_nVertices * 2)); idx += 2)
-        {
-            vbo[idx] = uvs[x];  vbo[idx + 1] = uvs[x + 1];
-            x += 2; 
-        }
-
-        x = 0, y = idx;
-        for (idx = idx; idx < (y + (m_nVertices * 3)); idx += 3)
-        {
-            vbo[idx] = normals[x];  vbo[idx + 1] = normals[x + 1]; vbo[idx + 2] = normals[x + 2];
-            x += 3;
-        }
-
-        x = 0, y = idx;
-        for (idx = idx; idx < (y + (m_nVertices * 3)); idx += 3)
-        {
-            vbo[idx] = tangents[x];  vbo[idx + 1] = tangents[x + 1]; vbo[idx + 2] = tangents[x + 2];
-            x += 3;
-        }
-
-        x = 0, y = idx;
-        for (idx = idx; idx < (y + (m_nVertices * 3)); idx += 3)
-        {
-            vbo[idx] = biTangents[x];  vbo[idx + 1] = biTangents[x + 1]; vbo[idx + 2] = biTangents[x + 2];
-            x += 3;
-        }*/
-
-
-
         uint32_t idx = 0, idxUvs = 0, idxVbo = 0;
 
         for (size_t i = 0; i < m_nVertices; i++)
@@ -219,6 +183,5 @@ namespace Gon {
             idx += 3;
             idxVbo += 14;
         }
-
 	}
 }

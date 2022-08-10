@@ -2,7 +2,7 @@
 
 #include "GonEngine/geometries/geometry.hpp"
 
-namespace Gon {
+namespace Gon {    
 
     class Cube final : public Geometry
     {
@@ -17,13 +17,11 @@ namespace Gon {
         const uint32_t* getIndices();
         const uint32_t  nIndices();
 
-        const float* get() { return m_vert.get(); };
-
-        // temporal
-        const float* getRainbowColor();
+        const float* get() { return m_vert; };        
 
     private:
-        ScpUint32 m_indices;
-        ScpFloat  m_vert;
+        
+        uint32_t m_indices[36];
+        float m_vert[504];
     };
 }

@@ -30,14 +30,20 @@ namespace Gon {
 
 		// separate methods
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		virtual void enableCullFace()		= 0;
-		virtual void disableCullFace()		= 0;
+		virtual void enableCullFace()		 = 0;
+		virtual void disableCullFace()		 = 0;
 
-		virtual void enableDepthTest()		= 0;
-		virtual void disableDepthTest()		= 0;
+		virtual void enableDepthTest()		 = 0;
+		virtual void disableDepthTest()		 = 0;
 
-		virtual void enableAlphaBlending()	= 0;
-		virtual void disableAlphaBlending() = 0;
+		virtual void setFalseDepthMask()	 = 0;
+		virtual void setTrueDepthMask()		 = 0;
+
+		virtual void enableEqualDepthTest()  = 0;
+		virtual void disableEqualDepthTest() = 0;
+
+		virtual void enableAlphaBlending()	 = 0;
+		virtual void disableAlphaBlending()  = 0;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 		virtual void linePolygonMode(const bool type) const = 0;
@@ -45,9 +51,6 @@ namespace Gon {
 		// Draw final call
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 		virtual void Draw(const VAO* vao) const = 0;
-		
-
-		
-			
+		virtual void Draw(const uint32_t count) const = 0;
 	};
 }

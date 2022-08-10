@@ -1,7 +1,4 @@
 #pragma once
-#ifndef OUT_CONTEXT_LEAKS
-	#define OUT_CONTEXT_LEAKS 4960
-#endif // !OUT_CONTEXT_LEAKS
 
 #include <cinttypes>
 
@@ -39,7 +36,6 @@ void operator delete(void* memory, const size_t size)
 
 static void printfMemoryUsage()
 {
-	s_metrics.TotalAllocated = (s_metrics.TotalAllocated > OUT_CONTEXT_LEAKS) ? (s_metrics.TotalAllocated - OUT_CONTEXT_LEAKS) : s_metrics.TotalAllocated;
 	printf("\n    Total allocated: %u bytes\n", s_metrics.TotalAllocated);
 	printf("    Total freeds:    %u bytes\n", s_metrics.TotalFreed);
 	printf("    Memory leaks:    %u bytes\n", s_metrics.TotalAllocated - s_metrics.TotalFreed);

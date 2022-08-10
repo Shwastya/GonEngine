@@ -15,7 +15,7 @@ namespace Gon {
         GON_TRACE("[CREATED] Quad from geometry.");
 
         // positions, uvs, normals, tangents, bitangents
-        m_vert.init(84);
+       // m_vert.init(84);
         m_indices.init(m_nElements);
 
         const float half = size / 2.0f;
@@ -49,7 +49,7 @@ namespace Gon {
 
         uint32_t indices[]{ 0, 3, 1, 1 , 3, 2 };
 
-        setData(m_vert.get(), positions, uvs, normals, false);
+        setData(m_vert, positions, uvs, normals, false);
         memcpy(m_indices.get(), indices, sizeof(indices));
     }
     Quad::~Quad()
@@ -57,16 +57,8 @@ namespace Gon {
         GON_TRACE("[DESTROYED] Quad from geometry.");
     }
     const uint32_t Quad::size()
-    {
-        const uint32_t vboSize
-        {
-            (sizeof(float) * m_nVertices * 3) +
-            (sizeof(float) * m_nVertices * 2) +
-            (sizeof(float) * m_nVertices * 3) +
-            (sizeof(float) * m_nVertices * 3) +
-            (sizeof(float) * m_nVertices * 3)
-        };
-        return vboSize;
+    {       
+        return sizeof(m_vert);
     }
     const uint32_t* Quad::getIndices()
     {

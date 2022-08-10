@@ -23,5 +23,10 @@ namespace Gon {
 
 	template<typename T>
 	using s_ptr  = std::shared_ptr<T>;
+	template<typename T, typename ...Args>
+	constexpr s_ptr<T> make_s_ptr(Args&& ... args)
+	{
+		return std::make_shared<T>(std::forward<Args>(args)...);
+	}
 }
 

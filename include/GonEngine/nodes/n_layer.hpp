@@ -17,9 +17,6 @@ namespace Gon {
 		Layer& operator=(Layer&&) noexcept = delete;
 		virtual ~Layer();
 
-		virtual void onJoin() = 0;
-		virtual void onQuit() = 0;	
-
 		virtual void onEvent(Event& e) = 0;
 
 		virtual void onUpdate(const DeltaTime dt) = 0;

@@ -16,10 +16,10 @@ namespace Gon {
         const uint32_t* getIndices();
         const uint32_t  nIndices();
 
-        const float* get() { return m_vert.get(); };
+        const float* get() { return m_vert; };
 
     private:
         ScpUint32 m_indices;
-        ScpFloat  m_vert;
+        float  m_vert[84];
     };
 }

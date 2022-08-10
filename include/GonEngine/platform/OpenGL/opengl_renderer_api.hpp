@@ -21,14 +21,20 @@ namespace Gon {
 		
 		// separate methods
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		virtual void enableCullFace()		override;
-		virtual void disableCullFace()		override;
+		virtual void enableCullFace()		 override;
+		virtual void disableCullFace()		 override;
 
-		virtual void enableDepthTest()		override;
-		virtual void disableDepthTest()		override;
+		virtual void enableDepthTest()		 override;
+		virtual void disableDepthTest()		 override;
 
-		virtual void enableAlphaBlending()	override;
-		virtual void disableAlphaBlending() override;
+		virtual void setFalseDepthMask()	 override;
+		virtual void setTrueDepthMask()		 override;
+
+		virtual void enableEqualDepthTest()  override;
+		virtual void disableEqualDepthTest() override;
+
+		virtual void enableAlphaBlending()	 override;
+		virtual void disableAlphaBlending()  override;
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 		virtual void linePolygonMode(const bool type) const override;
@@ -36,5 +42,6 @@ namespace Gon {
 		// Draw final call
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 		virtual void Draw(const VAO* vao) const override;
+		virtual void Draw(const uint32_t count) const override;
 	};
 }

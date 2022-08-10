@@ -1,34 +1,67 @@
 #pragma once
-#include "GonEngine/memcfg/scp_ptr.hpp"
-#include <glm/glm.hpp>
+#include "GonEngine/headers/h_renderer.hpp"
 
-
-namespace Gon {
-
-	#define _model	 Renderer::s_matrixData->Model
-	#define _view	 Renderer::s_matrixData->View
-	#define _proj	 Renderer::s_matrixData->Projection
-
-	class Renderer
+namespace Gon 	
+{
+	enum  Geo
 	{
-	public:
+		TRIANGLE = 0,
+		QUAD = 1,
+		CUBE = 2,
+		BLEENDIG = QUAD,
+		SKYBOX = 3
+	};	
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
+	class  CubeMapText;
+	class  Texture2D;	
+	struct VBOLayout;
+	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 
-		Renderer()	= delete;
-		~Renderer() = delete;	
+	struct Renderer	{ // namespace commands
 
-		static void init(const bool cullface, const bool depthtest, const bool alphablending);
-		static void reset();
+		Renderer()  = delete;
+		~Renderer() = delete;
+
+		static void init(const bool cullface, const bool depthtest, const bool alphablending);		
+		static void reset();		
+
+		static void init3D();
+		static void reset3D();
 
 		static void setViewPorts(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
-		static void onWindowResize(const uint32_t width, const uint32_t height);
+		static void onWindowResize(const uint32_t width, const uint32_t height);						
 
-		struct MatrixData
-		{
-			glm::mat4 Model		 { 1.0f };
-			glm::mat4 View		 { 1.0f };
-			glm::mat4 Projection { 1.0f };
-		};
+		static void beginScene(const glm::mat4& view, const glm::mat4& projection);
+		static void drawSkyBox(const CubeMapText* skybox);
 
-		static u_ptr<MatrixData> s_matrixData;
+		static void endScene();
+
+		static VBOLayout getLayout();
+
+		// 3D Renderer
+		static void draw3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geo Geo3D, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geo Geo3D, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+
+		static void drawRotate3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawRotate3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawRotate3D(const Geo Geo3D, VEC4 r, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+
+		static void drawPolygon3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geo Geo3D, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geo Geo3D, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+
+		static void drawRotatePolygon3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawRotatePolygon3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawRotatePolygon3D(const Geo Geo3D, VEC4 r, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+
+		static void drawBlending(VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawBlending(VEC3 t, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+
+
+	private:
+		static void TRSsubmit();
 	};
 }
