@@ -50,7 +50,11 @@ namespace Gon {
 
 		// Draw final call
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-		virtual void Draw(const VAO* vao) const = 0;
-		virtual void Draw(const uint32_t count) const = 0;
+		virtual void DrawElements(const VAO* vao) const = 0;
+		virtual void DrawElements(const uint32_t count) const = 0;
+		virtual void DrawArrays(const uint32_t count) const = 0;
+
+
+
 	};
 }

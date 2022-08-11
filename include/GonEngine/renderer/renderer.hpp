@@ -3,14 +3,6 @@
 
 namespace Gon 	
 {
-	enum  Geo
-	{
-		TRIANGLE = 0,
-		QUAD = 1,
-		CUBE = 2,
-		BLEENDIG = QUAD,
-		SKYBOX = 3
-	};	
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 	class  CubeMapText;
 	class  Texture2D;	
@@ -36,29 +28,27 @@ namespace Gon
 
 		static void endScene();
 
-		static VBOLayout getLayout();
-
 		// 3D Renderer
-		static void draw3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void draw3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void draw3D(const Geo Geo3D, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void draw3D(const Geo Geo3D, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geometry::Type Geo3D, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geometry::Type Geo3D, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
 
-		static void drawRotate3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawRotate3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawRotate3D(const Geo Geo3D, VEC4 r, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawRotate3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawRotate3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawRotate3D(const Geometry::Type Geo3D, vector4 r, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
 
-		static void drawPolygon3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawPolygon3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawPolygon3D(const Geo Geo3D, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawPolygon3D(const Geo Geo3D, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geometry::Type Geo3D, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawPolygon3D(const Geometry::Type Geo3D, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
 
-		static void drawRotatePolygon3D(const Geo Geo3D, VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawRotatePolygon3D(const Geo Geo3D, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawRotatePolygon3D(const Geo Geo3D, VEC4 r, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawRotatePolygon3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawRotatePolygon3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawRotatePolygon3D(const Geometry::Type Geo3D, vector4 r, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
 
-		static void drawBlending(VEC3 t, VEC4 r, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
-		static void drawBlending(VEC3 t, VEC3 s, Texture albedo, Color colormask = glm::vec4{ 1.0f });
+		static void drawBlending(vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawBlending(vector3 t, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
 
 
 	private:

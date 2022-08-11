@@ -53,6 +53,9 @@ namespace Gon {
 		// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
 		static void Draw(const VAO* vao);
 		static void Draw(const uint32_t count);
+		static void DrawArrays(const uint32_t count);
+
+		
 
 	private:
 		static u_ptr<RendererAPI> s_renderer_api;

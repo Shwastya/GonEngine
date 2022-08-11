@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GonEngine/platform/OpenGL/opengl_vao.hpp"
 #include "GonEngine/geometries/geometry.hpp"
 
 namespace Gon {
@@ -12,14 +12,10 @@ namespace Gon {
 
         virtual ~Quad();
 
-        const uint32_t  size();
-        const uint32_t* getIndices();
-        const uint32_t  nIndices();
-
-        const float* get() { return m_vert; };
+        virtual void draw() override;
 
     private:
-        ScpUint32 m_indices;
-        float  m_vert[84];
+        u_ptr<VAO> m_vao;
     };
 }
+

@@ -97,11 +97,15 @@ namespace Gon {
 	
 	// Draw final call
 	// -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*	
-	void OpenGLRendererAPI::Draw(const VAO* vao) const
+	void OpenGLRendererAPI::DrawElements(const VAO* vao) const
 	{
 		glDrawElements(GL_TRIANGLES, vao->getEBO()->nIndices(), GL_UNSIGNED_INT, nullptr);
 	}
-	void OpenGLRendererAPI::Draw(const uint32_t count) const
+	void OpenGLRendererAPI::DrawElements(const uint32_t count) const
+	{
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	}
+	void OpenGLRendererAPI::DrawArrays(const uint32_t count) const
 	{
 		glDrawArrays(GL_TRIANGLES, 0, count);
 		

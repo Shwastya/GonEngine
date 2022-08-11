@@ -38,7 +38,7 @@ namespace Gon {
 	private:	
 
 		u_ptr<Texture2D>	m_texture[4];
-		u_ptr<CubeMapText>  m_cubemapText;
+		u_ptr<CubeMapText>  m_cubemapText[2];
 		s_ptr<CameraMan>	m_cameraMan;
 		u_ptr<FrameBuffer>  m_frameBuffer;
 
@@ -47,6 +47,8 @@ namespace Gon {
 	
 		bool m_windowFocused{ false };
 		bool m_windowHovered{ false };
+
+		bool m_switchSkybox{ false };
 
 		GON_UI_TIMING_VECS_DEFS;
 	};

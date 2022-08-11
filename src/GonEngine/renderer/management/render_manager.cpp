@@ -68,11 +68,15 @@ namespace Gon {
 	}
 	void RenderMan::Draw(const VAO* vao)
 	{
-		s_renderer_api->Draw(vao);
+		s_renderer_api->DrawElements(vao);
 	}
 	void RenderMan::Draw(const uint32_t count)
 	{
-		s_renderer_api->Draw(count);
+		s_renderer_api->DrawElements(count);
+	}
+	void RenderMan::DrawArrays(const uint32_t count)
+	{
+		s_renderer_api->DrawArrays(count);
 	}
 }
 
