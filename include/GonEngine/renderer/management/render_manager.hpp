@@ -40,8 +40,8 @@ namespace Gon {
 		static void setFalseDepthMask();
 		static void setTrueDepthMask();
 
-		static void enableEqualDepthTest();
-		static void disableEqualDepthTest();
+		static void setEqualDepthTest();
+		static void setLessDepthTest();
 
 		static void enableAlphaBlending();
 		static void disableAlphaBlending();

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "headers/h_layers.hpp"
 
 namespace Gon {
@@ -36,19 +35,22 @@ namespace Gon {
 		void onRender() override;
 
 	private:	
+		CameraMan	m_cameraMan;
+		
 
+		s_ptr<SceneGraph>   m_currentScene;
 		u_ptr<Texture2D>	m_texture[4];
-		u_ptr<CubeMapText>  m_cubemapText[2];
-		s_ptr<CameraMan>	m_cameraMan;
-		u_ptr<FrameBuffer>  m_frameBuffer;
+		u_ptr<CubeMapText>  m_cubemapText[2];		
+		
 
 		ImGuiDockSpace m_dock_space{ ImGuiDockSpace(NodeType::ImGui, "DockSpace-Layer") };
 		glm::vec2 m_viewPort{ 0.0f, 0.0f };
+		u_ptr<FrameBuffer>  m_frameBuffer;
 	
 		bool m_windowFocused{ false };
 		bool m_windowHovered{ false };
 
-		bool m_switchSkybox{ false };
+		// bool m_switchSkybox{ false };
 
 		GON_UI_TIMING_VECS_DEFS;
 	};

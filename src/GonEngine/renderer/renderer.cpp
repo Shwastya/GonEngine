@@ -24,7 +24,7 @@ namespace Gon
 	{
 		ShaderManager	Shader;
 		IDShader		CurrentShader {IDShader::BasicText};
-		u_ptr<Geometry> geometry[4];
+		u_ptr<Geometry> geometry[5];
 
 		glm::mat4 Model = glm::mat4(1.0f);
 		glm::mat4 View  = glm::mat4(1.0f);
@@ -56,9 +56,10 @@ namespace Gon
 
 	void Renderer::init3D()
 	{
-		s_storage->geometry[Geometry::QUAD]   = Geometry::create(Geometry::QUAD, 1.0f);
-		s_storage->geometry[Geometry::CUBE]   = Geometry::create(Geometry::CUBE, 1.0f);
-		s_storage->geometry[Geometry::SKYBOX] = Geometry::create(Geometry::SKYBOX);
+		s_storage->geometry[Geometry::QUAD]		   = Geometry::create(Geometry::QUAD, 1.0f);
+		s_storage->geometry[Geometry::CUBE]		   = Geometry::create(Geometry::CUBE, 1.0f);
+		s_storage->geometry[Geometry::CUBEMAP]	   = Geometry::create(Geometry::CUBEMAP);
+		s_storage->geometry[Geometry::REFLECTCUBE] = Geometry::create(Geometry::REFLECTCUBE, 1.0f);
 	}
 
 	void Renderer::reset3D()
@@ -84,17 +85,15 @@ namespace Gon
 		skybox->bind();
 
 		// 3
-		s_storage->geometry[Geometry::SKYBOX]->draw();		
+		s_storage->geometry[Geometry::CUBEMAP]->draw();		
 	}	
 
 	void Renderer::TRSsubmit()
 	{
-		s_storage->Shader[current]->bind();
 		s_storage->Shader[current]->uniform("uModel", s_storage->Model);
 		s_storage->Shader[current]->uniform("uView",  s_storage->View);
 		s_storage->Shader[current]->uniform("uProj",  s_storage->Proj);
-		s_storage->Model = glm::mat4(1.0f);
-		
+		s_storage->Model = glm::mat4(1.0f);		
 	}
 
 	void Renderer::endScene()
@@ -102,300 +101,58 @@ namespace Gon
 		s_storage->Shader[current]->unbind();
 	}
 
-	void Renderer::draw3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
+	void Renderer::draw3D(const Geometry::Type Geo3D, glm::mat4& transform, texture2D albedo)
 	{
 		// 1
-		s_storage->Model = glm::translate(s_storage->Model, t);
-		s_storage->Model = glm::rotate(s_storage->Model, glm::radians(r.x), { r.y, r.z, r.w });
-		s_storage->Model = glm::scale(s_storage->Model, s);
+		s_storage->Model = transform;
 		current = BasicText;
+		s_storage->Shader[current]->bind();
 		TRSsubmit();
-
 		// 2		
 		s_storage->Shader[BasicText]->uniform("uTexture", 0);
 		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
+		s_storage->Shader[BasicText]->uniform("uColorMask", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		albedo->bind();
 
 		// 3
 		s_storage->geometry[Geo3D]->draw();
-	}
-	void Renderer::draw3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{
-		// 1
-		s_storage->Model = glm::rotate(s_storage->Model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
+	}	
 
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geo3D]->draw();
-	}
-
-	void Renderer::draw3D(const Geometry::Type Geo3D, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1	
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geo3D]->draw();
-	}
-	void Renderer::draw3D(const Geometry::Type Geo3D, texture2D albedo, vector4 colormask)
-	{
-		// 1
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geo3D]->draw();
-	}
-
-	void Renderer::drawRotate3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1
-		s_storage->Model = glm::translate(s_storage->Model, t);
-		s_storage->Model = glm::rotate(s_storage->Model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);		
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geo3D]->draw();
-	}
-
-	void Renderer::drawRotate3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1
-		s_storage->Model = glm::rotate(s_storage->Model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geo3D]->draw();
-	}
-
-	void Renderer::drawRotate3D(const Geometry::Type Geo3D, vector4 r, texture2D albedo, vector4 colormask)
-	{		
-		// 1		
-		s_storage->Model = glm::rotate(s_storage->Model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geo3D]->draw();
-	}
-
-	void Renderer::drawBlending(vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1
-		s_storage->Model = glm::translate(s_storage->Model, t);
-		s_storage->Model = glm::rotate(s_storage->Model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geometry::QUAD]->draw();
-	}
-	void Renderer::drawBlending(vector3 t, vector3 s, texture2D albedo, vector4 colormask)
-	{
-		// 1
-		s_storage->Model = glm::translate(s_storage->Model, t);
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2				
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		s_storage->geometry[Geometry::QUAD]->draw();
-	}
-
-	
-
-	void Renderer::drawPolygon3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
+	void Renderer::drawReflect3D(vector3 t, vector4 r, vector3 s, const CubeMapText* text, vector3 camPos)
 	{
 		// 1
 		s_storage->Model = glm::translate(s_storage->Model, t);
 		s_storage->Model = glm::rotate(s_storage->Model, glm::radians(r.x), { r.y, r.z, r.w });
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-		
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
-	}
-	void Renderer::drawPolygon3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1
-		s_storage->Model = glm::rotate(s_storage->Model, glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
+		s_storage->Model = glm::scale(s_storage->Model, s);		
+		current = Reflection;
+		s_storage->Shader[current]->bind();
+		s_storage->Shader[current]->uniform("cameraPos", camPos);
 		TRSsubmit();
 
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
+		// 2		
+		s_storage->Shader[Reflection]->uniform("skyBox", 0);
+		text->bind();
+
 		// 3
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
+		s_storage->geometry[Geometry::REFLECTCUBE]->draw();
 	}
 
-	void Renderer::drawPolygon3D(const Geometry::Type Geo3D, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
-	}
-	void Renderer::drawPolygon3D(const Geometry::Type Geo3D, texture2D albedo, vector4 colormask)
+	void Renderer::drawRotateReflect3D(vector3 t, vector4 r, vector3 s, const CubeMapText* text, vector3 camPos)
 	{
 		// 1
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
-	}
-
-
-	void Renderer::drawRotatePolygon3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{
-		// 1		
 		s_storage->Model = glm::translate(s_storage->Model, t);
 		s_storage->Model = glm::rotate(s_storage->Model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
 		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
+		current = Reflection;
+		s_storage->Shader[current]->bind();
+		s_storage->Shader[current]->uniform("cameraPos", camPos);
+		TRSsubmit();		
 
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
+		// 2		
+		s_storage->Shader[Reflection]->uniform("skyBox", 0);
+		text->bind();
+
 		// 3
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
-	}
-
-	void Renderer::drawRotatePolygon3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask)
-	{		
-		// 1
-		s_storage->Model = glm::rotate(s_storage->Model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		s_storage->Model = glm::scale(s_storage->Model, s);
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// 3
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
-	}
-
-	void Renderer::drawRotatePolygon3D(const Geometry::Type Geo3D, vector4 r, texture2D albedo, vector4 colormask)
-	{
-		// 1		
-		s_storage->Model = glm::rotate(s_storage->Model, static_cast<float>(GonEngine::getTime()) * glm::radians(r.x), glm::vec3(r.y, r.z, r.w));
-		current = BasicText;
-		TRSsubmit();
-
-		// 2
-		s_storage->Shader[BasicText]->uniform("uTexture", 0);
-		s_storage->Shader[BasicText]->uniform("uTextScale", albedo->getTilingScale());
-		s_storage->Shader[BasicText]->uniform("uColorMask", colormask);
-		albedo->bind();
-		
-		// bind VAO an DRAW
-		RenderMan::linePolygonMode(true);
-		s_storage->geometry[Geo3D]->draw();;
-		RenderMan::linePolygonMode(false);
-	}
+		s_storage->geometry[Geometry::REFLECTCUBE]->draw();
+	}	
 }

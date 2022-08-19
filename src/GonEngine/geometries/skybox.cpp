@@ -6,51 +6,52 @@
 
 namespace Gon {
 
-    SkyBox::SkyBox() : m_vao(VAO::create(1))
+    CubeMap::CubeMap() : m_vao(VAO::create(1))
     {
-        float vertices[] = {
-        	// positions          
-        	-1.0f,  1.0f, -1.0f,
-        	-1.0f, -1.0f, -1.0f,
-        	 1.0f, -1.0f, -1.0f,
-        	 1.0f, -1.0f, -1.0f,
-        	 1.0f,  1.0f, -1.0f,
-        	-1.0f,  1.0f, -1.0f,
+        float vertices[]
+        {
+            // positions          
+         -1.0f,  1.0f, -1.0f,
+         -1.0f, -1.0f, -1.0f,
+          1.0f, -1.0f, -1.0f,
+          1.0f, -1.0f, -1.0f,
+          1.0f,  1.0f, -1.0f,
+         -1.0f,  1.0f, -1.0f,
 
-        	-1.0f, -1.0f,  1.0f,
-        	-1.0f, -1.0f, -1.0f,
-        	-1.0f,  1.0f, -1.0f,
-        	-1.0f,  1.0f, -1.0f,
-        	-1.0f,  1.0f,  1.0f,
-        	-1.0f, -1.0f,  1.0f,
+         -1.0f, -1.0f,  1.0f,
+         -1.0f, -1.0f, -1.0f,
+         -1.0f,  1.0f, -1.0f,
+         -1.0f,  1.0f, -1.0f,
+         -1.0f,  1.0f,  1.0f,
+         -1.0f, -1.0f,  1.0f,
 
-        	 1.0f, -1.0f, -1.0f,
-        	 1.0f, -1.0f,  1.0f,
-        	 1.0f,  1.0f,  1.0f,
-        	 1.0f,  1.0f,  1.0f,
-        	 1.0f,  1.0f, -1.0f,
-        	 1.0f, -1.0f, -1.0f,
+          1.0f, -1.0f, -1.0f,
+          1.0f, -1.0f,  1.0f,
+          1.0f,  1.0f,  1.0f,
+          1.0f,  1.0f,  1.0f,
+          1.0f,  1.0f, -1.0f,
+          1.0f, -1.0f, -1.0f,
 
-        	-1.0f, -1.0f,  1.0f,
-        	-1.0f,  1.0f,  1.0f,
-        	 1.0f,  1.0f,  1.0f,
-        	 1.0f,  1.0f,  1.0f,
-        	 1.0f, -1.0f,  1.0f,
-        	-1.0f, -1.0f,  1.0f,
+         -1.0f, -1.0f,  1.0f,
+         -1.0f,  1.0f,  1.0f,
+          1.0f,  1.0f,  1.0f,
+          1.0f,  1.0f,  1.0f,
+          1.0f, -1.0f,  1.0f,
+         -1.0f, -1.0f,  1.0f,
 
-        	-1.0f,  1.0f, -1.0f,
-        	 1.0f,  1.0f, -1.0f,
-        	 1.0f,  1.0f,  1.0f,
-        	 1.0f,  1.0f,  1.0f,
-        	-1.0f,  1.0f,  1.0f,
-        	-1.0f,  1.0f, -1.0f,
+         -1.0f,  1.0f, -1.0f,
+          1.0f,  1.0f, -1.0f,
+          1.0f,  1.0f,  1.0f,
+          1.0f,  1.0f,  1.0f,
+         -1.0f,  1.0f,  1.0f,
+         -1.0f,  1.0f, -1.0f,
 
-        	-1.0f, -1.0f, -1.0f,
-        	-1.0f, -1.0f,  1.0f,
-        	 1.0f, -1.0f, -1.0f,
-        	 1.0f, -1.0f, -1.0f,
-        	-1.0f, -1.0f,  1.0f,
-        	 1.0f, -1.0f,  1.0f
+         -1.0f, -1.0f, -1.0f,
+         -1.0f, -1.0f,  1.0f,
+          1.0f, -1.0f, -1.0f,
+          1.0f, -1.0f, -1.0f,
+         -1.0f, -1.0f,  1.0f,
+          1.0f, -1.0f,  1.0f
         };
 
         u_ptr<VBO> vbo = VBO::create(vertices, sizeof(vertices));
@@ -59,12 +60,12 @@ namespace Gon {
 
         GON_TRACE("[CREATED] SkyBox from geometry.");
     }
-    SkyBox::~SkyBox()
+    CubeMap::~CubeMap()
     {
         GON_TRACE("[DESTROYED] Cube from geometry.");
     }
 
-    void SkyBox::draw()
+    void CubeMap::draw()
     {
         RenderMan::setFalseDepthMask();
         {

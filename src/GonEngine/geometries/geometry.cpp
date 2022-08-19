@@ -1,3 +1,4 @@
+#include "GonEngine/geometries/reflectCube.hpp"
 #include "GonEngine/geometries/triangle.hpp"
 #include "GonEngine/geometries/geometry.hpp"
 #include "GonEngine/geometries/skybox.hpp"
@@ -10,16 +11,17 @@
 #include <glm/vec2.hpp>
 #include <glad/glad.h>
 
-
 namespace Gon 
 {
     u_ptr<Geometry> Geometry::create(Geometry::Type type, const float size)
     {
         switch (type)
         {
-        case Geometry::TRIANGLE: return make_u_ptr<Cube>(size);
-        case Geometry::QUAD:     return make_u_ptr<Quad>(size);
-        case Geometry::CUBE:     return make_u_ptr<Cube>(size);
+        case Geometry::TRIANGLE:    return make_u_ptr<Cube>(size);
+        case Geometry::QUAD:        return make_u_ptr<Quad>(size);
+        case Geometry::CUBE:        return make_u_ptr<Cube>(size);
+        case Geometry::REFLECTCUBE: return make_u_ptr<ReflectCube>(size);
+
         }
         GON_ASSERT(false, "Geometry bad type parameter");
         return nullptr;
@@ -29,7 +31,7 @@ namespace Gon
     {
         switch (type)
         {
-        case Geometry::SKYBOX:   return make_u_ptr<SkyBox>();
+        case Geometry::CUBEMAP:   return make_u_ptr<CubeMap>();
         }
         GON_ASSERT(false, "Geometry bad type parameter");
         return nullptr;

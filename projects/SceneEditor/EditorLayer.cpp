@@ -29,85 +29,80 @@ namespace Gon
 	};
 
 	EditorLayer::EditorLayer(const NodeType ntype, const std::string& name)
-		: Layer(ntype, name)
+		: Layer(ntype, name),
+		m_cameraMan(CameraMan
+		(
+			CamMode::Persp,
+			m_viewPort.x / m_viewPort.y,
+			k_orthoData, k_perspData
+		))
 	{
 		m_texture[0] = Texture2D::create(k_albedo_ore, Texture2D::Format::RGB);
 		m_texture[1] = Texture2D::create(k_albedo_alien, Texture2D::Format::RGB);
 		m_texture[2] = Texture2D::create(k_blending, Texture2D::Format::RGBA);
 		m_texture[3] = Texture2D::create(k_albedo_lava, Texture2D::Format::RGB);
-
-		m_cubemapText[0] = CubeMapText::create(k_cubemap1, CubeMapText::Format::RGB);
-		m_cubemapText[1] = CubeMapText::create(k_cubemap2, CubeMapText::Format::RGB);
-
 	}
 
 	EditorLayer::~EditorLayer() {}
 
 	void EditorLayer::onJoin()
 	{
-		m_viewPort = { (gonWindowWidth / 1.5f), (gonWindowHeight / 1.5f) };
+		m_viewPort = { (gonWindowWidth / 1.5f), (gonWindowHeight / 1.5f) };		
 
-		m_cameraMan = make_s_ptr<CameraMan>
-			(
-				CamMode::Persp,
-				m_viewPort.x / m_viewPort.y,
-				k_orthoData, k_perspData
-				);
-		m_cameraMan->disablePrimeWindowResize();
-
-		FBProps frameBufferProps
-		{
+		m_frameBuffer = FrameBuffer::create(FBProps
+		({
 			static_cast<uint32_t>(m_viewPort.x),
 			static_cast<uint32_t>(m_viewPort.y),
 			{ FBTextureFormat::RGBA8 }
-		};
-		m_frameBuffer = FrameBuffer::create(frameBufferProps);
+		}));
+		m_cameraMan.disablePrimeWindowResize();
+
+		m_currentScene = make_s_ptr<SceneGraph>();
+
+		m_currentScene->pushSkyBox(k_cubemap1);
+		m_currentScene->pushSkyBox(k_cubemap2);
+
+		auto _cube{ m_currentScene->createEntity("Cube", { 0.5f, 1.0f, -2.0f }, {0.5f, 0.5f, 0.5f}) };
+		_cube.addComponent<MeshRendererComponent>(k_albedo_alien, Texture2D::Format::RGB);
+		_cube.addComponent<MeshFilterComponent>(Geometry::Type::CUBE);
+
+		
+		auto _quad{ m_currentScene->createEntity("Quad", { 0.0f, -1.0f, -1.5f }, {-1.5f, 0.0f, 0.0f} , glm::vec3(3.5f))};
+		_quad.addComponent<MeshRendererComponent>(k_albedo_ore, Texture2D::Format::RGB);
+		_quad.addComponent<MeshFilterComponent>(Geometry::Type::QUAD);
+
 	}
 	void EditorLayer::onQuit()
 	{
 	}
 	void EditorLayer::onEvent(Event& e)
 	{
-		m_cameraMan->onEvent(e);
-
-		if (e.getEventType() == EventType::KeyPressed)
-		{
-			const auto& _e = dynamic_cast<OnKeyPressed&>(e);			
-			if (_e.getKeyCode() == KeyCode::F8)	
-				m_switchSkybox = !m_switchSkybox;
-
-		}
+		m_cameraMan.onEvent(e);
+		m_currentScene->onEvent(e);
 	}
 	void EditorLayer::onUpdate(const DeltaTime dt)
 	{
 		{
-			// Camera::onUpdate
+			// Camera::onUpdate && Scene::onUpdate
 			{
-				GON_UI_TIMING("Camera::onUpdate");
-				if (m_windowHovered) m_cameraMan->handler()->onUpdate(dt);
+				GON_UI_TIMING("Camera + Scene::onUpdate");
+				if (m_windowHovered) m_cameraMan.handler()->onUpdate(dt);
+				
 			}
 			// Render Set
 			{
-				m_frameBuffer->bind();
-
+				
 				GON_UI_TIMING("Render setting");
+				m_frameBuffer->bind();
 				RenderMan::setClearColor({ 0.15f, 0.15f, 0.15f, 1.0f });
 				RenderMan::clear();
 			}
 			// Render Runtime
 			{
 				GON_UI_TIMING("Render runTime");
-
-				Renderer::beginScene(m_cameraMan->View(), m_cameraMan->Projection());
+				Renderer::beginScene(m_cameraMan.View(), m_cameraMan.Projection());
 				{
-					Renderer::drawSkyBox(m_cubemapText[m_switchSkybox].get());
-					Renderer::draw3D(Geometry::QUAD, { 0.0f, -1.0f, -1.5f }, { -90.0f, 1.0f, 0.0f, 0.0f }, glm::vec3{ 3.5f }, m_texture[0].get());
-					Renderer::drawBlending({ 0.6f, -0.745f, -1.0f }, glm::vec3{ 0.5f }, m_texture[2].get());
-					Renderer::drawRotatePolygon3D(Geometry::CUBE, { 0.6f, 0.0f, -0.6f }, { 23.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.36f }, m_texture[1].get());
-					Renderer::drawRotate3D(Geometry::CUBE, { -0.1f, 0.2f, -0.2f }, { 90.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f }, m_texture[1].get(), { 1.0f, 0.2f, 0.2f, 0.7F });
-					Renderer::drawRotate3D(Geometry::CUBE, { 0.0f, -0.1f, 0.3f }, { -90.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.23f }, m_texture[3].get());
-					Renderer::drawRotate3D(Geometry::CUBE, { -0.4f, 0.3f, 0.3f }, { -50.0f, 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.4f }, m_texture[1].get(), { 0.5, 0.0, 1.0, 0.5 });
-					Renderer::drawRotate3D(Geometry::CUBE, { 0.15f, 0.3f, 0.3f }, { 32.0f, 0.5f, 0.3f, 0.7f }, glm::vec3{ 0.23f }, m_texture[1].get(), { 1.0, 1.0, 1.0, 0.5 });
+					m_currentScene->onUpdate(dt);					
 				}
 				Renderer::endScene();
 				m_frameBuffer->unbind();
@@ -129,7 +124,7 @@ namespace Gon
 				{
 					m_frameBuffer->resize((uint32_t)viewportUI.x, (uint32_t)viewportUI.y);
 					m_viewPort = { viewportUI.x, viewportUI.y };
-					m_cameraMan->refreshAspectRatio(m_viewPort);
+					m_cameraMan.refreshAspectRatio(m_viewPort);
 				}
 				const uint64_t textureID{ m_frameBuffer->getFBOTexture() };
 				ImGui::Image

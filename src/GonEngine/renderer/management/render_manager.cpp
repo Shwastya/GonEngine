@@ -57,8 +57,8 @@ namespace Gon {
 	void RenderMan::disableDepthTest()		{ s_renderer_api->disableDepthTest();}
 	void RenderMan::setFalseDepthMask()		{ s_renderer_api->setFalseDepthMask();}
 	void RenderMan::setTrueDepthMask()		{ s_renderer_api->setTrueDepthMask();}
-	void RenderMan::enableEqualDepthTest()	{ s_renderer_api->enableEqualDepthTest();}
-	void RenderMan::disableEqualDepthTest()	{ s_renderer_api->disableEqualDepthTest();}
+	void RenderMan::setEqualDepthTest()		{ s_renderer_api->setEqualDepthTest();}
+	void RenderMan::setLessDepthTest()		{ s_renderer_api->setLessDepthTest();}
 	void RenderMan::enableAlphaBlending()	{ s_renderer_api->enableAlphaBlending();}
 	void RenderMan::disableAlphaBlending()	{ s_renderer_api->disableAlphaBlending();}
 

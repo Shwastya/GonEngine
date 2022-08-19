@@ -29,26 +29,14 @@ namespace Gon
 		static void endScene();
 
 		// 3D Renderer
-		static void draw3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void draw3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void draw3D(const Geometry::Type Geo3D, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void draw3D(const Geometry::Type Geo3D, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void draw3D(const Geometry::Type Geo3D, glm::mat4& transform, texture2D albedo);
 
-		static void drawRotate3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawRotate3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawRotate3D(const Geometry::Type Geo3D, vector4 r, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		
 
-		static void drawPolygon3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawPolygon3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawPolygon3D(const Geometry::Type Geo3D, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawPolygon3D(const Geometry::Type Geo3D, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
+		static void drawReflect3D(vector3 t, vector4 r, vector3 s, const CubeMapText* text, vector3 camPos);
+		static void drawRotateReflect3D(vector3 t, vector4 r, vector3 s, const CubeMapText* text, vector3 camPos);
+		
 
-		static void drawRotatePolygon3D(const Geometry::Type Geo3D, vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawRotatePolygon3D(const Geometry::Type Geo3D, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawRotatePolygon3D(const Geometry::Type Geo3D, vector4 r, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-
-		static void drawBlending(vector3 t, vector4 r, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
-		static void drawBlending(vector3 t, vector3 s, texture2D albedo, vector4 colormask = glm::vec4{ 1.0f });
 
 
 	private:

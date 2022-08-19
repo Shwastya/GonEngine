@@ -19,7 +19,7 @@ namespace Gon {
 		CameraMan(const CamMode mode, const float aspectRatio = 1.0f, const OrthoHandler::Data orthodata = OrthoHandler::Data(), PerspHandler::Data perpsdata = PerspHandler::Data());
 		~CameraMan();
 
-		const u_ptr<Camera>& getCam();
+		const glm::vec3& getPosition();
 		const s_ptr<CameraHandler>& handler();
 
 		const glm::mat4& View();

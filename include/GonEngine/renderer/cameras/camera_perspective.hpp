@@ -61,6 +61,8 @@ namespace Gon {
 		virtual void enablePrimeWindowResize()  override { m_enabled_prime_window = true; }
 		virtual void disablePrimeWindowResize() override { m_enabled_prime_window = false; }
 	
+		virtual const glm::vec3& getPosition() { return m_camera->getPosition(); };
+
 	private:
 		bool onMouseMoved(OnMouseMoved& e);
 		const Data getData() { return m_data; }

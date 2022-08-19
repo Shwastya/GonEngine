@@ -29,9 +29,9 @@ namespace Gon {
 	{
 		m_cameraHandler[m_mode]->setAspectRatio(viewport.x / viewport.y);
 	}
-	const u_ptr<Camera>& CameraMan::getCam() 
+	const glm::vec3& CameraMan::getPosition()
 	{ 
-		return m_cameraHandler[m_mode]->get(); 
+		return  m_cameraHandler[m_mode]->getPosition();
 	}
 	const s_ptr<CameraHandler>& CameraMan::handler() 
 	{

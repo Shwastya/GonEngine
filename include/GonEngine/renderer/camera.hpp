@@ -52,7 +52,7 @@ namespace Gon {
 		virtual void enablePrimeWindowResize()				 = 0;
 		virtual void disablePrimeWindowResize()				 = 0;
 
-		const u_ptr<Camera>& get() { return m_camera; }
+		virtual const glm::vec3& getPosition()				 = 0;
 
 	protected:
 		glm::mat4 m_projectionMatrix;

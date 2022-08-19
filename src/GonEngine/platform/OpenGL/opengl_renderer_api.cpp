@@ -5,9 +5,7 @@
 #include "GonEngine/platform/OpenGL/opengl_renderer_api.hpp"
 #include <glad/glad.h>
 
-namespace Gon {
-
-	
+namespace Gon {	
 
 	void OpenGLRendererAPI::initConfig(const bool cullface, const bool depthtest, const bool alphablending)
 	{
@@ -16,8 +14,12 @@ namespace Gon {
 		else OpenGLRendererAPI::disableDepthTest();
 
 		// Se habilita el test de profundidad para las geometrias 3D
-		if (depthtest) OpenGLRendererAPI::enableDepthTest();
-		//if (depthtest) OpenGLRendererAPI::enableEqualDepthTest();
+		if (depthtest) 
+		{
+			OpenGLRendererAPI::enableDepthTest();
+			OpenGLRendererAPI::setLessDepthTest();
+		}
+		
 		else OpenGLRendererAPI::disableDepthTest();
 
 		// Se habilita el Alpha Blending (alpha|depth channel textures)
@@ -49,7 +51,6 @@ namespace Gon {
 	void OpenGLRendererAPI::enableCullFace() 
 	{
 		glEnable(GL_CULL_FACE);		
-		glCullFace(GL_BACK);
 	}
 	void OpenGLRendererAPI::disableCullFace()
 	{
@@ -57,8 +58,7 @@ namespace Gon {
 	}
 	void OpenGLRendererAPI::enableDepthTest()
 	{
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS); // (el mas habitual) el que tiene la prof. mas pequenya es el que queda
+		glEnable(GL_DEPTH_TEST);		
 	}
 	void OpenGLRendererAPI::disableDepthTest()
 	{
@@ -72,13 +72,13 @@ namespace Gon {
 	{
 		glDepthMask(GL_TRUE);
 	}
-	void OpenGLRendererAPI::enableEqualDepthTest()
+	void OpenGLRendererAPI::setEqualDepthTest()
 	{		
 		glDepthFunc(GL_LEQUAL);
 	}
-	void OpenGLRendererAPI::disableEqualDepthTest()
+	void OpenGLRendererAPI::setLessDepthTest()
 	{
-		glDepthFunc(GL_LEQUAL);
+		glDepthFunc(GL_LESS);
 	}
 	void OpenGLRendererAPI::enableAlphaBlending()
 	{

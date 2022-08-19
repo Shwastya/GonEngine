@@ -11,7 +11,9 @@ namespace Gon {
 	({
 		Shader::create("../assets/shaders/color/basic.glsl"),	// Basic1
 		Shader::create("../assets/shaders/text/basic.glsl"),
-		Shader::create("../assets/shaders/text/SkyBox.glsl")
+		Shader::create("../assets/shaders/text/SkyBox.glsl"),
+		Shader::create("../assets/shaders/text/Reflection.glsl")
+
 	})
 	{
 		GON_TRACE("[CREATED] ShaderManager: Archived Shaders");

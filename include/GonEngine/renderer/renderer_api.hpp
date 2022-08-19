@@ -39,8 +39,8 @@ namespace Gon {
 		virtual void setFalseDepthMask()	 = 0;
 		virtual void setTrueDepthMask()		 = 0;
 
-		virtual void enableEqualDepthTest()  = 0;
-		virtual void disableEqualDepthTest() = 0;
+		virtual void setEqualDepthTest()	 = 0;
+		virtual void setLessDepthTest()		 = 0;
 
 		virtual void enableAlphaBlending()	 = 0;
 		virtual void disableAlphaBlending()  = 0;

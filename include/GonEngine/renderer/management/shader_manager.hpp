@@ -9,7 +9,8 @@ namespace Gon {
     {
         BasicColor   = 0,
         BasicText,
-        SkyBox
+        SkyBox,
+        Reflection
     };
 
     // The simplest idea now:
@@ -33,7 +34,7 @@ namespace Gon {
         }        
 
     private:
-        std::array<u_ptr<Shader>, 3> m_storage;
+        std::array<u_ptr<Shader>, 4> m_storage;
 	};
 
 

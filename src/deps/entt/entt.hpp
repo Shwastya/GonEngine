@@ -66511,5 +66511,4 @@ namespace entt {
     sink(sigh<Ret(Args...), Allocator>&)->sink<sigh<Ret(Args...), Allocator>>;
 
 } // namespace entt
-
 #endif

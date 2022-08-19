@@ -10,7 +10,12 @@ namespace Gon {
 
         enum  Type
         {
-            TRIANGLE = 0, QUAD, CUBE, SKYBOX
+            NONE,
+            TRIANGLE    = 0, 
+            QUAD        = 1, 
+            CUBE        = 2, 
+            CUBEMAP     = 3, 
+            REFLECTCUBE = 4
         };
 
         Geometry() = default;

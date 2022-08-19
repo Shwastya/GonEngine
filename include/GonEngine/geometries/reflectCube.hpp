@@ -4,11 +4,13 @@
 
 namespace Gon {
 
-    class CubeMap: public Geometry
+    class ReflectCube final : public Geometry
     {
     public:
-        CubeMap();
-        virtual ~CubeMap();
+        ReflectCube() = delete;
+        ReflectCube(const float size);
+
+        virtual ~ReflectCube();
 
         virtual void draw() override;
 

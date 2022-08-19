@@ -51,7 +51,9 @@ namespace Gon {
         virtual const glm::mat4& getViewMatrix()		     override;
 
         virtual void enablePrimeWindowResize()  override { m_enabled_prime_window = true; }
-        virtual void disablePrimeWindowResize() override { m_enabled_prime_window = false; }            
+        virtual void disablePrimeWindowResize() override { m_enabled_prime_window = false; }   
+
+        virtual const glm::vec3& getPosition() { return m_camera->getPosition(); };
 
     private:
         const Data getData() { return m_data; }
